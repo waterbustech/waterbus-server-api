@@ -30,8 +30,8 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const options = new DocumentBuilder()
-    .setTitle('Waterbus.cloud')
-    .setDescription('Auth.Service')
+    .setTitle('waterbus.cloud - auth-service.cloud')
+    .setDescription('Auth Services: take responsible for authentication, users information... 🍻')
     .setVersion('1.0')
     .addBearerAuth()
     .build();
