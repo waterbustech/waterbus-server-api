@@ -1,6 +1,5 @@
-import { Controller, Get, Param, Body, Put, Post } from '@nestjs/common';
+import { Controller, Body, Post } from '@nestjs/common';
 import { LoginSocialDto } from 'src/core/dtos/auth';
-import { UpdateUserInfoDto } from 'src/core/dtos/user';
 import { UserFactoryService } from 'src/usecases/users/user-factory.service';
 import { AuthUseCases } from 'src/usecases/auth/auth.usecase';
 
