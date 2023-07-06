@@ -31,7 +31,9 @@ async function bootstrap() {
 
   const options = new DocumentBuilder()
     .setTitle('waterbus.cloud - auth-service.cloud')
-    .setDescription('Auth Services: take responsible for authentication, users information... 🍻')
+    .setDescription(
+      'Auth Services: take responsible for authentication, users information... 🍻',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();
