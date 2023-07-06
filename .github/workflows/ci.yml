@@ -3,7 +3,9 @@ name: Analyze & Test
 on:
   push:
     branches:
-      - '*/*'
+      - '*'
+    tags:
+      - '*'
 
 jobs:
   test:
