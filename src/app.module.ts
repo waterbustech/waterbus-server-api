@@ -6,6 +6,9 @@ import authConfig from './config/auth.config';
 import appConfig from './config/app.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
+import { AuthController, UserController } from './controllers';
+import { AuthUsecasesModule } from './usecases/auth/auth-usecases.module';
+import { UsersModule } from './usecases/users/users.module';
 
 @Module({
   imports: [
@@ -20,6 +23,9 @@ import { DataSource, DataSourceOptions } from 'typeorm';
         return new DataSource(options).initialize();
       },
     }),
+    AuthUsecasesModule,
+    UsersModule,
   ],
+  controllers: [AuthController, UserController],
 })
 export class AppModule {}
