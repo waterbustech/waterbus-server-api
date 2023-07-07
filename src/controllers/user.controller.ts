@@ -17,12 +17,12 @@ export class UserController {
     private userFactoryService: UserFactoryService,
   ) {}
 
-  @Get(':id')
+  @Get()
   async getById(@Request() request) {
     return this.userUseCases.getUserByUserName(request.user.id);
   }
 
-  @Put(':id')
+  @Put()
   updateUserInfo(@Request() request, @Body() updateUserDto: UpdateUserInfoDto) {
     const user = this.userFactoryService.getUserFromUpdateDto(updateUserDto);
 
