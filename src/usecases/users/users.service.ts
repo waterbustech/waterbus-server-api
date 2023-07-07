@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/core';
-import { EntityCondition } from 'src/utils/types/entity-condition.type';
-import { NullableType } from 'src/utils/types/nullable.type';
+import { User } from '../../core';
+import { EntityCondition } from '../../utils/types/entity-condition.type';
+import { NullableType } from '../../utils/types/nullable.type';
 import { DeepPartial, Repository } from 'typeorm';
 
 @Injectable()

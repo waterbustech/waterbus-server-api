@@ -2,9 +2,9 @@ import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { AllConfigType } from 'src/config/config.type';
-import { User } from 'src/core';
+import { User } from '../../core';
 import { Session } from '../session/entities/session.entity';
-import { JwtRefreshPayloadType } from 'src/strategies/types/jwt-refresh-payload.type';
+import { JwtRefreshPayloadType } from '../../strategies/types/jwt-refresh-payload.type';
 import { SessionService } from '../session/session.service';
 import { LoginResponseType } from './types/login-response.type';
 import { UsersService } from '../users/users.service';
@@ -62,10 +62,7 @@ export class AuthService {
     };
   }
 
-  private async getTokensData(data: {
-    id: User['id'];
-    sessionId: Session['id'];
-  }) {
+  async getTokensData(data: { id: User['id']; sessionId: Session['id'] }) {
     const tokenExpiresIn = this.configService.getOrThrow('auth.expires', {
       infer: true,
     });

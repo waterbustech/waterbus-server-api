@@ -7,7 +7,7 @@ import appConfig from './config/app.config';
 import { TypeOrmConfigService } from './database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AuthController, UserController } from './controllers';
-import { AuthUsecasesModule } from './usecases/auth/auth-usecases.module';
+import { AuthUsecasesModule } from './usecases/auth/auth.module';
 import { UsersModule } from './usecases/users/users.module';
 
 @Module({
