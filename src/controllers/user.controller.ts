@@ -1,22 +1,31 @@
-import { Controller } from '@nestjs/common';
-// import { AuthUseCases } from 'src/usecases/auth/auth.usecase';
+import { Body, Controller, Get, Request, Put, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { ApiBearerAuth } from '@nestjs/swagger';
+import { UpdateUserInfoDto } from 'src/core/dtos';
+import { UserFactoryService } from 'src/usecases/users/user-factory.service';
+import { UserUseCases } from 'src/usecases/users/user.usecase';
 
-@Controller('api/author')
+@ApiBearerAuth()
+@UseGuards(AuthGuard('jwt'))
+@Controller({
+  path: 'users',
+  version: '1',
+})
 export class UserController {
-  // constructor(private authorUseCases: AuthUseCases) {}
-  //   @Get()
-  //   async getAll() {
-  //     return this.authorUseCases.getAllAuthors();
-  //   }
-  //   @Get(':id')
-  //   async getById(@Param('id') id: any) {
-  //     return this.authorUseCases.getAuthorById(id);
-  //   }
-  //   @Put(':id')
-  //   updateUserInfo(
-  //     @Param('id') authorId: string,
-  //     @Body() updateAuthorDto: UpdateUserInfoDto,
-  //   ) {
-  //     return this.authorUseCases.updateAuthor(authorId, updateAuthorDto);
-  //   }
+  constructor(
+    private userUseCases: UserUseCases,
+    private userFactoryService: UserFactoryService,
+  ) {}
+
+  @Get(':id')
+  async getById(@Request() request) {
+    return this.userUseCases.getUserByUserName(request.user.id);
+  }
+
+  @Put(':id')
+  updateUserInfo(@Request() request, @Body() updateUserDto: UpdateUserInfoDto) {
+    const user = this.userFactoryService.getUserFromUpdateDto(updateUserDto);
+
+    return this.userUseCases.updateUser(request.user.id, user);
+  }
 }

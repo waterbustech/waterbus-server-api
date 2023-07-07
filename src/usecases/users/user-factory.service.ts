@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../core/entities';
-import { LoginSocialDto } from '../../core/dtos';
+import { LoginSocialDto, UpdateUserInfoDto } from '../../core/dtos';
 
 @Injectable()
 export class UserFactoryService {
@@ -11,6 +11,14 @@ export class UserFactoryService {
     newUser.googleId = user.googleId;
     newUser.facebookId = user.facebookId;
     newUser.appleId = user.appleId;
+
+    return newUser;
+  }
+
+  getUserFromUpdateDto(user: UpdateUserInfoDto): User {
+    const newUser = new User();
+    newUser.fullName = user.fullName;
+    newUser.avatar = user.avatar;
 
     return newUser;
   }

@@ -1,18 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '../../core/entities';
-import { UsersService } from '../users/users.service';
+import { AuthService } from './auth.service';
+import { LoginResponseType } from './types/login-response.type';
 
 @Injectable()
 export class AuthUseCases {
-  constructor(private userService: UsersService) {}
+  constructor(private authService: AuthService) {}
 
-  async loginWithSocial(user: User): Promise<User> {
-    try {
-      const createdUser = await this.userService.create(user);
+  async loginWithSocial(user: User): Promise<LoginResponseType> {
+    return this.authService.loginWithSocial(user);
+  }
 
-      return createdUser;
-    } catch (error) {
-      throw error;
-    }
+  async logout(sessionId: number) {
+    await this.authService.logout({ sessionId });
   }
 }
