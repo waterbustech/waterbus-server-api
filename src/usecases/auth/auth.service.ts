@@ -22,7 +22,7 @@ export class AuthService {
   async loginWithSocial(mUser: User): Promise<LoginResponseType> {
     const user = await this.usersService.create(mUser);
 
-    const session = await this.sessionService.create(user);
+    const session: Session = await this.sessionService.create({ user });
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,

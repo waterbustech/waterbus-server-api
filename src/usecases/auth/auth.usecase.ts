@@ -11,6 +11,10 @@ export class AuthUseCases {
     return this.authService.loginWithSocial(user);
   }
 
+  async refresh(sessionId: number) {
+    return await this.authService.refreshToken({ sessionId });
+  }
+
   async logout(sessionId: number) {
     await this.authService.logout({ sessionId });
   }
