@@ -1,14 +1,13 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import databaseConfig from './config/database.config';
-import authConfig from './config/auth.config';
-import appConfig from './config/app.config';
-import { TypeOrmConfigService } from './database/typeorm-config.service';
+import databaseConfig from './core/config/database.config';
+import authConfig from './core/config/auth.config';
+import appConfig from './core/config/app.config';
+import { TypeOrmConfigService } from './core/database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
-import { AuthController, UserController } from './controllers';
-import { AuthUsecasesModule } from './usecases/auth/auth.module';
-import { UsersModule } from './usecases/users/users.module';
+import { AuthModule } from './features/auth/auth.module';
+import { UsersModule } from './features/users/users.module';
 
 @Module({
   imports: [
@@ -23,9 +22,8 @@ import { UsersModule } from './usecases/users/users.module';
         return new DataSource(options).initialize();
       },
     }),
-    AuthUsecasesModule,
+    AuthModule,
     UsersModule,
   ],
-  controllers: [AuthController, UserController],
 })
 export class AppModule {}

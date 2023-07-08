@@ -2,8 +2,8 @@ import { Body, Controller, Get, Request, Put, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateUserInfoDto } from 'src/core/dtos';
-import { UserFactoryService } from 'src/usecases/users/user-factory.service';
-import { UserUseCases } from 'src/usecases/users/user.usecase';
+import { UserFactoryService } from './user-factory.service';
+import { UserUseCases } from './user.usecase';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))

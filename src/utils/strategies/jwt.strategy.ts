@@ -2,26 +2,21 @@ import { ExtractJwt, Strategy } from 'passport-jwt';
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
-import { JwtRefreshPayloadType } from './types/jwt-refresh-payload.type';
-import { AllConfigType } from 'src/config/config.type';
+import { AllConfigType } from 'src/core/config/config.type';
+import { JwtPayloadType } from './types/jwt-payload.type';
 import { OrNeverType } from 'src/utils/types/or-never.type';
 
 @Injectable()
-export class JwtRefreshStrategy extends PassportStrategy(
-  Strategy,
-  'jwt-refresh',
-) {
+export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
   constructor(private configService: ConfigService<AllConfigType>) {
     super({
       jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-      secretOrKey: configService.get('auth.refreshSecret', { infer: true }),
+      secretOrKey: configService.get('auth.secret', { infer: true }),
     });
   }
 
-  public validate(
-    payload: JwtRefreshPayloadType,
-  ): OrNeverType<JwtRefreshPayloadType> {
-    if (!payload.sessionId) {
+  public validate(payload: JwtPayloadType): OrNeverType<JwtPayloadType> {
+    if (!payload.id) {
       throw new UnauthorizedException();
     }
 

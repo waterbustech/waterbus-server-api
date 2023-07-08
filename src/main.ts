@@ -8,7 +8,7 @@ import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from './config/config.type';
+import { AllConfigType } from './core/config/config.type';
 import validationOptions from './utils/validation-options';
 
 async function bootstrap() {

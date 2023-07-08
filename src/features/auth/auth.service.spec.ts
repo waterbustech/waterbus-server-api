@@ -5,9 +5,9 @@ import { AuthService } from './auth.service';
 import { UsersService } from '../users/users.service';
 import { SessionService } from '../session/session.service';
 import { User } from '../../core/entities/user.entity';
-import { Session } from '../session/entities/session.entity';
+import { Session } from '../../core/entities/session.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
-import { JwtRefreshPayloadType } from 'src/strategies/types/jwt-refresh-payload.type';
+import { JwtRefreshPayloadType } from 'src/utils/strategies/types/jwt-refresh-payload.type';
 import { UnauthorizedException } from '@nestjs/common';
 
 const mockUserRepositoryFactory = jest.fn(() => ({

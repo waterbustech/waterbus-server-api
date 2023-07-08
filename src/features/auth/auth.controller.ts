@@ -9,11 +9,11 @@ import {
   SerializeOptions,
 } from '@nestjs/common';
 import { LoginSocialDto } from 'src/core/dtos/auth';
-import { UserFactoryService } from 'src/usecases/users/user-factory.service';
-import { AuthUseCases } from 'src/usecases/auth/auth.usecase';
+import { UserFactoryService } from '../users/user-factory.service';
+import { AuthUseCases } from 'src/features/auth/auth.usecase';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
-import { LoginResponseType } from 'src/usecases/auth/types/login-response.type';
+import { LoginResponseType } from 'src/features/auth/types/login-response.type';
 
 @Controller({
   path: 'auth',

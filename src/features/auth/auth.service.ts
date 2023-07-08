@@ -1,10 +1,10 @@
 import { Injectable, UnauthorizedException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
-import { AllConfigType } from 'src/config/config.type';
+import { AllConfigType } from 'src/core/config/config.type';
 import { User } from '../../core';
-import { Session } from '../session/entities/session.entity';
-import { JwtRefreshPayloadType } from '../../strategies/types/jwt-refresh-payload.type';
+import { Session } from '../../core/entities/session.entity';
+import { JwtRefreshPayloadType } from '../../utils/strategies/types/jwt-refresh-payload.type';
 import { SessionService } from '../session/session.service';
 import { LoginResponseType } from './types/login-response.type';
 import { UsersService } from '../users/users.service';
@@ -22,7 +22,7 @@ export class AuthService {
   async loginWithSocial(mUser: User): Promise<LoginResponseType> {
     const user = await this.usersService.create(mUser);
 
-    const session: Session = await this.sessionService.create({ user });
+    const session = await this.sessionService.create({ user });
 
     const { token, refreshToken, tokenExpires } = await this.getTokensData({
       id: user.id,

@@ -6,8 +6,8 @@ import {
   PrimaryGeneratedColumn,
   DeleteDateColumn,
 } from 'typeorm';
-import { EntityHelper } from '../../../utils/entity-helper';
-import { User } from '../../../core';
+import { EntityHelper } from '../../utils/entity-helper';
+import { User } from '..';
 
 @Entity()
 export class Session extends EntityHelper {

@@ -1,4 +1,4 @@
-import { Session } from 'src/usecases/session/entities/session.entity';
+import { Session } from 'src/core/entities/session.entity';
 
 export type JwtRefreshPayloadType = {
   sessionId: Session['id'];

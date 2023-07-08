@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Not, Repository } from 'typeorm';
-import { Session } from './entities/session.entity';
+import { Session } from '../../core/entities/session.entity';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { User } from 'src/core';
 import { FindOptions } from 'src/utils/types/find-options.type';
