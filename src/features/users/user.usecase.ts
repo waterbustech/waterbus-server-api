@@ -6,7 +6,7 @@ import { UsersService } from './users.service';
 export class UserUseCases {
   constructor(private userService: UsersService) {}
 
-  async getUserByUserName(userId: number): Promise<User> {
+  async getUserById(userId: number): Promise<User> {
     try {
       const existsUser = await this.userService.findOne({
         id: userId,

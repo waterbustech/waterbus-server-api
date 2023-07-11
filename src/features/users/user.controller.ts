@@ -19,7 +19,7 @@ export class UserController {
 
   @Get()
   async getById(@Request() request) {
-    return this.userUseCases.getUserByUserName(request.user.id);
+    return this.userUseCases.getUserById(request.user.id);
   }
 
   @Put()

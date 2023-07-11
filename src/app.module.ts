@@ -8,6 +8,7 @@ import { TypeOrmConfigService } from './core/database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
+import { MeetingsModule } from './features/meetings/meetings.module';
 
 @Module({
   imports: [
@@ -24,6 +25,7 @@ import { UsersModule } from './features/users/users.module';
     }),
     AuthModule,
     UsersModule,
+    MeetingsModule,
   ],
 })
 export class AppModule {}

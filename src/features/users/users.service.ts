@@ -28,7 +28,6 @@ export class UsersService {
 
       return newUser;
     } catch (error) {
-      console.log('CONCAC');
       throw error;
     }
   }
