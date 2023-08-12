@@ -11,6 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { SessionModule } from '../session/session.module';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
+import { AwsS3Service } from '../images/aws-s3/aws-s3.service';
 
 @Module({
   imports: [UsersModule, JwtModule.register({}), SessionModule, PassportModule],
@@ -23,6 +24,7 @@ import { AuthController } from './auth.controller';
     JwtStrategy,
     JwtRefreshStrategy,
     AnonymousStrategy,
+    AwsS3Service,
   ],
   exports: [AuthUseCases],
   controllers: [AuthController],
