@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Meeting } from 'src/core/entities/meeting.entity';
+import { Meeting } from '../../core/entities/meeting.entity';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { DeepPartial, Repository } from 'typeorm';

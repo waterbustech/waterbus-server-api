@@ -10,8 +10,7 @@ import {
 } from '@nestjs/common';
 import { MeetingsUseCases } from './meetings.usecase';
 import { MeetingFactoryService } from './meetings-factory.service';
-import { UpdateMeetingDto } from 'src/core/dtos/meetings/update-meeting.dto';
-import { CreateMeetingDto } from 'src/core/dtos';
+import { CreateMeetingDto, UpdateMeetingDto } from '../../core/dtos';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';

@@ -31,7 +31,7 @@ export class MeetingsUseCases {
 
   async updateRoom(userId: number, meeting: Meeting): Promise<Meeting> {
     try {
-      let existsRoom = await this.getRoomByCode(meeting.code);
+      const existsRoom = await this.getRoomByCode(meeting.code);
 
       if (!existsRoom || existsRoom.createdBy.id != userId) return;
 
