@@ -10,6 +10,8 @@ import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './core/config/config.type';
 import validationOptions from './utils/validation-options';
+import { join } from 'path';
+import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, { cors: true });
@@ -40,6 +42,22 @@ async function bootstrap() {
 
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
+
+  const microserviceOptions: MicroserviceOptions = {
+    transport: Transport.GRPC,
+    options: {
+      package: 'auth',
+      protoPath: join(__dirname, 'proto/auth.proto'),
+      url: 'localhost:50055',
+      loader: {
+        arrays: true,
+      },
+    },
+  };
+
+  app.connectMicroservice(microserviceOptions);
+
+  await app.startAllMicroservices();
 
   await app.listen(configService.getOrThrow('app.port', { infer: true }));
 }
