@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './core/config/database.config';
 import authConfig from './core/config/auth.config';
@@ -10,12 +10,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MeetingsModule } from './features/meetings/meetings.module';
 import { GrpcModule } from './features/grpc/grpc.module';
-import {
-  GrpcReflectionModule,
-  addReflectionToGrpcConfig,
-} from 'nestjs-grpc-reflection';
-import { GrpcOptions, Transport } from '@nestjs/microservices';
-import { join } from 'path';
+import { GrpcReflectionModule } from 'nestjs-grpc-reflection';
 import { grpcClientOptions } from './grpc.options';
 
 @Module({

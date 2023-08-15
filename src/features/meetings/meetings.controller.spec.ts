@@ -4,9 +4,6 @@ import { MeetingsUseCases } from './meetings.usecase';
 import { MeetingFactoryService } from './meetings-factory.service';
 import { UsersService } from '../users/users.service';
 import { CreateMeetingDto, UpdateMeetingDto } from 'src/core/dtos';
-import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { Request } from '@nestjs/common';
 
 describe('MeetingsController', () => {
   let meetingsController: MeetingsController;

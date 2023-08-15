@@ -1,7 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { AwsS3Service } from './aws-s3.service';
 import * as AWS from 'aws-sdk';
-import { v4 as uuidv4 } from 'uuid';
 
 class MockS3 {
   public getSignedUrlPromise(operation: string, params: any): Promise<string> {

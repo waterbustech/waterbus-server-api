@@ -57,7 +57,7 @@ export class AuthController {
   @Post('presigned-url')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.CREATED)
-  public async createS3Presigned(@Request() request) {
+  public async createS3Presigned() {
     return this.awsS3Service.generatePresignedUrl('image/png');
   }
 }

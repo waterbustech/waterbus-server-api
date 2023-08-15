@@ -12,7 +12,7 @@ export class GrpcController implements auth.AuthService {
   @GrpcMethod('AuthService', 'verifyToken')
   verifyToken(
     data: auth.VerifyTokenRequest,
-    metadata: Metadata,
+    _: Metadata,
   ): Observable<auth.VerifyTokenResponse> {
     const token = data.token;
 
