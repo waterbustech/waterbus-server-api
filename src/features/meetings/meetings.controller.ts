@@ -15,9 +15,9 @@ import { UsersService } from '../users/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Participant } from 'src/core/entities/participant.entity';
+import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
-import { ParticipantRole } from 'src/core/enums';
+import { ParticipantRole } from '../../core/enums';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))

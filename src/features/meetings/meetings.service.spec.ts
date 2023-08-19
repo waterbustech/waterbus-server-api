@@ -40,7 +40,6 @@ describe('MeetingsService', () => {
         id: 0,
         users: [],
         setPassword: jest.fn(),
-        createdBy: null,
         createdAt: undefined,
         updatedAt: undefined,
         deletedAt: undefined,

@@ -21,7 +21,7 @@ export class GrpcController implements auth.AuthService {
         secret: process.env.AUTH_JWT_SECRET,
       });
 
-      console.log(decodedToken)
+      console.log(decodedToken);
 
       const isValidToken = true;
       const response: auth.VerifyTokenResponse = {
