@@ -50,7 +50,7 @@ async function bootstrap() {
       protoPath: join(__dirname, 'proto/auth.proto'),
       url: 'localhost:50055',
       loader: {
-        arrays: true,
+        json: true,
       },
     },
   };

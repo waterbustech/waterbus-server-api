@@ -33,7 +33,11 @@ export class MeetingsUseCases {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);
 
-      if (!existsRoom || existsRoom.createdBy.id != userId) return;
+      if (!existsRoom) return;
+
+      const indexHost = existsRoom.users.findIndex((user) => user.id == userId);
+
+      if (indexHost < 0) return;
 
       existsRoom.title = meeting.title;
       existsRoom.password = meeting.password;

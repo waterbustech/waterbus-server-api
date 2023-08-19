@@ -1,15 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import { CreateMeetingDto, UpdateMeetingDto } from '../../core/dtos';
 import { Meeting } from '../../core/entities/meeting.entity';
-import { User } from 'src/core';
+import { Participant } from 'src/core/entities/participant.entity';
 
 @Injectable()
 export class MeetingFactoryService {
-  createNewRoom(room: CreateMeetingDto, createdBy: User): Meeting {
+  createNewRoom(room: CreateMeetingDto, participant: Participant): Meeting {
     const newRoom = new Meeting();
     newRoom.title = room.title;
     newRoom.password = room.password;
-    newRoom.createdBy = createdBy;
+
+    newRoom.users = [participant];
+
+    console.log({ newRoom });
 
     return newRoom;
   }

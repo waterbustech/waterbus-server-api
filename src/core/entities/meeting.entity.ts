@@ -6,14 +6,17 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  JoinColumn,
+  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from '../../utils/entity-helper';
 import bcrypt from 'bcryptjs';
-import { User } from './user.entity';
+import { Participant } from './participant.entity';
 
 @Entity()
 export class Meeting extends EntityHelper {
@@ -21,7 +24,7 @@ export class Meeting extends EntityHelper {
   @ApiProperty({ example: 1 })
   id: number;
 
-  @ApiProperty({ example: 'Kai Dao' })
+  @ApiProperty({ example: 'Meeting with Kai' })
   @Column({ type: String })
   title: string;
 
@@ -29,11 +32,11 @@ export class Meeting extends EntityHelper {
   @Column({ type: String })
   password: string;
 
-  @ManyToOne(() => User, {
+  @OneToMany(() => Participant, (participant) => participant.meeting, {
     eager: true,
+    cascade: true,
   })
-  @Index()
-  users: Array<User>;
+  users: Participant[];
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -46,12 +49,6 @@ export class Meeting extends EntityHelper {
 
   @Column({ type: Number })
   code: number;
-
-  @ManyToOne(() => User, {
-    eager: true,
-  })
-  @Index()
-  createdBy: User;
 
   @CreateDateColumn()
   createdAt: Date;

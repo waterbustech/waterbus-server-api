@@ -21,10 +21,12 @@ export class GrpcController implements auth.AuthService {
         secret: process.env.AUTH_JWT_SECRET,
       });
 
+      console.log(decodedToken)
+
       const isValidToken = true;
       const response: auth.VerifyTokenResponse = {
         valid: isValidToken,
-        userId: isValidToken ? decodedToken.userId : null,
+        userId: isValidToken ? decodedToken.id : null,
       };
 
       return new Observable<auth.VerifyTokenResponse>((observer) => {
