@@ -1,8 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import {
-  CreateMeetingDto,
-  UpdateMeetingDto,
-} from '../../core/dtos';
+import { CreateMeetingDto, UpdateMeetingDto } from '../../core/dtos';
 import { Meeting } from '../../core/entities/meeting.entity';
 import { Participant } from 'src/core/entities/participant.entity';
 
