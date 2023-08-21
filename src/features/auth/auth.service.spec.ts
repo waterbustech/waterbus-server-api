@@ -77,6 +77,7 @@ describe('AuthService', () => {
         softRemove: jest.fn(),
         recover: jest.fn(),
         reload: jest.fn(),
+        participant: null,
       };
 
       const mSession: Session = {

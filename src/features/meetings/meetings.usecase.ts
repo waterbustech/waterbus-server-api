@@ -71,8 +71,7 @@ export class MeetingsUseCases {
         existsRoom.password,
       );
 
-      if (!isMatchPassword)
-        throw new BadRequestException('Wrong password!');
+      if (!isMatchPassword) throw new BadRequestException('Wrong password!');
 
       existsRoom.users.push(participant);
 
