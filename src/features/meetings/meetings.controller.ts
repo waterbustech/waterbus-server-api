@@ -7,10 +7,16 @@ import {
   Param,
   Post,
   UseGuards,
+  Delete,
 } from '@nestjs/common';
 import { MeetingsUseCases } from './meetings.usecase';
 import { MeetingFactoryService } from './meetings-factory.service';
-import { CreateMeetingDto, UpdateMeetingDto } from '../../core/dtos';
+import {
+  CreateMeetingDto,
+  JoinMeetingDto,
+  LeaveMeetingDto,
+  UpdateMeetingDto,
+} from '../../core/dtos';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
@@ -68,12 +74,35 @@ export class MeetingsController {
     return this.meetingsUseCases.updateRoom(request.user.id, room);
   }
 
-  // @Post()
-  // async joinRoom(@Request() request, @Body() createRoom: CreateMeetingDto) {
-  //   const user = await this.userService.findOne({ id: request.user.id });
+  @Post()
+  async joinRoom(
+    @Param('code') code: number,
+    @Request() request,
+    @Body() joinRoomDto: JoinMeetingDto,
+  ) {
+    const user = await this.userService.findOne({ id: request.user.id });
 
-  //   const room = this.meetingFactoryService.createNewRoom(createRoom, user);
+    const room = this.meetingFactoryService.getRoomFromJoinDto(
+      code,
+      joinRoomDto.password,
+    );
 
-  //   return this.meetingsUseCases.createRoom(room);
-  // }
+    let attendee = new Participant();
+    attendee.user = user;
+    attendee.role = ParticipantRole.Attendee;
+
+    const participant = await this.participantsRepository.save(
+      this.participantsRepository.create(attendee),
+    );
+
+    return this.meetingsUseCases.joinRoom(room, participant);
+  }
+
+  @Delete(':code')
+  async leaveRoom(
+    @Param('code') code: number,
+    @Body() leaveRoomDto: LeaveMeetingDto,
+  ) {
+    return this.meetingsUseCases.leaveRoom(code, leaveRoomDto.participantId);
+  }
 }
