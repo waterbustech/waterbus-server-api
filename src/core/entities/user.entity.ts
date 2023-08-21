@@ -4,11 +4,13 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from '../../utils/entity-helper';
+import { Participant } from './participant.entity';
 
 @Entity()
 export class User extends EntityHelper {
@@ -47,6 +49,9 @@ export class User extends EntityHelper {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @OneToMany(() => Participant, (participant) => participant.user)
+  participant: Participant;
 
   @BeforeInsert()
   async generateUserName() {

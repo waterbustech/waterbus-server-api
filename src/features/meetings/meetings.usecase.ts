@@ -1,4 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { User } from '../../core/entities';
 import { MeetingsService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
@@ -59,12 +64,15 @@ export class MeetingsUseCases {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);
 
-      if (!existsRoom) return;
+      if (!existsRoom) throw new NotFoundException();
 
-      const salt = await bcrypt.genSalt();
-      const hashPassword = await bcrypt.hash(meeting.password, salt);
+      const isMatchPassword = await bcrypt.compare(
+        meeting.password,
+        existsRoom.password,
+      );
 
-      if (hashPassword != existsRoom.password) return;
+      if (!isMatchPassword)
+        throw new BadRequestException('Wrong password!');
 
       existsRoom.users.push(participant);
 

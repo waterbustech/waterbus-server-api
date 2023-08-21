@@ -74,7 +74,7 @@ export class MeetingsController {
     return this.meetingsUseCases.updateRoom(request.user.id, room);
   }
 
-  @Post()
+  @Post(':code')
   async joinRoom(
     @Param('code') code: number,
     @Request() request,

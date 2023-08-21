@@ -18,8 +18,9 @@ export class Participant extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => User, {
-    eager: false,
+  @ManyToOne(() => User, (user) => user.participant, {
+    eager: true,
+    cascade: true,
   })
   @Index()
   user: User;
