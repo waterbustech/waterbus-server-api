@@ -12,8 +12,6 @@ export class MeetingFactoryService {
 
     newRoom.users = [participant];
 
-    console.log({ newRoom });
-
     return newRoom;
   }
 

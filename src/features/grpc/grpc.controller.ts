@@ -21,8 +21,6 @@ export class GrpcController implements auth.AuthService {
         secret: process.env.AUTH_JWT_SECRET,
       });
 
-      console.log(decodedToken);
-
       const isValidToken = true;
       const response: auth.VerifyTokenResponse = {
         valid: isValidToken,
@@ -34,7 +32,6 @@ export class GrpcController implements auth.AuthService {
         observer.complete();
       });
     } catch (error) {
-      console.log({ error });
       const response: auth.VerifyTokenResponse = {
         valid: false,
         userId: null,

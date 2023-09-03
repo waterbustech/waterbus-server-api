@@ -726,14 +726,14 @@
     webpack "5.82.1"
     webpack-node-externals "3.0.0"
 
-"@nestjs/common@^9.0.0":
-  version "9.4.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-9.4.3.tgz#f907c5315b4273f7675864a05c4dda7056632b87"
-  integrity sha512-Gd6D4IaYj01o14Bwv81ukidn4w3bPHCblMUq+SmUmWLyosK+XQmInCS09SbDDZyL8jy86PngtBLTdhJ2bXSUig==
+"@nestjs/common@^10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/common/-/common-10.2.0.tgz#afeeedd81cc1986b2a22e4aebe0b0f2b81bdb3b2"
+  integrity sha512-QhoIaekEfXJ48IHdp9pBsZho464XoW8LRNid61Qncxx90qWCbe7oT1tswlT8kxn1HxsqEqZ8sXGY3ozLxZeVJQ==
   dependencies:
     uid "2.0.2"
     iterare "1.2.1"
-    tslib "2.5.3"
+    tslib "2.6.1"
 
 "@nestjs/config@^3.0.0":
   version "3.0.0"
@@ -745,17 +745,17 @@
     lodash "4.17.21"
     uuid "9.0.0"
 
-"@nestjs/core@^9.0.0":
-  version "9.4.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-9.4.3.tgz#7d6d3417e18c0a598684b87c955e4caac4f56dd4"
-  integrity sha512-Qi63+wi55Jh4sDyaj5Hhx2jOpKqT386aeo+VOKsxnd+Ql9VvkO/FjmuwBGUyzkJt29ENYc+P0Sx/k5LtstNpPQ==
+"@nestjs/core@^10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/core/-/core-10.2.0.tgz#4e5c3d374b7a37b2d2d135680b667b7ffcd9a592"
+  integrity sha512-K9QwdSXO8O8HHAgs23U+icLuNhkD4JmesE6LH2VIFgpsBOc7pUuUD+Ur4A0juNVeB+Us3etKdYIkw4SWgkBfXA==
   dependencies:
     uid "2.0.2"
     "@nuxtjs/opencollective" "0.3.2"
     fast-safe-stringify "2.1.1"
     iterare "1.2.1"
     path-to-regexp "3.2.0"
-    tslib "2.5.3"
+    tslib "2.6.1"
 
 "@nestjs/jwt@^10.1.0":
   version "10.1.0"
@@ -770,10 +770,10 @@
   resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-2.0.2.tgz#c8a090a8d22145b85ed977414c158534210f2e4f"
   integrity sha512-V0izw6tWs6fTp9+KiiPUbGHWALy563Frn8X6Bm87ANLRuE46iuBMD5acKBDP5lKL/75QFvrzSJT7HkCbB0jTpg==
 
-"@nestjs/microservices@^10.1.3":
-  version "10.1.3"
-  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-10.1.3.tgz#ba1487fd6f54412319d5c396259b27cd7a73ea31"
-  integrity sha512-IBKefw+DR6v2SaXjPJ8tRT+gQTJUSGN83gxuaA32uCQNW2rK+CyVapgX3fDeM/zJsLfBkdveSMX+R74w5wuk+Q==
+"@nestjs/microservices@^10.2.0":
+  version "10.2.0"
+  resolved "https://registry.yarnpkg.com/@nestjs/microservices/-/microservices-10.2.0.tgz#faa934a3e014dd2964a69adb4781f3a8bf6fc033"
+  integrity sha512-rjwhSRlzj961+6mVLiRz4O36pS61BoXRrnOv10N8MozqYOsdU1tEODIaZZ5VbkiIxoNwPvRKnwkA+n9oAM//vA==
   dependencies:
     iterare "1.2.1"
     tslib "2.6.1"

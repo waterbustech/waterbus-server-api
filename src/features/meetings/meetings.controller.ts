@@ -57,8 +57,6 @@ export class MeetingsController {
       this.participantsRepository.create(host),
     );
 
-    console.log({ participant });
-
     const room = this.meetingFactoryService.createNewRoom(
       createRoom,
       participant,

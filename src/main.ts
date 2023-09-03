@@ -32,11 +32,12 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const options = new DocumentBuilder()
-    .setTitle('waterbus.cloud - auth-service.cloud')
-    .setDescription(
-      'Auth Services: take responsible for authentication, users information... 🍻',
-    )
+    .setTitle('Waterbus.Cloud')
+    .setDescription('Waterbus Restful API')
     .setVersion('1.0')
+    .addApiKey({
+      type: 'apiKey',
+    })
     .addBearerAuth()
     .build();
 
