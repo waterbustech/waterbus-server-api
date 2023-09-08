@@ -58,13 +58,16 @@ export class User extends EntityHelper {
     // Convert full name to lowercase
     const lowercaseName = this.fullName.toLowerCase();
 
-    // Remove spaces from the name
-    const nameWithoutSpaces = lowercaseName.replace(/\s/g, '');
+    // Remove spaces and non-ASCII characters from the name
+    const nameWithoutSpacesAndNonAscii = lowercaseName.replace(
+      /[\s\u0080-\uFFFF]/g,
+      '',
+    );
 
     // Add a unique identifier to the name (e.g., timestamp)
     const uniqueIdentifier = Date.now().toString();
 
     // Combine the name and unique identifier to generate the username
-    this.userName = `${nameWithoutSpaces}${uniqueIdentifier}`;
+    this.userName = `${nameWithoutSpacesAndNonAscii}${uniqueIdentifier}`;
   }
 }

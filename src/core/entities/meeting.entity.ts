@@ -13,6 +13,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from '../../utils/entity-helper';
 import bcrypt from 'bcryptjs';
 import { Participant } from './participant.entity';
+import { Transform } from 'class-transformer';
 
 @Entity()
 export class Meeting extends EntityHelper {
@@ -25,6 +26,7 @@ export class Meeting extends EntityHelper {
   title: string;
 
   @ApiProperty()
+  @Transform(({ value }) => undefined)
   @Column({ type: String })
   password: string;
 
