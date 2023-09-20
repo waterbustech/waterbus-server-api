@@ -6,7 +6,6 @@ import { UsersService } from '../users/users.service';
 import { CreateMeetingDto, UpdateMeetingDto } from 'src/core/dtos';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
-import { Repository } from 'typeorm';
 
 describe('MeetingsController', () => {
   let meetingsController: MeetingsController;

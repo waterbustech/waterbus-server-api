@@ -7,7 +7,7 @@ import { MeetingsService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from 'src/core/entities/participant.entity';
-import { Status } from 'src/core/enums';
+import { Status } from '../../core/enums';
 
 @Injectable()
 export class MeetingsUseCases {
