@@ -15,7 +15,7 @@ import bcrypt from 'bcryptjs';
 import { Participant } from './participant.entity';
 import { Transform } from 'class-transformer';
 
-@Entity()
+@Entity({ name: 'meetings' })
 export class Meeting extends EntityHelper {
   @PrimaryGeneratedColumn()
   @ApiProperty({ example: 1 })

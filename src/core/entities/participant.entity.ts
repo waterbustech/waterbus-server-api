@@ -12,7 +12,7 @@ import { User } from '..';
 import { ParticipantRole, Status } from '../enums';
 import { Meeting } from './meeting.entity';
 
-@Entity()
+@Entity({ name: 'participants' })
 export class Participant extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;

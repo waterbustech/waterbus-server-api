@@ -9,7 +9,7 @@ import {
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '..';
 
-@Entity()
+@Entity({ name: 'sessions' })
 export class Session extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;

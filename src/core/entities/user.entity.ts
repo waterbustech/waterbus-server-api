@@ -12,7 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from '../../utils/entity-helper';
 import { Participant } from './participant.entity';
 
-@Entity()
+@Entity({ name: 'users' })
 export class User extends EntityHelper {
   @PrimaryGeneratedColumn()
   @ApiProperty({ example: 1 })

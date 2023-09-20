@@ -2,13 +2,12 @@ import {
   BadRequestException,
   Injectable,
   NotFoundException,
-  UnauthorizedException,
 } from '@nestjs/common';
-import { User } from '../../core/entities';
 import { MeetingsService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from 'src/core/entities/participant.entity';
+import { Status } from 'src/core/enums';
 
 @Injectable()
 export class MeetingsUseCases {
@@ -92,9 +91,13 @@ export class MeetingsUseCases {
 
       if (!existsRoom) return;
 
-      existsRoom.users = existsRoom.users.filter(
+      let indexOfParticipant = existsRoom.users.findIndex(
         (participant) => participant.id != participantId,
       );
+
+      if (indexOfParticipant == -1) return;
+
+      existsRoom.users[indexOfParticipant].status = Status.Inactive;
 
       const updatedRoom = await this.meetingServices.update(
         existsRoom.id,
