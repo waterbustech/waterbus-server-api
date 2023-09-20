@@ -6,11 +6,10 @@ import {
   Column,
   ManyToOne,
   Index,
-  JoinColumn,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '..';
-import { ParticipantRole } from '../enums';
+import { ParticipantRole, Status } from '../enums';
 import { Meeting } from './meeting.entity';
 
 @Entity()
@@ -34,6 +33,13 @@ export class Participant extends EntityHelper {
     default: ParticipantRole.Attendee,
   })
   role: ParticipantRole;
+
+  @Column({
+    type: 'enum',
+    enum: Status,
+    default: Status.Active,
+  })
+  status: Status;
 
   @CreateDateColumn()
   createdAt: Date;
