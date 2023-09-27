@@ -102,7 +102,7 @@ export class MeetingsUseCases {
       if (!existsRoom) return;
 
       let indexOfParticipant = existsRoom.users.findIndex(
-        (participant) => participant.id != participantId,
+        (participant) => participant.id == participantId,
       );
 
       if (indexOfParticipant == -1) return;
