@@ -95,7 +95,7 @@ export class MeetingsController {
     if (existsRoom) {
       let hostUser = existsRoom.users.find(
         (mPart) =>
-          mPart.user.id == participant.user.id &&
+          mPart.user.id == request.user.id &&
           mPart.role == ParticipantRole.Host,
       );
 
