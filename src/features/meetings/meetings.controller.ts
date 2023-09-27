@@ -24,7 +24,7 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
-import { ParticipantRole } from '../../core/enums';
+import { ParticipantRole, Status } from '../../core/enums';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -122,6 +122,7 @@ export class MeetingsController {
     }
 
     participant.user = user;
+    participant.status = Status.Active;
 
     const updatedParticipant = await this.participantsRepository.save(
       participant,
