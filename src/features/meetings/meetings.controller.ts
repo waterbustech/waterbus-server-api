@@ -88,17 +88,20 @@ export class MeetingsController {
 
     let attendee = new Participant();
     attendee.user = user;
+    attendee.role = ParticipantRole.Attendee;
 
-    let hostUser = room.users.find(
-      (participant) =>
-        participant.user.id == request.user.id &&
-        participant.role == ParticipantRole.Host,
-    );
+    const existsRoom = await this.meetingsUseCases.getRoomByCode(code);
 
-    if (hostUser) {
-      attendee.role = ParticipantRole.Host;
-    } else {
-      attendee.role = ParticipantRole.Attendee;
+    if (existsRoom) {
+      let hostUser = existsRoom.users.find(
+        (mPart) =>
+          mPart.user.id == participant.user.id &&
+          mPart.role == ParticipantRole.Host,
+      );
+
+      if (hostUser) {
+        attendee.role = ParticipantRole.Host;
+      }
     }
 
     const participant = await this.participantsRepository.save(
