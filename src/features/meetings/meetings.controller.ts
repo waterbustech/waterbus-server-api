@@ -88,7 +88,18 @@ export class MeetingsController {
 
     let attendee = new Participant();
     attendee.user = user;
-    attendee.role = ParticipantRole.Attendee;
+
+    let hostUser = room.users.find(
+      (participant) =>
+        participant.user.id == request.user.id &&
+        participant.role == ParticipantRole.Host,
+    );
+
+    if (hostUser) {
+      attendee.role = ParticipantRole.Host;
+    } else {
+      attendee.role = ParticipantRole.Attendee;
+    }
 
     const participant = await this.participantsRepository.save(
       this.participantsRepository.create(attendee),

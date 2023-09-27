@@ -7,7 +7,7 @@ import { MeetingsService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from 'src/core/entities/participant.entity';
-import { Status } from '../../core/enums';
+import { ParticipantRole, Status } from '../../core/enums';
 
 @Injectable()
 export class MeetingsUseCases {
@@ -65,12 +65,14 @@ export class MeetingsUseCases {
 
       if (!existsRoom) throw new NotFoundException();
 
-      const isMatchPassword = await bcrypt.compare(
-        meeting.password,
-        existsRoom.password,
-      );
+      if (participant.role != ParticipantRole.Host) {
+        const isMatchPassword = await bcrypt.compare(
+          meeting.password,
+          existsRoom.password,
+        );
 
-      if (!isMatchPassword) throw new BadRequestException('Wrong password!');
+        if (!isMatchPassword) throw new BadRequestException('Wrong password!');
+      }
 
       // Just update if participant already exists in room
       let indexOfParticipant = existsRoom.users.findIndex(
