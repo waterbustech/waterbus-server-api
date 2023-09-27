@@ -8,6 +8,7 @@ import {
   Post,
   UseGuards,
   Delete,
+  BadGatewayException,
 } from '@nestjs/common';
 import { MeetingsUseCases } from './meetings.usecase';
 import { MeetingFactoryService } from './meetings-factory.service';
@@ -94,6 +95,39 @@ export class MeetingsController {
     );
 
     return this.meetingsUseCases.joinRoom(room, participant);
+  }
+
+  @Post(':code/rejoin/:participantId')
+  async reJoinRoom(
+    @Param('code') code: number,
+    @Param('participantId') participantId: number,
+    @Request() request,
+    @Body() joinRoomDto: JoinMeetingDto,
+  ) {
+    const user = await this.userService.findOne({ id: request.user.id });
+
+    const room = this.meetingFactoryService.getRoomFromJoinDto(
+      code,
+      joinRoomDto.password,
+    );
+
+    const participant = await this.participantsRepository.findOne({
+      where: {
+        id: participantId,
+      },
+    });
+
+    if (!participant) {
+      throw new BadGatewayException('Not found partiticipant');
+    }
+
+    participant.user = user;
+
+    const updatedParticipant = await this.participantsRepository.save(
+      participant,
+    );
+
+    return this.meetingsUseCases.joinRoom(room, updatedParticipant);
   }
 
   @Delete(':code')

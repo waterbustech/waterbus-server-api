@@ -72,7 +72,15 @@ export class MeetingsUseCases {
 
       if (!isMatchPassword) throw new BadRequestException('Wrong password!');
 
-      existsRoom.users.push(participant);
+      // Just update if participant already exists in room
+      let indexOfParticipant = existsRoom.users.findIndex(
+        (mParticipant) => mParticipant.id == participant.id,
+      );
+      if (indexOfParticipant != -1) {
+        existsRoom.users[indexOfParticipant] = participant;
+      } else {
+        existsRoom.users.push(participant);
+      }
 
       const updatedRoom = await this.meetingServices.update(
         existsRoom.id,
