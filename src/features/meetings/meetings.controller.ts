@@ -164,6 +164,6 @@ export class MeetingsController {
 
     if (!participant) throw new NotFoundException('Not exists participant');
 
-    return participant;
+    return { participant };
   }
 }
