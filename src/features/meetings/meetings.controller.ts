@@ -9,6 +9,7 @@ import {
   UseGuards,
   Delete,
   BadGatewayException,
+  NotFoundException,
 } from '@nestjs/common';
 import { MeetingsUseCases } from './meetings.usecase';
 import { MeetingFactoryService } from './meetings-factory.service';
@@ -151,5 +152,18 @@ export class MeetingsController {
     @Body() leaveRoomDto: LeaveMeetingDto,
   ) {
     return this.meetingsUseCases.leaveRoom(code, leaveRoomDto.participantId);
+  }
+
+  @Get(':participantId')
+  async getParticipantById(@Param('participantId') participantId: number) {
+    const participant = await this.participantsRepository.findOne({
+      where: {
+        id: participantId,
+      },
+    });
+
+    if (!participant) throw new NotFoundException('Not exists participant');
+
+    return participant;
   }
 }
