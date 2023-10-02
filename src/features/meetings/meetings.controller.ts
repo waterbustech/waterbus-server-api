@@ -154,7 +154,7 @@ export class MeetingsController {
     return this.meetingsUseCases.leaveRoom(code, leaveRoomDto.participantId);
   }
 
-  @Get(':participantId')
+  @Get('/participants/:participantId')
   async getParticipantById(@Param('participantId') participantId: number) {
     const participant = await this.participantsRepository.findOne({
       where: {
