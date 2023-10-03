@@ -39,11 +39,13 @@ export class MeetingsUseCases {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);
 
-      if (!existsRoom) return;
+      if (!existsRoom) throw new NotFoundException('Not found room');
 
-      const indexHost = existsRoom.users.findIndex((user) => user.id == userId);
+      const indexHost = existsRoom.users.findIndex(
+        (user) => user.user.id == userId,
+      );
 
-      if (indexHost < 0) return;
+      if (indexHost < 0) throw new NotFoundException('Cannot check permission');
 
       existsRoom.title = meeting.title;
       existsRoom.password = meeting.password;
