@@ -1,4 +1,6 @@
-# Auth Service (waterbus.cloud) 🇺🇦
+# Auth Service (waterbus.cloud)
+
+<img src="./images/waterbus-banner-restful.png" width="100%"/>
 
 ## Description
 
@@ -7,7 +9,7 @@ NestJS REST API boilerplate for typical project
 [Full documentation here](https://github.com/brocoders/nestjs-boilerplate/blob/main/docs/readme.md)
 
 ## Table of Contents
-- [Auth Service (waterbus.cloud) 🇺🇦](#auth-service-waterbuscloud-)
+- [Auth Service (waterbus.cloud)](#auth-service-waterbuscloud)
   - [Description](#description)
   - [Table of Contents](#table-of-contents)
   - [Introduce](#introduce)
