@@ -32,8 +32,10 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const options = new DocumentBuilder()
-    .setTitle('Waterbus.Cloud')
-    .setDescription('Waterbus Restful API')
+    .setTitle('Restful API - @waterbus.tech')
+    .setDescription(
+      'Waterbus: Online Meeting App using Flutter and WebRTC SFU (Selective Forwarding Unit)',
+    )
     .setVersion('1.0')
     .addApiKey({
       type: 'apiKey',
@@ -44,19 +46,36 @@ async function bootstrap() {
   const document = SwaggerModule.createDocument(app, options);
   SwaggerModule.setup('docs', app, document);
 
-  const microserviceOptions: MicroserviceOptions = {
+  const authGrpcUrl = configService.getOrThrow('grpc.authUrl', { infer: true });
+  const meetingGrpcUrl = configService.getOrThrow('grpc.meetingUrl', {
+    infer: true,
+  });
+
+  const authMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
     options: {
       package: 'auth',
       protoPath: join(__dirname, 'proto/auth.proto'),
-      url: 'localhost:50055',
+      url: authGrpcUrl,
+      loader: {
+        json: true,
+      },
+    },
+  };
+  const meetingMicroserviceOptions: MicroserviceOptions = {
+    transport: Transport.GRPC,
+    options: {
+      package: 'meeting',
+      protoPath: join(__dirname, 'proto/meeting.proto'),
+      url: meetingGrpcUrl,
       loader: {
         json: true,
       },
     },
   };
 
-  app.connectMicroservice(microserviceOptions);
+  app.connectMicroservice(authMicroserviceOptions);
+  app.connectMicroservice(meetingMicroserviceOptions);
 
   await app.startAllMicroservices();
 

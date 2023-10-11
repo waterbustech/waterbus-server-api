@@ -4,6 +4,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import databaseConfig from './core/config/database.config';
 import authConfig from './core/config/auth.config';
 import appConfig from './core/config/app.config';
+import grpcConfig from './core/config/grpc.config';
 import { TypeOrmConfigService } from './core/database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AuthModule } from './features/auth/auth.module';
@@ -17,7 +18,7 @@ import { grpcClientOptions } from './grpc.options';
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
-      load: [databaseConfig, authConfig, appConfig],
+      load: [databaseConfig, authConfig, appConfig, grpcConfig],
       envFilePath: ['.env'],
     }),
     TypeOrmModule.forRootAsync({

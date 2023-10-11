@@ -6,7 +6,7 @@ import { auth } from '../../proto/auth';
 import { JwtService } from '@nestjs/jwt';
 
 @Controller()
-export class GrpcController implements auth.AuthService {
+export class AuthGrpcController implements auth.AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
   @GrpcMethod('AuthService', 'verifyToken')
