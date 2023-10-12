@@ -1,0 +1,28 @@
+version: '3'
+
+services:
+  postgres:
+    image: postgres:16
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: banhcuon
+      POSTGRES_DB: waterbus.dev
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+  waterbus-restful-service:
+    build:
+      context: .
+    ports:
+      - '5980:5980'
+    env_file:
+      - .env
+    environment:
+      DATABASE_HOST: postgres
+      DATABASE_PORT: 5432
+    depends_on:
+      - postgres
+
+volumes:
+  postgres_data:
