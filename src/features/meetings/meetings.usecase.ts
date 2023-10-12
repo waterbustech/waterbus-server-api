@@ -19,6 +19,8 @@ export class MeetingsUseCases {
         code: roomCode,
       });
 
+      if (!roomInfo) throw new NotFoundException('Room Not Found');
+
       return roomInfo;
     } catch (error) {
       throw error;
@@ -101,13 +103,14 @@ export class MeetingsUseCases {
     try {
       const existsRoom = await this.getRoomByCode(code);
 
-      if (!existsRoom) return;
+      if (!existsRoom) throw new NotFoundException('Room Not Found');
 
       let indexOfParticipant = existsRoom.users.findIndex(
         (participant) => participant.id == participantId,
       );
 
-      if (indexOfParticipant == -1) return;
+      if (indexOfParticipant == -1)
+        throw new NotFoundException('Participant Not Found');
 
       existsRoom.users[indexOfParticipant].status = Status.Inactive;
 
