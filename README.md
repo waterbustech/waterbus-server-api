@@ -104,11 +104,6 @@ yarn start
 
 ## Roadmap
 
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="./images/waterbus-roadmap-dark.png">
-  <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="./images/waterbus-roadmap-light.png">
-</picture>
-
 <div align="center">
 <img src="./images/waterbus-roadmap-light.png#gh-light-mode-only"/>
 <img src="./images/waterbus-roadmap-dark.png#gh-dark-mode-only"/>
