@@ -33,8 +33,8 @@
 
 ### Meeting Flow
 
-[![Flow Diagram](./images/waterbus-flow-dark.png)](https://docs.waterbus.tech#gh-dark-mode-only)
-[![Flow Diagram](./images/waterbus-flow-light.png)](https://docs.waterbus.tech#gh-light-mode-only)
+[![Flow Diagram](./images/waterbus-flow-dark.gif)](https://docs.waterbus.tech#gh-dark-mode-only)
+[![Flow Diagram](./images/waterbus-flow-light.gif)](https://docs.waterbus.tech#gh-light-mode-only)
 
 ### Entity Relationship Diagram (ERD)
 
@@ -105,8 +105,8 @@ yarn start
 ## Roadmap
 
 <div align="center">
-<img src="./images/waterbus-roadmap-light.png#gh-light-mode-only"/>
-<img src="./images/waterbus-roadmap-dark.png#gh-dark-mode-only"/>
+<img src="./images/waterbus-roadmap-light.gif#gh-light-mode-only" width=50%/>
+<img src="./images/waterbus-roadmap-dark.gif#gh-dark-mode-only" width=50%/>
 </div>
 
 ## Links: 
