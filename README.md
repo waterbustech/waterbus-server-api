@@ -80,7 +80,7 @@ Before getting started, ensure you have the following software installed:
 - Clone repository
 
 ```sh
-git clone https://github.com/waterbuscloud/waterbus-server-api.git
+git clone https://github.com/waterbustech/waterbus-server-api.git
 cd waterbus-server-api/
 ```
 
