@@ -1,6 +1,3 @@
-> [!IMPORTANT]  
-> Waterbus server api is updating to v2
-
 <img src="./images/banner-server-api.png" width="100%"/>
 <h2 align="center">Waterbus Server API</h2>
 <div class="badges" align="center">
