@@ -1,77 +1,123 @@
-# Auth Service (waterbus.cloud)
+> [!IMPORTANT]  
+> Waterbus server api is updating to v2
 
-<img src="./images/waterbus-banner-restful.png" width="100%"/>
-
-## Description
-
-NestJS REST API boilerplate for typical project
-
-[Full documentation here](https://github.com/brocoders/nestjs-boilerplate/blob/main/docs/readme.md)
+<img src="./images/banner-server-api.png" width="100%"/>
+<h2 align="center">Waterbus Server API</h2>
+<div class="badges" align="center">
+<p><a href="https://codecov.io/gh/lambiengcode/waterbus"><img src="https://codecov.io/gh/lambiengcode/waterbus/branch/main/graph/badge.svg?token=7KEMH26LHZ" alt="codecov"></a><a href="https://www.codefactor.io/repository/github/lambiengcode/waterbus"><img src="https://www.codefactor.io/repository/github/lambiengcode/waterbus/badge" alt="CodeFactor"></a><img src="https://img.shields.io/github/actions/workflow/status/lambiengcode/waterbus/ci.yml" alt="GitHub Workflow Status (with event)"><img src="https://img.shields.io/github/issues/lambiengcode/waterbus" alt="GitHub issues"><a href="https://chromium.googlesource.com/external/webrtc/+/branch-heads/6099"><img src="https://img.shields.io/badge/libwebrtc-122.6261.01-yellow.svg" alt="libwebrtc"></a><img src="https://img.shields.io/cocoapods/v/KaiRTC" alt="Cocoapods Version"><a href="https://github.com/lambiengcode"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat&amp;logo=github" alt="PRs Welcome"></a></p>
+</div>
+<div align="center">
+<a href="https://twitter.com/waterbustech"><img src="https://img.shields.io/twitter/follow/waterbus.tech?style=social" alt="Twitter Follow"></a><a href="https://discord.gg/mfrWVefU"><img alt="Discord" src="https://img.shields.io/discord/1220616225521143818"></a>
+</div>
+<p align="center">
+  <a href="https://docs.waterbus.tech">Website</a> &bull;
+  <a href="https://github.com/lambiengcode/waterbus/wiki">Wiki</a> &bull;
+  <a href="https://github.com/lambiengcode/waterbus/blob/main/LICENSE">License</a>
+</p>
 
 ## Table of Contents
-- [Auth Service (waterbus.cloud)](#auth-service-waterbuscloud)
-  - [Description](#description)
-  - [Table of Contents](#table-of-contents)
-  - [Introduce](#introduce)
-  - [ERD](#erd)
-  - [Communications (gRPC)](#communications-grpc)
+- [Table of Contents](#table-of-contents)
+- [Introduction](#introduction)
+  - [Meeting Flow](#meeting-flow)
+  - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
   - [Features](#features)
-  - [Quick run](#quick-run)
-  - [Tests](#tests)
-  - [Tests in Docker](#tests-in-docker)
-  - [Test benchmarking](#test-benchmarking)
+- [Quick run](#quick-run)
+  - [Requirements](#requirements)
+- [Roadmap](#roadmap)
+- [Links:](#links)
 
-## Introduce
+## Introduction
 
-## ERD
-<img src="./doc-assets/waterbus-erd.drawio.png" />
+- 🤙 Waterbus is open source video conferencing multiplatform app built on latest WebRTC SDK. This is server api for the application. 
+- 🎯 Waterbus aims for scalability and low latency as well as self-hosted and offers many useful features for everyday interviews or meetings.
 
-## Communications (gRPC)
+### Meeting Flow
 
-- Receive user token from other services and response user information if it's correct
+[![Flow Diagram](./images/waterbus-flow-dark.png)](https://docs.waterbus.tech#gh-dark-mode-only)
+[![Flow Diagram](./images/waterbus-flow-light.png)](https://docs.waterbus.tech#gh-light-mode-only)
 
-## Features
+### Entity Relationship Diagram (ERD)
 
-- [x] Login with Social (Google, Facebook, Apple)
+[![ERD](./images/waterbus-erd-dark.png)](https://docs.waterbus.tech#gh-dark-mode-only)
+[![ERD](./images/waterbus-erd-light.png)](https://docs.waterbus.tech#gh-light-mode-only)
+
+### Features
+
+- [x] Login with Google
 - [x] Refresh Token
 - [x] Authenticate gRPC
 - [x] Users
   - [x] Get info user
   - [x] Update info user
+- [ ] Meetings
+  - [x] Create meeting
+  - [x] Update meeting
+  - [x] Join/Leave meeting
+  - [ ] Invite user
+  - [ ] Code Editor
+    - [ ] Create record
+    - [ ] Update record
+  - [ ] Notes
+    - [ ] Create note
+    - [ ] Update note
+- [ ] Chats
+  - [ ] Get conversations by user
+  - [ ] Get messages by conversation
+  - [ ] Send message
+  - [ ] Edit message
+  - [ ] Delete message
 
 ## Quick run
 
-```bash
-git clone --depth 1 https://github.com/waterbuscloud/auth-services.cloud.git my-app
-cd my-app/
+### Requirements
+
+Before getting started, ensure you have the following software installed:
+
+- `Node.js`
+- `NestJS CLI`
+- `Postgres`
+
+- Clone repository
+
+```sh
+git clone https://github.com/waterbuscloud/waterbus-server-api.git
+cd waterbus-server-api/
+```
+
+- Create .env file
+
+```sh
 cp env-example .env
-docker compose up -d
 ```
 
-For check status run
+- Install dependencies
 
-```bash
-docker compose logs
+```sh
+yarn
 ```
 
-## Tests
+- Start server
 
-```bash
-# unit tests
-yarn test
-
-# e2e tests
-yarn test:e2e
+```sh
+yarn start
 ```
 
-## Tests in Docker
+## Roadmap
 
-```bash
-docker compose -f docker-compose.ci.yaml --env-file env-example -p ci up --build --exit-code-from api && docker compose -p ci rm -svf
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="./images/waterbus-roadmap-dark.png">
+  <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="./images/waterbus-roadmap-light.png">
+</picture>
 
-## Test benchmarking
+<div align="center">
+<img src="./images/waterbus-roadmap-light.png#gh-light-mode-only"/>
+<img src="./images/waterbus-roadmap-dark.png#gh-dark-mode-only"/>
+</div>
 
-```bash
-docker run --rm jordi/ab -n 100 -c 100 -T application/json -H "Authorization: Bearer USER_TOKEN" -v 2 http://<server_ip>:3000/api/v1/users
-```
+## Links: 
+
+- Check document at [docs.waterbus.tech](https://docs.waterbus.tech)
+- Flutter app [repository]()
+- Server SFU WebSocket [repository]()
+
+<h4 align="center">Built with 💙 by the Waterbus team.</h4>
