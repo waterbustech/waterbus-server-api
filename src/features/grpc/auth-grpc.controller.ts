@@ -2,17 +2,21 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
-import { auth } from '../../proto/auth';
 import { JwtService } from '@nestjs/jwt';
+import { auth } from 'waterbus-proto';
 
 @Controller()
 export class AuthGrpcController implements auth.AuthService {
   constructor(private readonly jwtService: JwtService) {}
 
+  @GrpcMethod('AuthService', 'ping')
+  ping(payload: any) {
+    return payload;
+  }
+
   @GrpcMethod('AuthService', 'verifyToken')
   verifyToken(
     data: auth.VerifyTokenRequest,
-    _: Metadata,
   ): Observable<auth.VerifyTokenResponse> {
     const token = data.token;
 

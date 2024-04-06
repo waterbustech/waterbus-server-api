@@ -10,11 +10,13 @@ import { useContainer } from 'class-validator';
 import { ConfigService } from '@nestjs/config';
 import { AllConfigType } from './core/config/config.type';
 import validationOptions from './utils/validation-options';
-import { join } from 'path';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestExpressApplication } from '@nestjs/platform-express';
+import { EPackage, getProtoPath, getIncludeDirs } from 'waterbus-proto';
+
 const { SwaggerTheme, SwaggerThemeNameEnum } = require('swagger-themes');
 const swaggerUi = require('swagger-ui-express');
+
 const theme = new SwaggerTheme();
 
 async function bootstrap() {
@@ -63,32 +65,33 @@ async function bootstrap() {
     infer: true,
   });
 
+  console.log(authGrpcUrl);
+
   const authMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
     options: {
-      package: 'auth',
-      protoPath: join(__dirname, 'proto/auth.proto'),
+      package: EPackage.AUTH,
+      protoPath: getProtoPath(EPackage.AUTH),
       url: authGrpcUrl,
       loader: {
-        json: true,
+        includeDirs: [getIncludeDirs()],
       },
     },
   };
   const meetingMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
     options: {
-      package: 'meeting',
-      protoPath: join(__dirname, 'proto/meeting.proto'),
+      package: EPackage.MEETING,
+      protoPath: getProtoPath(EPackage.MEETING),
       url: meetingGrpcUrl,
       loader: {
-        json: true,
+        includeDirs: [getIncludeDirs()],
       },
     },
   };
 
   app.connectMicroservice(authMicroserviceOptions);
   app.connectMicroservice(meetingMicroserviceOptions);
-
   await app.startAllMicroservices();
 
   await app.listen(configService.getOrThrow('app.port', { infer: true }));

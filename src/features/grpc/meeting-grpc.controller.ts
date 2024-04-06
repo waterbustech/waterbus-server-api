@@ -1,18 +1,22 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { Observable } from 'rxjs';
 import { Metadata } from '@grpc/grpc-js';
-import { meeting } from '../../proto/meeting';
+import { meeting } from 'waterbus-proto';
 import { MeetingsUseCases } from '../meetings/meetings.usecase';
+import { Observable } from 'rxjs';
 
 @Controller()
 export class MeetingGrpcController implements meeting.MeetingService {
   constructor(private meetingsUseCases: MeetingsUseCases) {}
 
+  @GrpcMethod('MeetingService', 'ping')
+  ping(payload: any) {
+    return payload;
+  }
+
   @GrpcMethod('MeetingService', 'leaveRoom')
   leaveRoom(
     data: meeting.LeaveRoomRequest,
-    _: Metadata,
   ): Observable<meeting.LeaveRoomResponse> {
     const roomId = data.roomId;
     const participantId = data.participantId;

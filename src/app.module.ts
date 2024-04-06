@@ -12,7 +12,6 @@ import { UsersModule } from './features/users/users.module';
 import { MeetingsModule } from './features/meetings/meetings.module';
 import { GrpcModule } from './features/grpc/grpc.module';
 import { GrpcReflectionModule } from 'nestjs-grpc-reflection';
-import { grpcClientOptions } from './grpc.options';
 
 @Module({
   imports: [
@@ -27,7 +26,6 @@ import { grpcClientOptions } from './grpc.options';
         return new DataSource(options).initialize();
       },
     }),
-    GrpcReflectionModule.register(grpcClientOptions),
     AuthModule,
     UsersModule,
     MeetingsModule,
