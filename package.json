@@ -1,7 +1,7 @@
 {
-  "name": "waterbus-service.cloud",
+  "name": "waterbus-server-api",
   "version": "0.0.1",
-  "description": "Waterbus Restful API",
+  "description": "Waterbus Server API",
   "author": "lambiengcode",
   "private": true,
   "license": "MIT",
@@ -33,7 +33,7 @@
     "@nestjs/microservices": "^10.2.0",
     "@nestjs/passport": "^10.0.0",
     "@nestjs/platform-express": "^9.0.0",
-    "@nestjs/swagger": "^7.1.1",
+    "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.0",
     "aws-sdk": "^2.1435.0",
     "bcryptjs": "^2.4.3",
@@ -49,6 +49,8 @@
     "pg": "^8.11.1",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.2.0",
+    "swagger-themes": "^1.4.3",
+    "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.17"
   },
   "devDependencies": {

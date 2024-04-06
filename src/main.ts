@@ -12,9 +12,15 @@ import { AllConfigType } from './core/config/config.type';
 import validationOptions from './utils/validation-options';
 import { join } from 'path';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
+import { NestExpressApplication } from '@nestjs/platform-express';
+const { SwaggerTheme, SwaggerThemeNameEnum } = require('swagger-themes');
+const swaggerUi = require('swagger-ui-express');
+const theme = new SwaggerTheme();
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule, { cors: true });
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    cors: true,
+  });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(ConfigService<AllConfigType>);
 
@@ -32,9 +38,9 @@ async function bootstrap() {
   app.useGlobalInterceptors(new ClassSerializerInterceptor(app.get(Reflector)));
 
   const options = new DocumentBuilder()
-    .setTitle('Restful API - @waterbus.tech')
+    .setTitle('Waterbus Server API - @waterbus.tech')
     .setDescription(
-      'Waterbus: Online Meeting App using Flutter and WebRTC SFU (Selective Forwarding Unit)',
+      'Open source video conferencing app built on latest WebRTC SDK. Android/iOS/MacOS/Web',
     )
     .setVersion('1.0')
     .addApiKey({
@@ -44,7 +50,13 @@ async function bootstrap() {
     .build();
 
   const document = SwaggerModule.createDocument(app, options);
-  SwaggerModule.setup('docs', app, document);
+
+  const optionsTheme = {
+    explorer: true,
+    customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
+  };
+
+  app.use('/docs', swaggerUi.serve, swaggerUi.setup(document, optionsTheme));
 
   const authGrpcUrl = configService.getOrThrow('grpc.authUrl', { infer: true });
   const meetingGrpcUrl = configService.getOrThrow('grpc.meetingUrl', {

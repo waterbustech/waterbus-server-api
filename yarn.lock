@@ -698,6 +698,11 @@
   resolved "https://registry.yarnpkg.com/@lukeed/csprng/-/csprng-1.1.0.tgz#1e3e4bd05c1cc7a0b2ddbd8a03f39f6e4b5e6cfe"
   integrity sha512-Z7C/xXCiGWsg0KuKsHTKJxbWhpI3Vs5GwLfOean7MGyVFGqdRgBbAjOCh6u4bbjPc/8MJ2pZmK/0DLdCbivLDA==
 
+"@microsoft/tsdoc@^0.14.2":
+  version "0.14.2"
+  resolved "https://registry.yarnpkg.com/@microsoft/tsdoc/-/tsdoc-0.14.2.tgz#c3ec604a0b54b9a9b87e9735dfc59e1a5da6a5fb"
+  integrity sha512-9b8mPpKrfeGRuhFH5iO1iwCLeIIsV6+H1sRfxbkoGXIyQE2BTsPd9zqSqQJ+pv5sJ/hT5M1zvOFL02MnEezFug==
+
 "@nestjs/cli@^9.0.0":
   version "9.5.0"
   resolved "https://registry.yarnpkg.com/@nestjs/cli/-/cli-9.5.0.tgz#ddf1b0e21b5507c151e0cd1a4cfcf6c55df7cb2e"
@@ -765,10 +770,10 @@
     "@types/jsonwebtoken" "9.0.2"
     jsonwebtoken "9.0.0"
 
-"@nestjs/mapped-types@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-2.0.2.tgz#c8a090a8d22145b85ed977414c158534210f2e4f"
-  integrity sha512-V0izw6tWs6fTp9+KiiPUbGHWALy563Frn8X6Bm87ANLRuE46iuBMD5acKBDP5lKL/75QFvrzSJT7HkCbB0jTpg==
+"@nestjs/mapped-types@2.0.5":
+  version "2.0.5"
+  resolved "https://registry.yarnpkg.com/@nestjs/mapped-types/-/mapped-types-2.0.5.tgz#485d6b44e19779c98d04e52bd1d2bcc7001df0ea"
+  integrity sha512-bSJv4pd6EY99NX9CjBIyn4TVDoSit82DUZlL4I3bqNfy5Gt+gXTa86i3I/i0iIV9P4hntcGM5GyO+FhZAhxtyg==
 
 "@nestjs/microservices@^10.2.0":
   version "10.2.0"
@@ -804,16 +809,17 @@
     jsonc-parser "3.2.0"
     pluralize "8.0.0"
 
-"@nestjs/swagger@^7.1.1":
-  version "7.1.1"
-  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-7.1.1.tgz#67285035a58a32059f219532b449addf81f8e513"
-  integrity sha512-gIG1aVCegZlIppXZizKHqWkqZvQkvptTBR1C5CzZoDwGoVVKJBmJ2i9FAcsnzzb0j7hncFKhcBuWYOBJOsCvug==
+"@nestjs/swagger@^7.3.1":
+  version "7.3.1"
+  resolved "https://registry.yarnpkg.com/@nestjs/swagger/-/swagger-7.3.1.tgz#353fdd5bd6f23564505117b1c82d7decc145e8fe"
+  integrity sha512-LUC4mr+5oAleEC/a2j8pNRh1S5xhKXJ1Gal5ZdRjt9XebQgbngXCdW7JTA9WOEcwGtFZN9EnKYdquzH971LZfw==
   dependencies:
-    "@nestjs/mapped-types" "2.0.2"
+    "@microsoft/tsdoc" "^0.14.2"
+    "@nestjs/mapped-types" "2.0.5"
     js-yaml "4.1.0"
     lodash "4.17.21"
     path-to-regexp "3.2.0"
-    swagger-ui-dist "5.1.0"
+    swagger-ui-dist "5.11.2"
 
 "@nestjs/testing@^9.0.0":
   version "9.4.3"
@@ -5056,10 +5062,27 @@ supports-preserve-symlinks-flag@^1.0.0:
   resolved "https://registry.yarnpkg.com/supports-preserve-symlinks-flag/-/supports-preserve-symlinks-flag-1.0.0.tgz#6eda4bd344a3c94aea376d4cc31bc77311039e09"
   integrity sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==
 
-swagger-ui-dist@5.1.0:
-  version "5.1.0"
-  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-5.1.0.tgz#b01b3be06bebb2566b2df586c1632d502ec792ad"
-  integrity sha512-c1KmAjuVODxw+vwkNLALQZrgdlBAuBbr2xSPfYrJgseEi7gFKcTvShysPmyuDI4kcUa1+5rFpjWvXdusKY74mg==
+swagger-themes@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/swagger-themes/-/swagger-themes-1.4.3.tgz#b2a0abddffe9a41ccc7e40f0cf9ea8a4b1b50a48"
+  integrity sha512-1G0CqJC1IBbNxkAOyJoREd9hfwXH1R6+3GOFxLhQho2w2i+AbaJqkF4mTJhkce4yhaEMUXvv4KKu1YO/qpe6nQ==
+
+swagger-ui-dist@5.11.2:
+  version "5.11.2"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-5.11.2.tgz#b423e820928df703586ff58f80b09ffcf2434e08"
+  integrity sha512-jQG0cRgJNMZ7aCoiFofnoojeSaa/+KgWaDlfgs8QN+BXoGMpxeMVY5OEnjq4OlNvF3yjftO8c9GRAgcHlO+u7A==
+
+swagger-ui-dist@>=5.0.0:
+  version "5.13.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui-dist/-/swagger-ui-dist-5.13.0.tgz#e7e5b77de906d2d774c320f5f9fcaa6801cd7b88"
+  integrity sha512-uaWhh6j18IIs5tOX0arvIBnVINAzpTXaQXkr7qAk8zoupegJVg0UU/5+S/FgsgVCnzVsJ9d7QLjIxkswEeTg0Q==
+
+swagger-ui-express@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/swagger-ui-express/-/swagger-ui-express-5.0.0.tgz#7a00a18dd909574cb0d628574a299b9ba53d4d49"
+  integrity sha512-tsU9tODVvhyfkNSvf03E6FAk+z+5cU3lXAzMy6Pv4av2Gt2xA0++fogwC4qo19XuFf6hdxevPuVCSKFuMHJhFA==
+  dependencies:
+    swagger-ui-dist ">=5.0.0"
 
 symbol-observable@4.0.0:
   version "4.0.0"
