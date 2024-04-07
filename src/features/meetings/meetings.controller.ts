@@ -8,7 +8,6 @@ import {
   Post,
   UseGuards,
   Delete,
-  BadGatewayException,
   NotFoundException,
 } from '@nestjs/common';
 import { MeetingsUseCases } from './meetings.usecase';
@@ -16,7 +15,6 @@ import { MeetingFactoryService } from './meetings-factory.service';
 import {
   CreateMeetingDto,
   JoinMeetingDto,
-  LeaveMeetingDto,
   UpdateMeetingDto,
 } from '../../core/dtos';
 import { UsersService } from '../users/users.service';
@@ -25,7 +23,9 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
-import { ParticipantRole, Status } from '../../core/enums';
+import { Member } from 'src/core/entities/member.entity';
+import { MemberRole } from 'src/core/enums/member';
+import { AddUserDto } from 'src/core/dtos/meetings/add-user.dto';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -38,6 +38,8 @@ export class MeetingsController {
     private meetingsUseCases: MeetingsUseCases,
     private userService: UsersService,
     private meetingFactoryService: MeetingFactoryService,
+    @InjectRepository(Member)
+    private membersRepository: Repository<Member>,
     @InjectRepository(Participant)
     private participantsRepository: Repository<Participant>,
   ) {}
@@ -51,18 +53,14 @@ export class MeetingsController {
   async createRoom(@Request() request, @Body() createRoom: CreateMeetingDto) {
     const user = await this.userService.findOne({ id: request.user.id });
 
-    let host = new Participant();
-    host.user = user;
-    host.role = ParticipantRole.Host;
+    let member = new Member();
+    member.user = user;
+    member.role = MemberRole.Host;
 
-    const participant = await this.participantsRepository.save(
-      this.participantsRepository.create(host),
-    );
-
-    const room = this.meetingFactoryService.createNewRoom(
-      createRoom,
-      participant,
-    );
+    const room = this.meetingFactoryService.createNewRoom({
+      room: createRoom,
+      member,
+    });
 
     return this.meetingsUseCases.createRoom(room);
   }
@@ -74,8 +72,35 @@ export class MeetingsController {
     return this.meetingsUseCases.updateRoom(request.user.id, room);
   }
 
+  @Post('/members/:code')
+  async addUser(
+    @Request() request,
+    @Param('code') code: number,
+    @Body() addUserDto: AddUserDto,
+  ) {
+    return this.meetingsUseCases.addUser({
+      code: code,
+      hostId: request.user.id,
+      userId: addUserDto.userId,
+    });
+  }
+
+  @Delete('/members/:code')
+  async removeUser(
+    @Request() request,
+    @Param('code') code: number,
+    @Body() addUserDto: AddUserDto,
+  ) {
+    return this.meetingsUseCases.removeUser({
+      code: code,
+      hostId: request.user.id,
+      userId: addUserDto.userId,
+    });
+  }
+
+  // Using for stranger join by code & password
   @Post(':code')
-  async joinRoom(
+  async joinRoomForStranger(
     @Param('code') code: number,
     @Request() request,
     @Body() joinRoomDto: JoinMeetingDto,
@@ -89,69 +114,34 @@ export class MeetingsController {
 
     let attendee = new Participant();
     attendee.user = user;
-    attendee.role = ParticipantRole.Attendee;
-
-    const existsRoom = await this.meetingsUseCases.getRoomByCode(code);
-
-    if (existsRoom) {
-      let hostUser = existsRoom.users.find(
-        (mPart) =>
-          mPart.user.id == request.user.id &&
-          mPart.role == ParticipantRole.Host,
-      );
-
-      if (hostUser) {
-        attendee.role = ParticipantRole.Host;
-      }
-    }
 
     const participant = await this.participantsRepository.save(
       this.participantsRepository.create(attendee),
     );
 
-    return this.meetingsUseCases.joinRoom(room, participant);
+    return this.meetingsUseCases.joinRoom(room, participant, user.id);
   }
 
-  @Post(':code/rejoin/:participantId')
-  async reJoinRoom(
-    @Param('code') code: number,
-    @Param('participantId') participantId: number,
-    @Request() request,
-    @Body() joinRoomDto: JoinMeetingDto,
-  ) {
-    const user = await this.userService.findOne({ id: request.user.id });
+  // @Post('/join/:code')
+  // async joinRoomForMember(@Param('code') code: number, @Request() request) {
+  //   const user = await this.userService.findOne({ id: request.user.id });
 
-    const room = this.meetingFactoryService.getRoomFromJoinDto(
-      code,
-      joinRoomDto.password,
-    );
+  //   const room = this.meetingsUseCases.getRoomByCode(code);
 
-    const participant = await this.participantsRepository.findOne({
-      where: {
-        id: participantId,
-      },
-    });
+  //   let attendee = new Participant();
+  //   attendee.user = user;
 
-    if (!participant) {
-      throw new BadGatewayException('Not found partiticipant');
-    }
+  //   const participant = await this.participantsRepository.save(
+  //     this.participantsRepository.create(attendee),
+  //   );
 
-    participant.user = user;
-    participant.status = Status.Active;
-
-    const updatedParticipant = await this.participantsRepository.save(
-      participant,
-    );
-
-    return this.meetingsUseCases.joinRoom(room, updatedParticipant);
-  }
+  //   return this.meetingsUseCases.joinRoom(room, participant, user.id);
+  // }
 
   @Delete(':code')
-  async leaveRoom(
-    @Param('code') code: number,
-    @Body() leaveRoomDto: LeaveMeetingDto,
-  ) {
-    return this.meetingsUseCases.leaveRoom(code, leaveRoomDto.participantId);
+  async leaveRoom(@Request() request, @Param('code') code: number) {
+    let userId = request.user.id;
+    return this.meetingsUseCases.leaveRoom({ code, userId });
   }
 
   @Get('/participants/:participantId')

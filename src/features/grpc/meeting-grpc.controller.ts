@@ -22,7 +22,10 @@ export class MeetingGrpcController implements meeting.MeetingService {
     const participantId = data.participantId;
 
     try {
-      this.meetingsUseCases.leaveRoom(Number(roomId), Number(participantId));
+      this.meetingsUseCases.removeParticipant(
+        Number(roomId),
+        Number(participantId),
+      );
 
       const response: meeting.LeaveRoomResponse = {
         succeed: true,

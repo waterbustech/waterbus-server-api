@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ForbiddenException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
@@ -7,11 +8,21 @@ import { MeetingsService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from 'src/core/entities/participant.entity';
-import { ParticipantRole, Status } from '../../core/enums';
+import { Status } from '../../core/enums';
+import { MemberRole } from 'src/core/enums/member';
+import { UsersService } from '../users/users.service';
+import { Member } from 'src/core/entities/member.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class MeetingsUseCases {
-  constructor(private meetingServices: MeetingsService) {}
+  constructor(
+    private meetingServices: MeetingsService,
+    private userService: UsersService,
+    @InjectRepository(Participant)
+    private participantsRepository: Repository<Participant>,
+  ) {}
 
   async getRoomByCode(roomCode: number): Promise<Meeting> {
     try {
@@ -43,7 +54,7 @@ export class MeetingsUseCases {
 
       if (!existsRoom) throw new NotFoundException('Not found room');
 
-      const indexHost = existsRoom.users.findIndex(
+      const indexHost = existsRoom.participants.findIndex(
         (user) => user.user.id == userId,
       );
 
@@ -63,13 +74,21 @@ export class MeetingsUseCases {
     }
   }
 
-  async joinRoom(meeting: Meeting, participant: Participant): Promise<Meeting> {
+  async joinRoom(
+    meeting: Meeting,
+    participant: Participant,
+    userId: number,
+  ): Promise<Meeting> {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);
 
       if (!existsRoom) throw new NotFoundException();
 
-      if (participant.role != ParticipantRole.Host) {
+      let indexOfMember = existsRoom.members.findIndex(
+        (member) => member.user.id == userId,
+      );
+
+      if (indexOfMember == -1) {
         const isMatchPassword = await bcrypt.compare(
           meeting.password,
           existsRoom.password,
@@ -79,13 +98,14 @@ export class MeetingsUseCases {
       }
 
       // Just update if participant already exists in room
-      let indexOfParticipant = existsRoom.users.findIndex(
+      let indexOfParticipant = existsRoom.participants.findIndex(
         (mParticipant) => mParticipant.id == participant.id,
       );
+
       if (indexOfParticipant != -1) {
-        existsRoom.users[indexOfParticipant] = participant;
+        existsRoom.participants[indexOfParticipant] = participant;
       } else {
-        existsRoom.users.push(participant);
+        existsRoom.participants.push(participant);
       }
 
       const updatedRoom = await this.meetingServices.update(
@@ -99,20 +119,140 @@ export class MeetingsUseCases {
     }
   }
 
-  async leaveRoom(code: number, participantId: number): Promise<Meeting> {
+  async addUser({
+    code,
+    hostId,
+    userId,
+  }: {
+    code: number;
+    hostId: number;
+    userId: number;
+  }) {
+    const existsRoom = await this.getRoomByCode(code);
+
+    if (!existsRoom) throw new NotFoundException('Room not exists');
+
+    const indexOfUser = existsRoom.members.findIndex(
+      (member) => member.user.id == userId,
+    );
+
+    if (indexOfUser != -1)
+      throw new BadRequestException('User already in room');
+
+    const indexOfHost = existsRoom.members.findIndex(
+      (member) => member.user.id == hostId,
+    );
+
+    if (indexOfHost == -1) throw new NotFoundException('Host not found');
+
+    let host = existsRoom.members[indexOfHost];
+
+    if (host.role != MemberRole.Host)
+      throw new ForbiddenException('You not allow to add user');
+
+    const user = await this.userService.findOne({ id: userId });
+    let member = new Member();
+    member.user = user;
+
+    existsRoom.members.push(member);
+
+    const updatedRoom = await this.meetingServices.update(
+      existsRoom.id,
+      existsRoom,
+    );
+
+    return updatedRoom;
+  }
+
+  async removeUser({
+    code,
+    hostId,
+    userId,
+  }: {
+    code: number;
+    hostId: number;
+    userId: number;
+  }) {
+    const existsRoom = await this.getRoomByCode(code);
+
+    if (!existsRoom) throw new NotFoundException('Room not exists');
+
+    const indexOfUser = existsRoom.members.findIndex(
+      (member) => member.user.id == userId,
+    );
+
+    if (indexOfUser == -1) throw new NotFoundException('User not found');
+
+    const indexOfHost = existsRoom.members.findIndex(
+      (member) => member.user.id == hostId,
+    );
+
+    if (indexOfHost == -1) throw new NotFoundException('Host not found');
+
+    existsRoom.members = existsRoom.members.filter(
+      (member) => member.user.id != userId,
+    );
+
+    const updatedRoom = await this.meetingServices.update(
+      existsRoom.id,
+      existsRoom,
+    );
+
+    return updatedRoom;
+  }
+
+  async leaveRoom({
+    code,
+    userId,
+  }: {
+    code: number;
+    userId: number;
+  }): Promise<Meeting> {
     try {
       const existsRoom = await this.getRoomByCode(code);
 
       if (!existsRoom) throw new NotFoundException('Room Not Found');
 
-      let indexOfParticipant = existsRoom.users.findIndex(
+      let indexOfMember = existsRoom.members.findIndex(
+        (member) => member.user.id == userId,
+      );
+
+      if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+      let newMembers = existsRoom.members.filter(
+        (member) => member.user.id != userId,
+      );
+
+      existsRoom.members = newMembers;
+
+      const updatedRoom = await this.meetingServices.update(
+        existsRoom.id,
+        existsRoom,
+      );
+
+      return updatedRoom;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async removeParticipant(
+    code: number,
+    participantId: number,
+  ): Promise<Meeting> {
+    try {
+      const existsRoom = await this.getRoomByCode(code);
+
+      if (!existsRoom) throw new NotFoundException('Room Not Found');
+
+      let indexOfParticipant = existsRoom.participants.findIndex(
         (participant) => participant.id == participantId,
       );
 
       if (indexOfParticipant == -1)
         throw new NotFoundException('Participant Not Found');
 
-      existsRoom.users[indexOfParticipant].status = Status.Inactive;
+      existsRoom.participants[indexOfParticipant].status = Status.Inactive;
 
       const updatedRoom = await this.meetingServices.update(
         existsRoom.id,

@@ -65,8 +65,6 @@ async function bootstrap() {
     infer: true,
   });
 
-  console.log(authGrpcUrl);
-
   const authMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
     options: {

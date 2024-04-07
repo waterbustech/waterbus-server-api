@@ -50,6 +50,9 @@ export class User extends EntityHelper {
   @DeleteDateColumn()
   deletedAt: Date;
 
+  @DeleteDateColumn()
+  lastSeenAt: Date;
+
   @OneToMany(() => Participant, (participant) => participant.user)
   participant: Participant;
 
