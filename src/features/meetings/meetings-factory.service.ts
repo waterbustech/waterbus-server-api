@@ -15,8 +15,8 @@ export class MeetingFactoryService {
     const newRoom = new Meeting();
     newRoom.title = room.title;
     newRoom.password = room.password;
-
     newRoom.members = [member];
+    newRoom.participants = [];
 
     return newRoom;
   }

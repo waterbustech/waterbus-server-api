@@ -3,7 +3,9 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   ManyToOne,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -12,6 +14,7 @@ import { EntityHelper } from '../../utils/entity-helper';
 import { Meeting } from './meeting.entity';
 import { Status } from '../enums';
 import { MessageType } from '../enums/message';
+import { User } from './user.entity';
 
 @Entity({ name: 'messages' })
 export class Message extends EntityHelper {
@@ -23,7 +26,14 @@ export class Message extends EntityHelper {
   @Column({ type: String })
   data: string;
 
-  @ManyToOne(() => Meeting, (meeting) => meeting.participants)
+  @ManyToOne(() => User, (user) => user.message, {
+    eager: true,
+    cascade: true,
+  })
+  @Index()
+  createdBy: User;
+
+  @ManyToOne(() => Meeting, (meeting) => meeting.message)
   meeting: Meeting;
 
   @Column({

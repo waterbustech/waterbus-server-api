@@ -11,7 +11,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MeetingsModule } from './features/meetings/meetings.module';
 import { GrpcModule } from './features/grpc/grpc.module';
-import { GrpcReflectionModule } from 'nestjs-grpc-reflection';
+import { ChatsModule } from './features/chats/chats.module';
 
 @Module({
   imports: [
@@ -29,6 +29,7 @@ import { GrpcReflectionModule } from 'nestjs-grpc-reflection';
     AuthModule,
     UsersModule,
     MeetingsModule,
+    ChatsModule,
     GrpcModule,
   ],
 })

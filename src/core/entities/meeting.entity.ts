@@ -6,6 +6,7 @@ import {
   DeleteDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -45,6 +46,9 @@ export class Meeting extends EntityHelper {
     cascade: true,
   })
   members: Member[];
+
+  @OneToOne(() => Message, (message) => message.meeting)
+  latestMessage: Message;
 
   @OneToMany(() => Message, (message) => message.meeting)
   message: Message;

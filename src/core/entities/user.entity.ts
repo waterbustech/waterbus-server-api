@@ -11,6 +11,7 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from '../../utils/entity-helper';
 import { Participant } from './participant.entity';
+import { Message } from './message.entity';
 
 @Entity({ name: 'users' })
 export class User extends EntityHelper {
@@ -29,11 +30,9 @@ export class User extends EntityHelper {
   @Column({ type: String, unique: true, nullable: true })
   googleId?: string;
 
-  @ApiProperty({ example: 'facebookId' })
   @Column({ type: String, unique: true, nullable: true })
   facebookId?: string;
 
-  @ApiProperty({ example: 'appleId' })
   @Column({ type: String, unique: true, nullable: true })
   appleId?: string;
 
@@ -55,6 +54,9 @@ export class User extends EntityHelper {
 
   @OneToMany(() => Participant, (participant) => participant.user)
   participant: Participant;
+
+  @OneToMany(() => Message, (message) => message.createdBy)
+  message: Message;
 
   @BeforeInsert()
   async generateUserName() {

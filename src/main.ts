@@ -13,9 +13,8 @@ import validationOptions from './utils/validation-options';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { EPackage, getProtoPath, getIncludeDirs } from 'waterbus-proto';
-
-const { SwaggerTheme, SwaggerThemeNameEnum } = require('swagger-themes');
-const swaggerUi = require('swagger-ui-express');
+import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
+import * as swaggerUi from 'swagger-ui-express';
 
 const theme = new SwaggerTheme();
 

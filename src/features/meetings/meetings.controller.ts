@@ -25,7 +25,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
 import { Member } from '../../core/entities/member.entity';
-import { MemberRole } from '../../core/enums/member';
+import { MemberRole, MemberStatus } from '../../core/enums/member';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -49,13 +49,25 @@ export class MeetingsController {
     return this.meetingsUseCases.getRoomByCode(code);
   }
 
+  @Get('/conversations/:status')
+  async getRoomsByAuth(
+    @Request() request,
+    @Param('status') status: MemberStatus,
+  ) {
+    return this.meetingsUseCases.getRoomsByUserId({
+      userId: request.user.id,
+      status,
+    });
+  }
+
   @Post()
   async createRoom(@Request() request, @Body() createRoom: CreateMeetingDto) {
     const user = await this.userService.findOne({ id: request.user.id });
 
-    let member = new Member();
+    const member = new Member();
     member.user = user;
     member.role = MemberRole.Host;
+    member.status = MemberStatus.Joined;
 
     const memberSaved = await this.membersRepository.save(
       this.membersRepository.create(member),
@@ -77,12 +89,12 @@ export class MeetingsController {
   }
 
   @Post('/members/:code')
-  async addUser(
+  async addRoomMember(
     @Request() request,
     @Param('code') code: number,
     @Body() addUserDto: AddUserDto,
   ) {
-    return this.meetingsUseCases.addUser({
+    return this.meetingsUseCases.addRoomMember({
       code: code,
       hostId: request.user.id,
       userId: addUserDto.userId,
@@ -90,15 +102,23 @@ export class MeetingsController {
   }
 
   @Delete('/members/:code')
-  async removeUser(
+  async removeRoomMember(
     @Request() request,
     @Param('code') code: number,
     @Body() addUserDto: AddUserDto,
   ) {
-    return this.meetingsUseCases.removeUser({
+    return this.meetingsUseCases.removeRoomMember({
       code: code,
       hostId: request.user.id,
       userId: addUserDto.userId,
+    });
+  }
+
+  @Post('/members/accept/:code')
+  async acceptRoomInvitation(@Request() request, @Param('code') code: number) {
+    return this.meetingsUseCases.acceptRoomInvitation({
+      code: code,
+      userId: request.user.id,
     });
   }
 
@@ -116,7 +136,7 @@ export class MeetingsController {
       joinRoomDto.password,
     );
 
-    let attendee = new Participant();
+    const attendee = new Participant();
     attendee.user = user;
 
     const participant = await this.participantsRepository.save(
@@ -136,7 +156,7 @@ export class MeetingsController {
 
     const room = await this.meetingsUseCases.getRoomByCode(code);
 
-    let attendee = new Participant();
+    const attendee = new Participant();
     attendee.user = user;
 
     const participant = await this.participantsRepository.save(
@@ -148,7 +168,7 @@ export class MeetingsController {
 
   @Delete(':code')
   async leaveRoom(@Request() request, @Param('code') code: number) {
-    let userId = request.user.id;
+    const userId = request.user.id;
     return this.meetingsUseCases.leaveRoom({ code, userId });
   }
 

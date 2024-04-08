@@ -2,11 +2,13 @@ import {
   Controller,
   Body,
   Post,
+  Get,
   HttpStatus,
   UseGuards,
   HttpCode,
   Request,
   SerializeOptions,
+  Delete,
 } from '@nestjs/common';
 import { LoginSocialDto } from 'src/core/dtos/auth';
 import { UserFactoryService } from '../users/user-factory.service';
@@ -27,7 +29,7 @@ export class AuthController {
     private awsS3Service: AwsS3Service,
   ) {}
 
-  @Post('login')
+  @Post()
   loginWithSocial(@Body() loginWithSocial: LoginSocialDto) {
     const user = this.userFactoryService.createNewUser(loginWithSocial);
 
@@ -38,7 +40,7 @@ export class AuthController {
   @SerializeOptions({
     groups: ['me'],
   })
-  @Post('refresh')
+  @Get()
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
   public refresh(@Request() request): Promise<Omit<LoginResponseType, 'user'>> {
@@ -46,7 +48,7 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @Post('logout')
+  @Delete('logout')
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
   public async logout(@Request() request): Promise<void> {

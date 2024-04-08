@@ -5,5 +5,6 @@ export enum MemberRole {
 
 export enum MemberStatus {
   Inviting = 0,
-  Joined = 1,
+  Invisible = 1,
+  Joined = 2,
 }

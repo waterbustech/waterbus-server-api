@@ -44,6 +44,7 @@ describe('MeetingsService', () => {
         createdAt: undefined,
         updatedAt: undefined,
         deletedAt: undefined,
+        latestMessage: null,
         message: null,
         generateCode: jest.fn(),
         setEntityName: jest.fn(),
