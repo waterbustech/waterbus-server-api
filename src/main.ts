@@ -44,7 +44,7 @@ async function bootstrap() {
     .setDescription(
       'Open source video conferencing app built on latest WebRTC SDK. Android/iOS/MacOS/Web',
     )
-    .setVersion('1.0')
+    .setVersion('2.0')
     .addApiKey({
       type: 'apiKey',
     })

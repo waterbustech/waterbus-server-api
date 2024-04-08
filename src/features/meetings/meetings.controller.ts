@@ -16,6 +16,7 @@ import {
   CreateMeetingDto,
   JoinMeetingDto,
   UpdateMeetingDto,
+  AddUserDto,
 } from '../../core/dtos';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -23,9 +24,8 @@ import { ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
-import { Member } from 'src/core/entities/member.entity';
-import { MemberRole } from 'src/core/enums/member';
-import { AddUserDto } from 'src/core/dtos/meetings/add-user.dto';
+import { Member } from '../../core/entities/member.entity';
+import { MemberRole } from '../../core/enums/member';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -57,9 +57,13 @@ export class MeetingsController {
     member.user = user;
     member.role = MemberRole.Host;
 
+    const memberSaved = await this.membersRepository.save(
+      this.membersRepository.create(member),
+    );
+
     const room = this.meetingFactoryService.createNewRoom({
       room: createRoom,
-      member,
+      member: memberSaved,
     });
 
     return this.meetingsUseCases.createRoom(room);
@@ -99,7 +103,7 @@ export class MeetingsController {
   }
 
   // Using for stranger join by code & password
-  @Post(':code')
+  @Post('/join/password/:code')
   async joinRoomForStranger(
     @Param('code') code: number,
     @Request() request,
@@ -119,24 +123,28 @@ export class MeetingsController {
       this.participantsRepository.create(attendee),
     );
 
-    return this.meetingsUseCases.joinRoom(room, participant, user.id);
+    return this.meetingsUseCases.joinRoomWithPassword(
+      room,
+      participant,
+      user.id,
+    );
   }
 
-  // @Post('/join/:code')
-  // async joinRoomForMember(@Param('code') code: number, @Request() request) {
-  //   const user = await this.userService.findOne({ id: request.user.id });
+  @Post('/join/:code')
+  async joinRoomForMember(@Param('code') code: number, @Request() request) {
+    const user = await this.userService.findOne({ id: request.user.id });
 
-  //   const room = this.meetingsUseCases.getRoomByCode(code);
+    const room = await this.meetingsUseCases.getRoomByCode(code);
 
-  //   let attendee = new Participant();
-  //   attendee.user = user;
+    let attendee = new Participant();
+    attendee.user = user;
 
-  //   const participant = await this.participantsRepository.save(
-  //     this.participantsRepository.create(attendee),
-  //   );
+    const participant = await this.participantsRepository.save(
+      this.participantsRepository.create(attendee),
+    );
 
-  //   return this.meetingsUseCases.joinRoom(room, participant, user.id);
-  // }
+    return this.meetingsUseCases.joinRoomForMember(room, participant, user.id);
+  }
 
   @Delete(':code')
   async leaveRoom(@Request() request, @Param('code') code: number) {

@@ -7,11 +7,11 @@ import {
 import { MeetingsService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
-import { Participant } from 'src/core/entities/participant.entity';
+import { Participant } from '../../core/entities/participant.entity';
 import { Status } from '../../core/enums';
-import { MemberRole } from 'src/core/enums/member';
+import { MemberRole } from '../../core/enums/member';
 import { UsersService } from '../users/users.service';
-import { Member } from 'src/core/entities/member.entity';
+import { Member } from '../../core/entities/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
@@ -74,7 +74,7 @@ export class MeetingsUseCases {
     }
   }
 
-  async joinRoom(
+  async joinRoomWithPassword(
     meeting: Meeting,
     participant: Participant,
     userId: number,
@@ -82,20 +82,53 @@ export class MeetingsUseCases {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);
 
-      if (!existsRoom) throw new NotFoundException();
+      if (!existsRoom) throw new NotFoundException('Room not exists');
+
+      const isMatchPassword = await bcrypt.compare(
+        meeting.password,
+        existsRoom.password,
+      );
+
+      if (!isMatchPassword) throw new BadRequestException('Wrong password!');
+
+      // Just update if participant already exists in room
+      let indexOfParticipant = existsRoom.participants.findIndex(
+        (mParticipant) => mParticipant.id == participant.id,
+      );
+
+      if (indexOfParticipant != -1) {
+        existsRoom.participants[indexOfParticipant] = participant;
+      } else {
+        existsRoom.participants.push(participant);
+      }
+
+      const updatedRoom = await this.meetingServices.update(
+        existsRoom.id,
+        existsRoom,
+      );
+
+      return updatedRoom;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async joinRoomForMember(
+    meeting: Meeting,
+    participant: Participant,
+    userId: number,
+  ): Promise<Meeting> {
+    try {
+      const existsRoom = await this.getRoomByCode(meeting.code);
+
+      if (!existsRoom) throw new NotFoundException('Room not exists');
 
       let indexOfMember = existsRoom.members.findIndex(
         (member) => member.user.id == userId,
       );
 
-      if (indexOfMember == -1) {
-        const isMatchPassword = await bcrypt.compare(
-          meeting.password,
-          existsRoom.password,
-        );
-
-        if (!isMatchPassword) throw new BadRequestException('Wrong password!');
-      }
+      if (indexOfMember == -1)
+        throw new ForbiddenException('User not allow to join directly');
 
       // Just update if participant already exists in room
       let indexOfParticipant = existsRoom.participants.findIndex(
@@ -151,6 +184,9 @@ export class MeetingsUseCases {
       throw new ForbiddenException('You not allow to add user');
 
     const user = await this.userService.findOne({ id: userId });
+
+    if (!user) throw new NotFoundException('User not found');
+
     let member = new Member();
     member.user = user;
 
@@ -218,6 +254,12 @@ export class MeetingsUseCases {
       );
 
       if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+      if (existsRoom.members[indexOfMember].role == MemberRole.Host) {
+        throw new ForbiddenException(
+          'Host not allowed to leave the room. You can archive chats if the room no longer active.',
+        );
+      }
 
       let newMembers = existsRoom.members.filter(
         (member) => member.user.id != userId,

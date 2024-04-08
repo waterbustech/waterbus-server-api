@@ -10,7 +10,5 @@ import { ChatsUseCases } from './chats.usecase';
   version: '1',
 })
 export class ChatsController {
-  constructor(
-    private chatsUseCases: ChatsUseCases, // private meetingFactoryService: MeetingFactoryService,
-  ) {}
+  constructor() {} // private chatsUseCases: ChatsUseCases, // private meetingFactoryService: MeetingFactoryService,
 }
