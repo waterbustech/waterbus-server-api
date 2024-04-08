@@ -31,16 +31,14 @@ export class ChatsService {
     meetingId: number;
     deletedAt: Date;
   }): Promise<NullableType<Message[]>> {
-    return (
-      this.chatsRepository
-        .createQueryBuilder('message')
-        .innerJoinAndSelect('message.meeting', 'meeting')
-        .innerJoinAndSelect('message.createdBy', 'createdBy')
-        .where('meeting.id = :meetingId', { meetingId })
-        .andWhere('message.createdAt > :deletedAt', { deletedAt })
-        .orderBy('message.createdAt', 'DESC')
-        .getMany()
-    );
+    return this.chatsRepository
+      .createQueryBuilder('message')
+      .innerJoinAndSelect('message.meeting', 'meeting')
+      .innerJoinAndSelect('message.createdBy', 'createdBy')
+      .where('meeting.id = :meetingId', { meetingId })
+      .andWhere('message.createdAt > :deletedAt', { deletedAt })
+      .orderBy('message.createdAt', 'DESC')
+      .getMany();
   }
 
   findOne(
