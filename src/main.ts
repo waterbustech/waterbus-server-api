@@ -7,14 +7,13 @@ import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
-import { ConfigService } from '@nestjs/config';
-import { AllConfigType } from './core/config/config.type';
 import validationOptions from './utils/validation-options';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { EPackage, getProtoPath, getIncludeDirs } from 'waterbus-proto';
 import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
 import * as swaggerUi from 'swagger-ui-express';
+import { EnvironmentConfigService } from './core/config/environment/environments';
 
 const theme = new SwaggerTheme();
 
@@ -23,15 +22,12 @@ async function bootstrap() {
     cors: true,
   });
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
-  const configService = app.get(ConfigService<AllConfigType>);
+  const configService = app.get(EnvironmentConfigService);
 
   app.enableShutdownHooks();
-  app.setGlobalPrefix(
-    configService.getOrThrow('app.apiPrefix', { infer: true }),
-    {
-      exclude: ['/'],
-    },
-  );
+  app.setGlobalPrefix(configService.getApiPrefix(), {
+    exclude: ['/'],
+  });
   app.enableVersioning({
     type: VersioningType.URI,
   });
@@ -59,10 +55,8 @@ async function bootstrap() {
 
   app.use('/docs', swaggerUi.serve, swaggerUi.setup(document, optionsTheme));
 
-  const authGrpcUrl = configService.getOrThrow('grpc.authUrl', { infer: true });
-  const meetingGrpcUrl = configService.getOrThrow('grpc.meetingUrl', {
-    infer: true,
-  });
+  const authGrpcUrl = configService.getAuthGrpcUrl();
+  const meetingGrpcUrl = configService.getMeetingGrpcUrl();
 
   const authMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
@@ -91,6 +85,6 @@ async function bootstrap() {
   app.connectMicroservice(meetingMicroserviceOptions);
   await app.startAllMicroservices();
 
-  await app.listen(configService.getOrThrow('app.port', { infer: true }));
+  await app.listen(configService.getPort());
 }
 void bootstrap();
