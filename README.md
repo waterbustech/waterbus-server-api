@@ -49,20 +49,24 @@
 - [ ] Meetings
   - [x] Create meeting
   - [x] Update meeting
-  - [x] Join/Leave meeting
-  - [ ] Invite user
+  - [x] Users management
+    - [x] Join/Leave meeting
+    - [x] Invite user
+    - [x] Remove user
+    - [x] Accept invitation
   - [ ] Code Editor
     - [ ] Create record
     - [ ] Update record
   - [ ] Notes
     - [ ] Create note
     - [ ] Update note
-- [ ] Chats
-  - [ ] Get conversations by user
-  - [ ] Get messages by conversation
-  - [ ] Send message
-  - [ ] Edit message
-  - [ ] Delete message
+- [x] Chats
+  - [x] Get conversations by user
+  - [x] Get messages by conversation
+  - [x] Send message
+  - [x] Edit message
+  - [x] Delete message
+  - [x] Delete conversations
 
 ## Quick run
 

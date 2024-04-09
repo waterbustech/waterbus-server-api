@@ -76,7 +76,7 @@ export class ChatsUseCases {
 
       const meeting = await this.meetingsUsecases.getRoomById(meetingId);
 
-      let message = new Message();
+      const message = new Message();
       message.data = data;
       message.updatedAt = new Date();
       message.createdBy = user;

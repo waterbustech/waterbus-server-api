@@ -315,7 +315,7 @@ export class MeetingsUseCases {
 
       meeting.latestMessage = message;
 
-      for (var member of meeting.members) {
+      for (const member of meeting.members) {
         if (member.status == MemberStatus.Invisible) {
           member.status = MemberStatus.Joined;
         }
