@@ -5530,10 +5530,10 @@ watchpack@^2.4.0:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
-waterbus-proto@^1.0.3:
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/waterbus-proto/-/waterbus-proto-1.0.3.tgz#1db41250a21901eaa8762a25e37656e39e21df8d"
-  integrity sha512-fbV7EKJ35ZXjtI9Bf0zPI90gnQq0bHWO1HqttrYkXdpBxfAz2eFHcPzkWPXcpAHa8cBdI+HND+NyFaE7hEzajQ==
+waterbus-proto@^1.0.4:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/waterbus-proto/-/waterbus-proto-1.0.4.tgz#db8acb3b92d2624016369b8f2d55968bacbc5e58"
+  integrity sha512-c2W+QIutuWwRiKJVZ4WlFL95TuJraseCfhnk+NR4a4Vv1y0XNVI87V+Ikbtr7i3ocHjDGANXRoR0cYQHhlPE/g==
   dependencies:
     "@grpc/grpc-js" "^1.9.3"
     rxjs "^7.8.1"

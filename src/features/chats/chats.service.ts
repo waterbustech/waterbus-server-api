@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationListQuery } from 'src/core/dtos';
 import { Message } from 'src/core/entities/message.entity';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { NullableType } from 'src/utils/types/nullable.type';
@@ -27,9 +28,11 @@ export class ChatsService {
   findAllMessagesByMeeting({
     meetingId,
     deletedAt,
+    query,
   }: {
     meetingId: number;
     deletedAt: Date;
+    query: PaginationListQuery;
   }): Promise<NullableType<Message[]>> {
     return this.chatsRepository
       .createQueryBuilder('message')
@@ -38,6 +41,8 @@ export class ChatsService {
       .where('meeting.id = :meetingId', { meetingId })
       .andWhere('message.createdAt > :deletedAt', { deletedAt })
       .orderBy('message.createdAt', 'DESC')
+      .skip(query.skip)
+      .limit(query.limit)
       .getMany();
   }
 

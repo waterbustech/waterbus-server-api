@@ -13,6 +13,7 @@ import { Status } from 'src/core/enums';
 import { MeetingsUseCases } from '../meetings/meetings.usecase';
 import { MemberStatus } from 'src/core/enums/member';
 import { Meeting } from 'src/core/entities/meeting.entity';
+import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
 export class ChatsUseCases {
@@ -27,9 +28,11 @@ export class ChatsUseCases {
   async getMessagesByMeeting({
     userId,
     meetingId,
+    query,
   }: {
     userId: number;
     meetingId: number;
+    query: PaginationListQuery;
   }): Promise<Message[]> {
     try {
       const meeting = await this.meetingsUsecases.getRoomById(meetingId);
@@ -52,6 +55,7 @@ export class ChatsUseCases {
       const messages = await this.chatService.findAllMessagesByMeeting({
         meetingId,
         deletedAt,
+        query,
       });
 
       return messages;

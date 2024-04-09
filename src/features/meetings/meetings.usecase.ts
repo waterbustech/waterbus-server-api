@@ -15,6 +15,7 @@ import { Member } from '../../core/entities/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from '../../core/entities/message.entity';
+import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
 export class MeetingsUseCases {
@@ -28,12 +29,18 @@ export class MeetingsUseCases {
   async getRoomsByUserId({
     userId,
     status,
+    query,
   }: {
     userId: number;
     status: MemberStatus;
+    query: PaginationListQuery;
   }): Promise<Meeting[]> {
     try {
-      const rooms = await this.meetingService.findAll({ userId, status });
+      const rooms = await this.meetingService.findAll({
+        userId,
+        status,
+        query,
+      });
 
       return rooms;
     } catch (error) {

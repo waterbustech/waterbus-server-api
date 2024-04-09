@@ -8,11 +8,12 @@ import {
   Put,
   Delete,
   Body,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { ChatsUseCases } from './chats.usecase';
-import { SendMessageDto } from 'src/core/dtos';
+import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -27,10 +28,12 @@ export class ChatsController {
   async getMessagesByMeeting(
     @Request() request,
     @Param('meetingId') meetingId: number,
+    @Query() query: PaginationListQuery,
   ) {
     return this.chatsUseCases.getMessagesByMeeting({
       userId: request.user.id,
       meetingId,
+      query,
     });
   }
 

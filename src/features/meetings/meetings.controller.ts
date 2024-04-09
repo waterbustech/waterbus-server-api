@@ -9,6 +9,7 @@ import {
   UseGuards,
   Delete,
   NotFoundException,
+  Query,
 } from '@nestjs/common';
 import { MeetingsUseCases } from './meetings.usecase';
 import { MeetingFactoryService } from './meetings-factory.service';
@@ -17,6 +18,7 @@ import {
   JoinMeetingDto,
   UpdateMeetingDto,
   AddUserDto,
+  PaginationListQuery,
 } from '../../core/dtos';
 import { UsersService } from '../users/users.service';
 import { AuthGuard } from '@nestjs/passport';
@@ -53,10 +55,12 @@ export class MeetingsController {
   async getRoomsByAuth(
     @Request() request,
     @Param('status') status: MemberStatus,
+    @Query() query: PaginationListQuery,
   ) {
     return this.meetingsUseCases.getRoomsByUserId({
       userId: request.user.id,
       status,
+      query,
     });
   }
 

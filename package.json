@@ -52,7 +52,7 @@
     "swagger-themes": "^1.4.3",
     "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.17",
-    "waterbus-proto": "^1.0.3"
+    "waterbus-proto": "^1.0.4"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
