@@ -6,11 +6,23 @@ export class EnvironmentConfigService {
   constructor(private configService: ConfigService) {}
 
   getPort(): number {
-    return Number(this.configService.get<number>('PORT'));
+    return Number(this.configService.get<number>('APP_PORT'));
+  }
+
+  getApiPrefix(): string {
+    return this.configService.get<string>('API_PREFIX');
   }
 
   getWsGrpcUrl(): string {
     return this.configService.get<string>('WEBSOCKET_GRPC_ADDRESS');
+  }
+
+  getAuthGrpcUrl(): string {
+    return this.configService.get<string>('AUTH_GRPC_URL');
+  }
+
+  getMeetingGrpcUrl(): string {
+    return this.configService.get<string>('MEETING_GRPC_URL');
   }
 
   getPodName(): string {

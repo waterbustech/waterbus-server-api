@@ -6,7 +6,7 @@ import { AuthModule } from './features/auth/auth.module';
 import { UsersModule } from './features/users/users.module';
 import { MeetingsModule } from './features/meetings/meetings.module';
 import { ChatsModule } from './features/chats/chats.module';
-import { EnvironmentConfigModule } from './core/config/env/environment.module';
+import { EnvironmentConfigModule } from './core/config/environment/environment.module';
 
 @Module({
   imports: [

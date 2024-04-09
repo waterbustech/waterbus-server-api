@@ -1,10 +1,10 @@
 {
   "name": "waterbus-server-api",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "description": "Waterbus Server API",
   "author": "lambiengcode",
   "private": false,
-  "license": "MIT",
+  "license": "Apache-2.0",
   "scripts": {
     "typeorm": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
     "build": "nest build",

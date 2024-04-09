@@ -5,8 +5,8 @@ import {
   Transport,
 } from '@nestjs/microservices';
 import { EPackage, getIncludeDirs, getProtoPath } from 'waterbus-proto';
-import { EnvironmentConfigModule } from '../config/env/environment.module';
-import { EnvironmentConfigService } from '../config/env/environments';
+import { EnvironmentConfigModule } from '../config/environment/environment.module';
+import { EnvironmentConfigService } from '../config/environment/environments';
 
 export const getGrpcClientOptions = (
   config: EnvironmentConfigService,
