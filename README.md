@@ -15,8 +15,8 @@
   <a href="https://github.com/waterbustech/waterbus/blob/main/LICENSE">License</a>
 </p>
 
-## Table of Contents
-- [Table of Contents](#table-of-contents)
+## 📗 Table of Contents
+- [📗 Table of Contents](#-table-of-contents)
 - [👋 Introduction](#-introduction)
   - [👷 Meeting Flow](#-meeting-flow)
   - [🛠️ Arch Design](#️-arch-design)
@@ -24,8 +24,7 @@
   - [✨ Features](#-features)
 - [🚀 Quick run](#-quick-run)
   - [👇 Requirements](#-requirements)
-- [🚏 Roadmap](#-roadmap)
-- [Links](#links)
+- [🔗 Links](#-links)
 
 ## 👋 Introduction
 
@@ -112,17 +111,17 @@ yarn
 yarn start
 ```
 
-## 🚏 Roadmap
+<!-- ## 🚏 Roadmap
 
 <div align="center">
 <img src="./images/waterbus-roadmap-light.png#gh-light-mode-only" width=50%/>
 <img src="./images/waterbus-roadmap-dark.png#gh-dark-mode-only" width=50%/>
-</div>
+</div> -->
 
-## Links
+## 🔗 Links
 
 - 📃 Check document at [docs.waterbus.tech](https://docs.waterbus.tech)
-- 📱 Flutter app [repository]()
-- 📽️ Server SFU WebSocket [repository]()
+- 📱 Flutter app [repository](https://github.com/waterbustech/waterbus)
+- 📽️ Waterbus Server API [repository](https://github.com/waterbustech/waterbus-server-ws)
 
 <h4 align="center">Built with 💙 by the Waterbus team.</h4>
