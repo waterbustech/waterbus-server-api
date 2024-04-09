@@ -14,31 +14,37 @@
 
 ## Table of Contents
 - [Table of Contents](#table-of-contents)
-- [Introduction](#introduction)
-  - [Meeting Flow](#meeting-flow)
-  - [Entity Relationship Diagram (ERD)](#entity-relationship-diagram-erd)
-  - [Features](#features)
-- [Quick run](#quick-run)
-  - [Requirements](#requirements)
-- [Roadmap](#roadmap)
-- [Links:](#links)
+- [👋 Introduction](#-introduction)
+  - [👷 Meeting Flow](#-meeting-flow)
+  - [🛠️ Arch Design](#️-arch-design)
+  - [🧰 Entity Relationship Diagram (ERD)](#-entity-relationship-diagram-erd)
+  - [✨ Features](#-features)
+- [🚀 Quick run](#-quick-run)
+  - [👇 Requirements](#-requirements)
+- [🚏 Roadmap](#-roadmap)
+- [Links](#links)
 
-## Introduction
+## 👋 Introduction
 
 - 🤙 Waterbus is open source video conferencing multiplatform app built on latest WebRTC SDK. This is server api for the application. 
 - 🎯 Waterbus aims for scalability and low latency as well as self-hosted and offers many useful features for everyday interviews or meetings.
 
-### Meeting Flow
+### 👷 Meeting Flow
 
-[![Flow Diagram](./images/waterbus-flow-dark.gif)](https://docs.waterbus.tech#gh-dark-mode-only)
-[![Flow Diagram](./images/waterbus-flow-light.gif)](https://docs.waterbus.tech#gh-light-mode-only)
+[![Sequence Diagram](./images/waterbus-flow-dark.gif)](https://docs.waterbus.tech#gh-dark-mode-only)
+[![Sequence Diagram](./images/waterbus-flow-light.gif)](https://docs.waterbus.tech#gh-light-mode-only)
 
-### Entity Relationship Diagram (ERD)
+### 🛠️ Arch Design
+
+[![Arch](./images/arch-high-level-design-dark.gif)](https://docs.waterbus.tech#gh-dark-mode-only)
+[![Arch](./images/arch-high-level-design-light.gif)](https://docs.waterbus.tech#gh-light-mode-only)
+
+### 🧰 Entity Relationship Diagram (ERD)
 
 [![ERD](./images/waterbus-erd-dark.png)](https://docs.waterbus.tech#gh-dark-mode-only)
 [![ERD](./images/waterbus-erd-light.png)](https://docs.waterbus.tech#gh-light-mode-only)
 
-### Features
+### ✨ Features
 
 - [x] Login with Google
 - [x] Refresh Token
@@ -68,9 +74,9 @@
   - [x] Delete message
   - [x] Delete conversations
 
-## Quick run
+## 🚀 Quick run
 
-### Requirements
+### 👇 Requirements
 
 Before getting started, ensure you have the following software installed:
 
@@ -103,17 +109,17 @@ yarn
 yarn start
 ```
 
-## Roadmap
+## 🚏 Roadmap
 
 <div align="center">
-<img src="./images/waterbus-roadmap-light.gif#gh-light-mode-only" width=50%/>
-<img src="./images/waterbus-roadmap-dark.gif#gh-dark-mode-only" width=50%/>
+<img src="./images/waterbus-roadmap-light.png#gh-light-mode-only" width=50%/>
+<img src="./images/waterbus-roadmap-dark.png#gh-dark-mode-only" width=50%/>
 </div>
 
-## Links: 
+## Links
 
-- Check document at [docs.waterbus.tech](https://docs.waterbus.tech)
-- Flutter app [repository]()
-- Server SFU WebSocket [repository]()
+- 📃 Check document at [docs.waterbus.tech](https://docs.waterbus.tech)
+- 📱 Flutter app [repository]()
+- 📽️ Server SFU WebSocket [repository]()
 
 <h4 align="center">Built with 💙 by the Waterbus team.</h4>
