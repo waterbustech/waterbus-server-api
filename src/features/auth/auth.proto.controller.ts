@@ -1,7 +1,6 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { Observable } from 'rxjs';
-import { Metadata } from '@grpc/grpc-js';
 import { JwtService } from '@nestjs/jwt';
 import { auth } from 'waterbus-proto';
 

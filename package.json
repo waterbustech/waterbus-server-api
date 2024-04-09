@@ -1,9 +1,9 @@
 {
   "name": "waterbus-server-api",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "Waterbus Server API",
   "author": "lambiengcode",
-  "private": true,
+  "private": false,
   "license": "MIT",
   "scripts": {
     "typeorm": "env-cmd ts-node -r tsconfig-paths/register ./node_modules/typeorm/cli.js",
@@ -52,7 +52,7 @@
     "swagger-themes": "^1.4.3",
     "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.17",
-    "waterbus-proto": "^1.0.3"
+    "waterbus-proto": "^1.0.7"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",
@@ -87,6 +87,9 @@
       "ts"
     ],
     "rootDir": "src",
+    "moduleNameMapper": {
+      "^src/(.*)$": "<rootDir>/$1"
+    },
     "testRegex": ".*\\.spec\\.ts$",
     "transform": {
       "^.+\\.(t|j)s$": "ts-jest"

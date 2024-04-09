@@ -2,7 +2,7 @@ import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { Metadata } from '@grpc/grpc-js';
 import { meeting } from 'waterbus-proto';
-import { MeetingsUseCases } from '../meetings/meetings.usecase';
+import { MeetingsUseCases } from './meetings.usecase';
 import { Observable } from 'rxjs';
 
 @Controller()
@@ -22,7 +22,10 @@ export class MeetingGrpcController implements meeting.MeetingService {
     const participantId = data.participantId;
 
     try {
-      this.meetingsUseCases.leaveRoom(Number(roomId), Number(participantId));
+      this.meetingsUseCases.removeParticipant(
+        Number(roomId),
+        Number(participantId),
+      );
 
       const response: meeting.LeaveRoomResponse = {
         succeed: true,

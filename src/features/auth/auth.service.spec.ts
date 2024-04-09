@@ -78,6 +78,8 @@ describe('AuthService', () => {
         recover: jest.fn(),
         reload: jest.fn(),
         participant: null,
+        lastSeenAt: null,
+        message: null,
       };
 
       const mSession: Session = {

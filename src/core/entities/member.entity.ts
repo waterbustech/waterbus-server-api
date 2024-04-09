@@ -9,11 +9,11 @@ import {
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '..';
-import { Status } from '../enums';
 import { Meeting } from './meeting.entity';
+import { MemberRole, MemberStatus } from '../enums/member';
 
-@Entity({ name: 'participants' })
-export class Participant extends EntityHelper {
+@Entity({ name: 'members' })
+export class Member extends EntityHelper {
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -24,15 +24,22 @@ export class Participant extends EntityHelper {
   @Index()
   user: User;
 
-  @ManyToOne(() => Meeting, (meeting) => meeting.participants)
+  @ManyToOne(() => Meeting, (meeting) => meeting.members)
   meeting: Meeting;
 
   @Column({
     type: 'enum',
-    enum: Status,
-    default: Status.Active,
+    enum: MemberRole,
+    default: MemberRole.Attendee,
   })
-  status: Status;
+  role: MemberRole;
+
+  @Column({
+    type: 'enum',
+    enum: MemberStatus,
+    default: MemberStatus.Inviting,
+  })
+  status: MemberStatus;
 
   @CreateDateColumn()
   createdAt: Date;

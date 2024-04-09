@@ -6,6 +6,7 @@ import {
   DeleteDateColumn,
   Entity,
   OneToMany,
+  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
@@ -14,6 +15,8 @@ import { EntityHelper } from '../../utils/entity-helper';
 import bcrypt from 'bcryptjs';
 import { Participant } from './participant.entity';
 import { Transform } from 'class-transformer';
+import { Message } from './message.entity';
+import { Member } from './member.entity';
 
 @Entity({ name: 'meetings' })
 export class Meeting extends EntityHelper {
@@ -30,11 +33,25 @@ export class Meeting extends EntityHelper {
   @Column({ type: String })
   password: string;
 
+  // Use for session join
   @OneToMany(() => Participant, (participant) => participant.meeting, {
     eager: true,
     cascade: true,
   })
-  users: Participant[];
+  participants: Participant[];
+
+  // Permanent access
+  @OneToMany(() => Member, (member) => member.meeting, {
+    eager: true,
+    cascade: true,
+  })
+  members: Member[];
+
+  @OneToOne(() => Message, (message) => message.meeting)
+  latestMessage: Message;
+
+  @OneToMany(() => Message, (message) => message.meeting)
+  message: Message;
 
   @BeforeInsert()
   @BeforeUpdate()

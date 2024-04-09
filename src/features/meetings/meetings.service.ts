@@ -4,6 +4,8 @@ import { Meeting } from '../../core/entities/meeting.entity';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { NullableType } from 'src/utils/types/nullable.type';
 import { DeepPartial, Repository } from 'typeorm';
+import { MemberStatus } from 'src/core/enums/member';
+import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
 export class MeetingsService {
@@ -22,6 +24,30 @@ export class MeetingsService {
     } catch (error) {
       throw error;
     }
+  }
+
+  findAll({
+    userId,
+    status,
+    query,
+  }: {
+    userId: number;
+    status: MemberStatus;
+    query: PaginationListQuery;
+  }): Promise<NullableType<Meeting[]>> {
+    return this.meetingsRepository
+      .createQueryBuilder('meeting')
+      .innerJoinAndSelect('meeting.members', 'member')
+      .leftJoinAndSelect('meeting.participants', 'participants')
+      .leftJoinAndSelect('meeting.latestMessage', 'latestMessage')
+      .innerJoinAndSelect('member.user', 'memberUser')
+      .leftJoinAndSelect('participants.user', 'user')
+      .where('memberUser.id = :userId', { userId })
+      .andWhere('member.status = :status', { status })
+      .orderBy('latestMessage.createdAt', 'DESC')
+      .skip(query.skip)
+      .limit(query.limit)
+      .getMany();
   }
 
   findOne(

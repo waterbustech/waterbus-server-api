@@ -6,6 +6,7 @@ import { UsersService } from '../users/users.service';
 import { CreateMeetingDto, UpdateMeetingDto } from 'src/core/dtos';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
+import { Member } from '../../core/entities/member.entity';
 
 describe('MeetingsController', () => {
   let meetingsController: MeetingsController;
@@ -33,6 +34,11 @@ describe('MeetingsController', () => {
     create: jest.fn(),
   };
 
+  const mockMembersRepository = {
+    save: jest.fn(),
+    create: jest.fn(),
+  };
+
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [MeetingsController],
@@ -52,6 +58,10 @@ describe('MeetingsController', () => {
         {
           provide: getRepositoryToken(Participant),
           useValue: mockParticipantsRepository,
+        },
+        {
+          provide: getRepositoryToken(Member),
+          useValue: mockMembersRepository,
         },
       ],
     }).compile();
@@ -83,19 +93,19 @@ describe('MeetingsController', () => {
   describe('createRoom', () => {
     it('should create a room and return the result', async () => {
       // Arrange
-      const mockUser = {}; // Mock your user object here
+      const mockUser = {};
       const mockCreateRoomDto: CreateMeetingDto = {
         title: '123',
         password: '123',
-      }; // Mock your create room DTO here
-      const mockRoom = {}; // Mock your room object here
+      };
+      const mockRoom = {};
       const mockRequest = { user: { id: 1 } };
-      const mockParticipant = { user: mockUser, role: 0 };
+      const mockMember = { user: mockUser, role: 0 };
 
       mockUserService.findOne.mockResolvedValue(mockUser);
       mockMeetingFactoryService.createNewRoom.mockReturnValue(mockRoom);
       mockMeetingsUseCases.createRoom.mockResolvedValue(mockRoom);
-      mockParticipantsRepository.save.mockResolvedValue(mockParticipant);
+      mockMembersRepository.save.mockResolvedValue(mockMember);
 
       // Act
       const result = await meetingsController.createRoom(
@@ -108,10 +118,10 @@ describe('MeetingsController', () => {
       expect(mockUserService.findOne).toHaveBeenCalledWith({
         id: mockRequest.user.id,
       });
-      expect(mockMeetingFactoryService.createNewRoom).toHaveBeenCalledWith(
-        mockCreateRoomDto,
-        expect.any(Object), // You may need to adjust this to match the expected Participant object
-      );
+      expect(mockMeetingFactoryService.createNewRoom).toHaveBeenCalledWith({
+        room: mockCreateRoomDto,
+        member: expect.any(Object),
+      });
       expect(mockMeetingsUseCases.createRoom).toHaveBeenCalledWith(mockRoom);
     });
   });

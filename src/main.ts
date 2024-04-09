@@ -13,9 +13,8 @@ import validationOptions from './utils/validation-options';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { EPackage, getProtoPath, getIncludeDirs } from 'waterbus-proto';
-
-const { SwaggerTheme, SwaggerThemeNameEnum } = require('swagger-themes');
-const swaggerUi = require('swagger-ui-express');
+import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
+import * as swaggerUi from 'swagger-ui-express';
 
 const theme = new SwaggerTheme();
 
@@ -44,7 +43,7 @@ async function bootstrap() {
     .setDescription(
       'Open source video conferencing app built on latest WebRTC SDK. Android/iOS/MacOS/Web',
     )
-    .setVersion('1.0')
+    .setVersion('2.0')
     .addApiKey({
       type: 'apiKey',
     })
@@ -64,8 +63,6 @@ async function bootstrap() {
   const meetingGrpcUrl = configService.getOrThrow('grpc.meetingUrl', {
     infer: true,
   });
-
-  console.log(authGrpcUrl);
 
   const authMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
