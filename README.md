@@ -1,3 +1,6 @@
+> [!IMPORTANT]  
+> Waterbus Server API is migration to v2.
+
 <img src="./images/banner-waterbus.png" width="100%"/>
 <h2 align="center">Waterbus Server API</h2>
 <div class="badges" align="center">

@@ -9,10 +9,11 @@ import { UsersService } from '../users/users.service';
 import { User } from 'src/core';
 import { Participant } from 'src/core/entities/participant.entity';
 import { Member } from 'src/core/entities/member.entity';
+import { MeetingGrpcController } from './meeting.proto.controller';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Meeting, User, Participant, Member])],
-  controllers: [MeetingsController],
+  controllers: [MeetingsController, MeetingGrpcController],
   providers: [
     MeetingsService,
     UsersService,

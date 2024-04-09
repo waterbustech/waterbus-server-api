@@ -14,6 +14,7 @@ import { MeetingsUseCases } from '../meetings/meetings.usecase';
 import { MemberStatus } from 'src/core/enums/member';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import { PaginationListQuery } from 'src/core/dtos';
+import { ChatGrpcClientService } from 'src/services/chat.proto.service';
 
 @Injectable()
 export class ChatsUseCases {
@@ -21,6 +22,7 @@ export class ChatsUseCases {
     private chatService: ChatsService,
     private userService: UsersService,
     private meetingsUsecases: MeetingsUseCases,
+    private readonly chatGrpcClientService: ChatGrpcClientService,
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
   ) {}
@@ -92,6 +94,8 @@ export class ChatsUseCases {
 
       await this.meetingsUsecases.updateLatestMessage(createdMessage);
 
+      this.chatGrpcClientService.sendMessage(createdMessage);
+
       return createdMessage;
     } catch (error) {
       throw error;
@@ -130,6 +134,8 @@ export class ChatsUseCases {
         existsMessage,
       );
 
+      this.chatGrpcClientService.updateMessage(updatedMessage);
+
       return updatedMessage;
     } catch (error) {
       throw error;
@@ -164,6 +170,8 @@ export class ChatsUseCases {
         existsMessage.id,
         existsMessage,
       );
+
+      this.chatGrpcClientService.deleteMessage(updatedMessage);
 
       return updatedMessage;
     } catch (error) {

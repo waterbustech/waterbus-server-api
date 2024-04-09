@@ -12,6 +12,7 @@ import { SessionModule } from '../session/session.module';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AwsS3Service } from '../images/aws-s3/aws-s3.service';
+import { AuthGrpcController } from './auth.proto.controller';
 
 @Module({
   imports: [UsersModule, JwtModule.register({}), SessionModule, PassportModule],
@@ -27,6 +28,6 @@ import { AwsS3Service } from '../images/aws-s3/aws-s3.service';
     AwsS3Service,
   ],
   exports: [AuthUseCases],
-  controllers: [AuthController],
+  controllers: [AuthController, AuthGrpcController],
 })
 export class AuthModule {}
