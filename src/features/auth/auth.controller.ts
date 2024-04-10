@@ -48,7 +48,7 @@ export class AuthController {
   }
 
   @ApiBearerAuth()
-  @Delete('logout')
+  @Delete()
   @UseGuards(AuthGuard('jwt'))
   @HttpCode(HttpStatus.NO_CONTENT)
   public async logout(@Request() request): Promise<void> {

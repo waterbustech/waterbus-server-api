@@ -194,6 +194,18 @@ export class MeetingsUseCases {
     }
   }
 
+  async getParticipantById(participantId: number) {
+    const participant = await this.participantsRepository.findOne({
+      where: {
+        id: participantId,
+      },
+    });
+
+    if (!participant) throw new NotFoundException('Not exists participant');
+
+    return participant;
+  }
+
   // MARK: related to members managerment
 
   async addRoomMember({
@@ -397,11 +409,7 @@ export class MeetingsUseCases {
         );
       }
 
-      const newMembers = existsRoom.members.filter(
-        (member) => member.user.id != userId,
-      );
-
-      existsRoom.members = newMembers;
+      existsRoom.members.splice(indexOfMember, 1);
 
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,
@@ -421,7 +429,6 @@ export class MeetingsUseCases {
   ): Promise<Meeting> {
     try {
       const existsRoom = await this.getRoomByCode(code);
-
       if (!existsRoom) throw new NotFoundException('Room Not Found');
 
       const indexOfParticipant = existsRoom.participants.findIndex(
@@ -431,9 +438,11 @@ export class MeetingsUseCases {
       if (indexOfParticipant == -1)
         throw new NotFoundException('Participant Not Found');
 
-      existsRoom.participants[indexOfParticipant].status = Status.Inactive;
+      await this.participantsRepository.remove(
+        existsRoom.participants[indexOfParticipant],
+      );
 
-      await this.participantsRepository.delete(participantId);
+      existsRoom.participants.splice(indexOfParticipant, 1);
 
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,
