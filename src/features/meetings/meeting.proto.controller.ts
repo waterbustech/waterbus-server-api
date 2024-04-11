@@ -1,6 +1,5 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
-import { Metadata } from '@grpc/grpc-js';
 import { meeting } from 'waterbus-proto';
 import { MeetingsUseCases } from './meetings.usecase';
 import { Observable, catchError, throwError } from 'rxjs';

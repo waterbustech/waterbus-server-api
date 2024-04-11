@@ -18,7 +18,6 @@ import { chat } from 'waterbus-proto';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import { ClientService } from 'src/core/enums/grpc/client-service';
 import { Message } from 'src/core/entities/message.entity';
-import { status } from '@grpc/grpc-js';
 
 @Injectable()
 export class ChatGrpcClientService implements OnModuleInit {

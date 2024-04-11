@@ -8,7 +8,6 @@ import { MeetingsService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from '../../core/entities/participant.entity';
-import { Status } from '../../core/enums';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
 import { UsersService } from '../users/users.service';
 import { Member } from '../../core/entities/member.entity';
@@ -119,7 +118,6 @@ export class MeetingsUseCases {
   async joinRoomWithPassword(
     meeting: Meeting,
     participant: Participant,
-    userId: number,
   ): Promise<Meeting> {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);

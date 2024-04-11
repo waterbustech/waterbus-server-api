@@ -146,11 +146,7 @@ export class MeetingsController {
       this.participantsRepository.create(attendee),
     );
 
-    return this.meetingsUseCases.joinRoomWithPassword(
-      room,
-      participant,
-      user.id,
-    );
+    return this.meetingsUseCases.joinRoomWithPassword(room, participant);
   }
 
   @Post('/join/:code')
