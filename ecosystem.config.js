@@ -1,7 +1,7 @@
 module.exports = {
     apps: [
       {
-        name: "Waterbus-Restful",
+        name: "Waterbus Server API",
         script: "dist/main.js",
         instances: "max", // can set is "max" for using max of processors
         autorestart: true,
