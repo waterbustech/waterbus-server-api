@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, IsNotEmpty, IsNumber } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class JoinMeetingDto {
   @ApiProperty()

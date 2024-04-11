@@ -2425,6 +2425,18 @@ eslint-plugin-prettier@^4.0.0:
   dependencies:
     prettier-linter-helpers "^1.0.0"
 
+eslint-plugin-unused-imports@^3.1.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/eslint-plugin-unused-imports/-/eslint-plugin-unused-imports-3.1.0.tgz#db015b569d3774e17a482388c95c17bd303bc602"
+  integrity sha512-9l1YFCzXKkw1qtAru1RWUtG2EVDZY0a0eChKXcL+EZ5jitG7qxdctu4RnvhOJHv4xfmUf7h+JJPINlVpGhZMrw==
+  dependencies:
+    eslint-rule-composer "^0.3.0"
+
+eslint-rule-composer@^0.3.0:
+  version "0.3.0"
+  resolved "https://registry.yarnpkg.com/eslint-rule-composer/-/eslint-rule-composer-0.3.0.tgz#79320c927b0c5c0d3d3d2b76c8b4a488f25bbaf9"
+  integrity sha512-bt+Sh8CtDmn2OajxvNO+BX7Wn4CIWMpTRm3MaiKPCQcnnlm0CS2mhui6QaoeQugs+3Kj2ESKEEGJUdVafwhiCg==
+
 eslint-scope@5.1.1, eslint-scope@^5.1.1:
   version "5.1.1"
   resolved "https://registry.yarnpkg.com/eslint-scope/-/eslint-scope-5.1.1.tgz#e786e59a66cb92b3f6c1fb0d508aab174848f48c"
@@ -5530,10 +5542,10 @@ watchpack@^2.4.0:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
-waterbus-proto@^1.0.7:
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/waterbus-proto/-/waterbus-proto-1.0.7.tgz#33d46ab1a553b74cd2ee3cfa1bb5bb9d95ea5767"
-  integrity sha512-1e/Q+aJbn8XzZ/fzM5s604PLOqB0BS6oDXbWuwHO5bihYMQta8BQYPzGW6OSbWXhPH60GT4VLr1S/4pKG1wkkA==
+waterbus-proto@^1.0.9:
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/waterbus-proto/-/waterbus-proto-1.0.9.tgz#bd5ce407a48f4e7361cf7add680742dbf7fed4c7"
+  integrity sha512-6PFO921ql5EpXqOcNe7LLGKBIBhL8qufpnO8EdEv1jXzeNng3tNA9SNHrkGvEyLtLlkxZSu+QrEUFkQmCG5sCw==
   dependencies:
     "@grpc/grpc-js" "^1.9.3"
     rxjs "^7.8.1"

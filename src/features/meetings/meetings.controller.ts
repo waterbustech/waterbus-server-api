@@ -8,7 +8,6 @@ import {
   Post,
   UseGuards,
   Delete,
-  NotFoundException,
   Query,
 } from '@nestjs/common';
 import { MeetingsUseCases } from './meetings.usecase';
@@ -147,11 +146,7 @@ export class MeetingsController {
       this.participantsRepository.create(attendee),
     );
 
-    return this.meetingsUseCases.joinRoomWithPassword(
-      room,
-      participant,
-      user.id,
-    );
+    return this.meetingsUseCases.joinRoomWithPassword(room, participant);
   }
 
   @Post('/join/:code')
@@ -176,16 +171,16 @@ export class MeetingsController {
     return this.meetingsUseCases.leaveRoom({ code, userId });
   }
 
-  @Get('/participants/:participantId')
-  async getParticipantById(@Param('participantId') participantId: number) {
-    const participant = await this.participantsRepository.findOne({
-      where: {
-        id: participantId,
-      },
-    });
+  // @Get('/participants/:participantId')
+  // async getParticipantById(@Param('participantId') participantId: number) {
+  //   const participant = await this.participantsRepository.findOne({
+  //     where: {
+  //       id: participantId,
+  //     },
+  //   });
 
-    if (!participant) throw new NotFoundException('Not exists participant');
+  //   if (!participant) throw new NotFoundException('Not exists participant');
 
-    return { participant };
-  }
+  //   return { participant };
+  // }
 }

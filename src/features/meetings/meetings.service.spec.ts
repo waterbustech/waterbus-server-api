@@ -1,6 +1,6 @@
 import { Test, TestingModule } from '@nestjs/testing';
 import { MeetingsService } from './meetings.service';
-import { RemoveOptions, Repository, SaveOptions } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Meeting } from '../../core/entities/meeting.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
 
