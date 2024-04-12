@@ -19,7 +19,6 @@ import {
   AddUserDto,
   PaginationListQuery,
 } from '../../core/dtos';
-import { UsersService } from '../users/users.service';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -27,6 +26,7 @@ import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
 import { Member } from '../../core/entities/member.entity';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
+import { UserUseCases } from '../users/user.usecase';
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard('jwt'))
@@ -37,7 +37,7 @@ import { MemberRole, MemberStatus } from '../../core/enums/member';
 export class MeetingsController {
   constructor(
     private meetingsUseCases: MeetingsUseCases,
-    private userService: UsersService,
+    private userUseCases: UserUseCases,
     private meetingFactoryService: MeetingFactoryService,
     @InjectRepository(Member)
     private membersRepository: Repository<Member>,
@@ -65,7 +65,7 @@ export class MeetingsController {
 
   @Post()
   async createRoom(@Request() request, @Body() createRoom: CreateMeetingDto) {
-    const user = await this.userService.findOne({ id: request.user.id });
+    const user = await this.userUseCases.getUserById(request.user.id);
 
     const member = new Member();
     member.user = user;
@@ -132,7 +132,7 @@ export class MeetingsController {
     @Request() request,
     @Body() joinRoomDto: JoinMeetingDto,
   ) {
-    const user = await this.userService.findOne({ id: request.user.id });
+    const user = await this.userUseCases.getUserById(request.user.id);
 
     const room = this.meetingFactoryService.getRoomFromJoinDto(
       code,
@@ -151,7 +151,7 @@ export class MeetingsController {
 
   @Post('/join/:code')
   async joinRoomForMember(@Param('code') code: number, @Request() request) {
-    const user = await this.userService.findOne({ id: request.user.id });
+    const user = await this.userUseCases.getUserById(request.user.id);
 
     const room = await this.meetingsUseCases.getRoomByCode(code);
 
@@ -170,17 +170,4 @@ export class MeetingsController {
     const userId = request.user.id;
     return this.meetingsUseCases.leaveRoom({ code, userId });
   }
-
-  // @Get('/participants/:participantId')
-  // async getParticipantById(@Param('participantId') participantId: number) {
-  //   const participant = await this.participantsRepository.findOne({
-  //     where: {
-  //       id: participantId,
-  //     },
-  //   });
-
-  //   if (!participant) throw new NotFoundException('Not exists participant');
-
-  //   return { participant };
-  // }
 }

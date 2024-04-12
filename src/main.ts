@@ -42,6 +42,8 @@ async function bootstrap() {
     .setVersion('2.0')
     .addApiKey({
       type: 'apiKey',
+      in: 'header',
+      name: 'api_key'
     })
     .addBearerAuth()
     .build();

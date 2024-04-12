@@ -9,6 +9,10 @@ export class EnvironmentConfigService {
     return Number(this.configService.get<number>('APP_PORT'));
   }
 
+  getApiKey(): string {
+    return this.configService.get<string>('API_KEY');
+  }
+
   getApiPrefix(): string {
     return this.configService.get<string>('API_PREFIX');
   }

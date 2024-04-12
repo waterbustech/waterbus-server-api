@@ -17,6 +17,7 @@ import { Participant } from './participant.entity';
 import { Transform } from 'class-transformer';
 import { Message } from './message.entity';
 import { Member } from './member.entity';
+import { customAlphabet } from 'nanoid';
 
 @Entity({ name: 'meetings' })
 export class Meeting extends EntityHelper {
@@ -76,6 +77,13 @@ export class Meeting extends EntityHelper {
 
   @BeforeInsert()
   async generateCode() {
-    this.code = Math.floor(10000000 + Math.random() * 90000000);
+    let id = '';
+    const generateID = customAlphabet('1234567890', 9);
+
+    while (id.length !== 9 || id.startsWith('0')) {
+      id = generateID();
+    }
+
+    this.code = Number(id);
   }
 }

@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Request, Put, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Request,
+  Put,
+  UseGuards,
+  Param,
+  Query,
+} from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth } from '@nestjs/swagger';
 import { UpdateUserInfoDto } from 'src/core/dtos';
@@ -17,9 +26,23 @@ export class UserController {
     private userFactoryService: UserFactoryService,
   ) {}
 
+  @Get('search')
+  async searchUsers(@Query('q') query: string) {
+    return this.userUseCases.searchUsers(query);
+  }
+
   @Get()
   async getById(@Request() request) {
     return this.userUseCases.getUserById(request.user.id);
+  }
+
+  @Get('username/:userName')
+  async checkUserNameExists(@Param('userName') userName: string) {
+    const user = await this.userUseCases.getUserByUserName(userName);
+
+    return {
+      isRegistered: user != null,
+    };
   }
 
   @Put()
@@ -27,5 +50,13 @@ export class UserController {
     const user = this.userFactoryService.getUserFromUpdateDto(updateUserDto);
 
     return this.userUseCases.updateUser(request.user.id, user);
+  }
+
+  @Put('username/:userName')
+  updateUserName(@Request() request, @Param('userName') userName: string) {
+    return this.userUseCases.updateUserName({
+      userId: request.user.id,
+      userName,
+    });
   }
 }

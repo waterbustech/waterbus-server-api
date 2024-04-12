@@ -9,18 +9,18 @@ import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from '../../core/entities/participant.entity';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
-import { UsersService } from '../users/users.service';
 import { Member } from '../../core/entities/member.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from '../../core/entities/message.entity';
 import { PaginationListQuery } from 'src/core/dtos';
+import { UserUseCases } from '../users/user.usecase';
 
 @Injectable()
 export class MeetingsUseCases {
   constructor(
     private meetingService: MeetingsService,
-    private userService: UsersService,
+    private userUseCases: UserUseCases,
     @InjectRepository(Participant)
     private participantsRepository: Repository<Participant>,
   ) {}
@@ -236,7 +236,7 @@ export class MeetingsUseCases {
       if (host.role != MemberRole.Host)
         throw new ForbiddenException('You not allow to add user');
 
-      const user = await this.userService.findOne({ id: userId });
+      const user = await this.userUseCases.getUserById(userId);
 
       if (!user) throw new NotFoundException('User not found');
 

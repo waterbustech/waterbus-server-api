@@ -14,10 +14,13 @@ import { LoginSocialDto } from 'src/core/dtos/auth';
 import { UserFactoryService } from '../users/user-factory.service';
 import { AuthUseCases } from 'src/features/auth/auth.usecase';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { LoginResponseType } from 'src/features/auth/types/login-response.type';
 import { AwsS3Service } from '../images/aws-s3/aws-s3.service';
+import { ApiKeyGuard } from 'src/utils/strategies/api-key.strategy';
 
+@ApiSecurity('api_key', ['api_key'])
+@UseGuards(ApiKeyGuard)
 @Controller({
   path: 'auth',
   version: '1',

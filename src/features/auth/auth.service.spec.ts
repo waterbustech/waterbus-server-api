@@ -62,7 +62,7 @@ describe('AuthService', () => {
         fullName: 'Kai Dao',
         userName: 'kaidao123',
         googleId: 'google123',
-        facebookId: 'facebook123',
+        githubId: 'facebook123',
         appleId: 'apple123',
         avatar: 'https://waterbus.cloud/assets/avatar/lambiengcode',
         createdAt: new Date(),

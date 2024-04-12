@@ -13,15 +13,23 @@ import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
 import { AwsS3Service } from '../images/aws-s3/aws-s3.service';
 import { AuthGrpcController } from './auth.proto.controller';
+import { EnvironmentConfigModule } from 'src/core/config/environment/environment.module';
+import { ApiKeyGuard } from 'src/utils/strategies/api-key.strategy';
 
 @Module({
-  imports: [UsersModule, JwtModule.register({}), SessionModule, PassportModule],
+  imports: [
+    UsersModule,
+    JwtModule.register({}),
+    SessionModule,
+    PassportModule,
+    EnvironmentConfigModule,
+  ],
   providers: [
     AuthUseCases,
     AuthService,
     IsExist,
     IsNotExist,
-    AuthService,
+    ApiKeyGuard,
     JwtStrategy,
     JwtRefreshStrategy,
     AnonymousStrategy,

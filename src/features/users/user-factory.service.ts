@@ -9,7 +9,7 @@ export class UserFactoryService {
     newUser.fullName = user.fullName;
     newUser.userName = '123'; // generate unique userName
     newUser.googleId = user.googleId;
-    newUser.facebookId = user.facebookId;
+    newUser.githubId = user.githubId;
     newUser.appleId = user.appleId;
 
     return newUser;

@@ -15,7 +15,7 @@ export class LoginSocialDto {
   @ApiProperty({ nullable: true, required: false })
   @IsString()
   @IsOptional()
-  facebookId: string;
+  githubId: string;
 
   @ApiProperty({ nullable: true, required: false })
   @IsString()

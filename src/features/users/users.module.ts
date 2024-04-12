@@ -5,10 +5,11 @@ import { UsersService } from './users.service';
 import { UserFactoryService } from './user-factory.service';
 import { UserUseCases } from './user.usecase';
 import { UserController } from './user.controller';
+import { TypesenseConfig } from 'src/core/config/typesense/typesense.config';
 
 @Module({
   imports: [TypeOrmModule.forFeature([User])],
-  providers: [UserFactoryService, UsersService, UserUseCases],
+  providers: [TypesenseConfig, UserFactoryService, UsersService, UserUseCases],
   exports: [UserFactoryService, UsersService, UserUseCases],
   controllers: [UserController],
 })

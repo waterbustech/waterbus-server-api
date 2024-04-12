@@ -12,6 +12,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from '../../utils/entity-helper';
 import { Participant } from './participant.entity';
 import { Message } from './message.entity';
+import { nanoid } from 'nanoid';
 
 @Entity({ name: 'users' })
 export class User extends EntityHelper {
@@ -31,7 +32,7 @@ export class User extends EntityHelper {
   googleId?: string;
 
   @Column({ type: String, unique: true, nullable: true })
-  facebookId?: string;
+  githubId?: string;
 
   @Column({ type: String, unique: true, nullable: true })
   appleId?: string;
@@ -60,19 +61,6 @@ export class User extends EntityHelper {
 
   @BeforeInsert()
   async generateUserName() {
-    // Convert full name to lowercase
-    const lowercaseName = this.fullName.toLowerCase();
-
-    // Remove spaces and non-ASCII characters from the name
-    const nameWithoutSpacesAndNonAscii = lowercaseName.replace(
-      /[\s\u0080-\uFFFF]/g,
-      '',
-    );
-
-    // Add a unique identifier to the name (e.g., timestamp)
-    const uniqueIdentifier = Date.now().toString();
-
-    // Combine the name and unique identifier to generate the username
-    this.userName = `${nameWithoutSpacesAndNonAscii}${uniqueIdentifier}`;
+    this.userName = nanoid(12);
   }
 }

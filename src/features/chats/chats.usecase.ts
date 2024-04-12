@@ -15,12 +15,13 @@ import { MemberStatus } from 'src/core/enums/member';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import { PaginationListQuery } from 'src/core/dtos';
 import { ChatGrpcClientService } from 'src/services/chat.proto.service';
+import { UserUseCases } from '../users/user.usecase';
 
 @Injectable()
 export class ChatsUseCases {
   constructor(
     private chatService: ChatsService,
-    private userService: UsersService,
+    private userUseCases: UserUseCases,
     private meetingsUsecases: MeetingsUseCases,
     private readonly chatGrpcClientService: ChatGrpcClientService,
     @InjectRepository(Message)
@@ -76,7 +77,7 @@ export class ChatsUseCases {
     data: string;
   }): Promise<Message> {
     try {
-      const user = await this.userService.findOne({ id: userId });
+      const user = await this.userUseCases.getUserById(userId);
 
       if (!user) throw new NotFoundException('User not found');
 
