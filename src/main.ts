@@ -43,7 +43,7 @@ async function bootstrap() {
     .addApiKey({
       type: 'apiKey',
       in: 'header',
-      name: 'api_key'
+      name: 'api_key',
     })
     .addBearerAuth()
     .build();
