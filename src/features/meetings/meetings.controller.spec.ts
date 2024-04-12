@@ -2,16 +2,16 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { MeetingsController } from './meetings.controller';
 import { MeetingsUseCases } from './meetings.usecase';
 import { MeetingFactoryService } from './meetings-factory.service';
-import { UsersService } from '../users/users.service';
 import { CreateMeetingDto, UpdateMeetingDto } from 'src/core/dtos';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Member } from '../../core/entities/member.entity';
+import { UserUseCases } from '../users/user.usecase';
 
 describe('MeetingsController', () => {
   let meetingsController: MeetingsController;
   let meetingsUseCases: MeetingsUseCases;
-  let userService: UsersService;
+  let userUseCases: UserUseCases;
   let meetingFactoryService: MeetingFactoryService;
 
   const mockMeetingsUseCases = {
@@ -20,8 +20,8 @@ describe('MeetingsController', () => {
     updateRoom: jest.fn(),
   };
 
-  const mockUserService = {
-    findOne: jest.fn(),
+  const mockUserUseCases = {
+    getUserById: jest.fn(),
   };
 
   const mockMeetingFactoryService = {
@@ -48,8 +48,8 @@ describe('MeetingsController', () => {
           useValue: mockMeetingsUseCases,
         },
         {
-          provide: UsersService,
-          useValue: mockUserService,
+          provide: UserUseCases,
+          useValue: mockUserUseCases,
         },
         {
           provide: MeetingFactoryService,
@@ -68,7 +68,7 @@ describe('MeetingsController', () => {
 
     meetingsController = module.get<MeetingsController>(MeetingsController);
     meetingsUseCases = module.get<MeetingsUseCases>(MeetingsUseCases);
-    userService = module.get<UsersService>(UsersService);
+    userUseCases = module.get<UserUseCases>(UserUseCases);
     meetingFactoryService = module.get<MeetingFactoryService>(
       MeetingFactoryService,
     );
@@ -102,7 +102,7 @@ describe('MeetingsController', () => {
       const mockRequest = { user: { id: 1 } };
       const mockMember = { user: mockUser, role: 0 };
 
-      mockUserService.findOne.mockResolvedValue(mockUser);
+      mockUserUseCases.getUserById.mockResolvedValue(mockUser);
       mockMeetingFactoryService.createNewRoom.mockReturnValue(mockRoom);
       mockMeetingsUseCases.createRoom.mockResolvedValue(mockRoom);
       mockMembersRepository.save.mockResolvedValue(mockMember);
@@ -115,9 +115,7 @@ describe('MeetingsController', () => {
 
       // Assert
       expect(result).toBe(mockRoom);
-      expect(mockUserService.findOne).toHaveBeenCalledWith({
-        id: mockRequest.user.id,
-      });
+      expect(mockUserUseCases.getUserById).toHaveBeenCalledWith(mockRequest.user.id);
       expect(mockMeetingFactoryService.createNewRoom).toHaveBeenCalledWith({
         room: mockCreateRoomDto,
         member: expect.any(Object),

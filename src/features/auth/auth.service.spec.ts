@@ -23,17 +23,23 @@ const mockSessionRepositoryFactory = jest.fn(() => ({
 
 describe('AuthService', () => {
   let authService: AuthService;
-  // let jwtService: JwtService;
-  let usersService: UsersService;
   let sessionService: SessionService;
-  // let configService: ConfigService;
+  let userService: UsersService;
+
+  const mockUserService = {
+    findOne: jest.fn(),
+    create: jest.fn(),
+  };
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         AuthService,
         JwtService,
-        UsersService,
+        {
+          provide: UsersService,
+          useValue: mockUserService,
+        },
         SessionService,
         ConfigService,
         {
@@ -48,10 +54,7 @@ describe('AuthService', () => {
     }).compile();
 
     authService = module.get<AuthService>(AuthService);
-    // jwtService = module.get<JwtService>(JwtService);
-    usersService = module.get<UsersService>(UsersService);
     sessionService = module.get<SessionService>(SessionService);
-    // configService = module.get<ConfigService>(ConfigService);
   });
 
   describe('loginWithSocial', () => {
@@ -101,7 +104,7 @@ describe('AuthService', () => {
       const mTokenExpires = Date.now() + 3600; // Provide the token expiration time
 
       // Mock service methods
-      jest.spyOn(usersService, 'create').mockResolvedValueOnce(mUser);
+      mockUserService.create.mockResolvedValueOnce(mUser);
       jest.spyOn(sessionService, 'create').mockResolvedValueOnce(mSession);
       jest.spyOn(authService, 'getTokensData').mockResolvedValueOnce({
         token: 'mockToken',
