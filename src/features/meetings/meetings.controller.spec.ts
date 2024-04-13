@@ -115,7 +115,9 @@ describe('MeetingsController', () => {
 
       // Assert
       expect(result).toBe(mockRoom);
-      expect(mockUserUseCases.getUserById).toHaveBeenCalledWith(mockRequest.user.id);
+      expect(mockUserUseCases.getUserById).toHaveBeenCalledWith(
+        mockRequest.user.id,
+      );
       expect(mockMeetingFactoryService.createNewRoom).toHaveBeenCalledWith({
         room: mockCreateRoomDto,
         member: expect.any(Object),
