@@ -6,6 +6,7 @@ import { NullableType } from '../../utils/types/nullable.type';
 import { DeepPartial, Repository } from 'typeorm';
 import { Client } from 'typesense';
 import { TypesenseConfig } from 'src/core/config/typesense/typesense.config';
+import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
 export class UsersService {
@@ -83,10 +84,15 @@ export class UsersService {
     }
   }
 
-  async searchUsers(query: string): Promise<any> {
+  async searchUsers(
+    query: string,
+    pagination: PaginationListQuery,
+  ): Promise<any> {
     let searchParameters = {
       q: query,
       query_by: ['fullName', 'userName'],
+      page: pagination.page,
+      per_page: pagination.perPage,
     };
 
     return this.typesenseClient

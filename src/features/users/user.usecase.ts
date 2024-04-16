@@ -5,13 +5,14 @@ import {
 } from '@nestjs/common';
 import { User } from '../../core/entities';
 import { UsersService } from './users.service';
+import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
 export class UserUseCases {
   constructor(private userService: UsersService) {}
 
-  async searchUsers(q: string): Promise<any> {
-    return await this.userService.searchUsers(q);
+  async searchUsers(q: string, pagination: PaginationListQuery): Promise<any> {
+    return await this.userService.searchUsers(q, pagination);
   }
 
   async getUserById(userId: number): Promise<User | null> {

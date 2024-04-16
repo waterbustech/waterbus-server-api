@@ -9,12 +9,13 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
-import { UpdateUserInfoDto } from 'src/core/dtos';
+import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
+import { PaginationListQuery, UpdateUserInfoDto } from 'src/core/dtos';
 import { UserFactoryService } from './user-factory.service';
 import { UserUseCases } from './user.usecase';
 
 @ApiBearerAuth()
+@ApiSecurity('api_key', ['api_key'])
 @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'users',
@@ -27,8 +28,11 @@ export class UserController {
   ) {}
 
   @Get('search')
-  async searchUsers(@Query('q') query: string) {
-    return this.userUseCases.searchUsers(query);
+  async searchUsers(
+    @Query('q') query: string,
+    @Query() pagination: PaginationListQuery,
+  ) {
+    return this.userUseCases.searchUsers(query, pagination);
   }
 
   @Get()

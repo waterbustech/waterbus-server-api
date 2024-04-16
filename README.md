@@ -82,9 +82,10 @@
 
 Before getting started, ensure you have the following software installed:
 
-- `Node.js`
-- `NestJS CLI`
+- `Node.js`: (>= 18)
+- `NestJS CLI`: (>= 9.1.7)
 - `Postgres`
+- `Typesense`: (26.0)
 
 - Clone repository
 

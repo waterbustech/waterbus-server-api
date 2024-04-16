@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { MeetingsService } from './meetings.service';
+import { MeetingService } from './meetings.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from '../../core/entities/participant.entity';
@@ -15,14 +15,17 @@ import { Repository } from 'typeorm';
 import { Message } from '../../core/entities/message.entity';
 import { PaginationListQuery } from 'src/core/dtos';
 import { UserUseCases } from '../users/user.usecase';
+import { CCU } from 'src/core/entities/ccu.entity';
+import { ParticipantService } from './participant.service';
 
 @Injectable()
 export class MeetingsUseCases {
   constructor(
-    private meetingService: MeetingsService,
+    private meetingService: MeetingService,
     private userUseCases: UserUseCases,
-    @InjectRepository(Participant)
-    private participantsRepository: Repository<Participant>,
+    private participantService: ParticipantService,
+    @InjectRepository(CCU)
+    private ccuRepository: Repository<CCU>,
   ) {}
 
   async getRoomsByUserId({
@@ -192,14 +195,31 @@ export class MeetingsUseCases {
     }
   }
 
-  async getParticipantById(participantId: number) {
-    const participant = await this.participantsRepository.findOne({
-      where: {
-        id: participantId,
-      },
+  async getParticipantById(participantId: number, socketId: string) {
+    const participant = await this.participantService.findOne({
+      id: participantId,
     });
 
     if (!participant) throw new NotFoundException('Not exists participant');
+
+    if (!participant.ccu && socketId != 'WSid') {
+      const ccu = await this.ccuRepository.findOne({
+        where: {
+          socketId: socketId,
+        },
+      });
+
+      if (!ccu) throw new NotFoundException('Not exists CCU');
+
+      participant.ccu = ccu;
+
+      const participantUpdated = await this.participantService.update(
+        participant.id,
+        participant,
+      );
+
+      return participantUpdated;
+    }
 
     return participant;
   }
@@ -436,9 +456,9 @@ export class MeetingsUseCases {
       if (indexOfParticipant == -1)
         throw new NotFoundException('Participant Not Found');
 
-      await this.participantsRepository.remove(
+      await this.participantService.remove([
         existsRoom.participants[indexOfParticipant],
-      );
+      ]);
 
       existsRoom.participants.splice(indexOfParticipant, 1);
 

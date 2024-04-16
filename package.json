@@ -55,7 +55,7 @@
     "swagger-ui-express": "^5.0.0",
     "typeorm": "^0.3.17",
     "typesense": "^1.8.2",
-    "waterbus-proto": "^1.0.9"
+    "waterbus-proto": "^1.1.3"
   },
   "devDependencies": {
     "@nestjs/cli": "^9.0.0",

@@ -6,11 +6,13 @@ import {
   Column,
   ManyToOne,
   Index,
+  OneToOne,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '..';
 import { Status } from '../enums';
 import { Meeting } from './meeting.entity';
+import { CCU } from './ccu.entity';
 
 @Entity({ name: 'participants' })
 export class Participant extends EntityHelper {
@@ -26,6 +28,13 @@ export class Participant extends EntityHelper {
 
   @ManyToOne(() => Meeting, (meeting) => meeting.participants)
   meeting: Meeting;
+
+  @ManyToOne(() => CCU, (ccu) => ccu.participant, {
+    eager: true,
+    cascade: true,
+  })
+  @Index()
+  ccu: CCU;
 
   @Column({
     type: 'enum',

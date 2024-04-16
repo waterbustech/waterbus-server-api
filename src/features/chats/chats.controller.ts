@@ -11,11 +11,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { ChatsUseCases } from './chats.usecase';
 import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 
 @ApiBearerAuth()
+@ApiSecurity('api_key', ['api_key'])
 @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'chats',

@@ -19,4 +19,16 @@ export class PaginationListQuery implements IPagination {
   @IsNumber()
   @IsOptional()
   readonly limit: number = 5;
+
+  @ApiProperty({ required: false })
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  @IsOptional()
+  readonly page: number = 1;
+
+  @ApiProperty({ required: false })
+  @Transform(({ value }) => parseInt(value))
+  @IsNumber()
+  @IsOptional()
+  readonly perPage: number = 10;
 }

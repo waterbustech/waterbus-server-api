@@ -9,6 +9,10 @@ export class EnvironmentConfigService {
     return Number(this.configService.get<number>('APP_PORT'));
   }
 
+  getJwtSecret(): string {
+    return this.configService.get<string>('AUTH_JWT_SECRET');
+  }
+
   getApiKey(): string {
     return this.configService.get<string>('API_KEY');
   }

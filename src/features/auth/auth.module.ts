@@ -15,9 +15,14 @@ import { AwsS3Service } from '../images/aws-s3/aws-s3.service';
 import { AuthGrpcController } from './auth.proto.controller';
 import { EnvironmentConfigModule } from 'src/core/config/environment/environment.module';
 import { ApiKeyGuard } from 'src/utils/strategies/api-key.strategy';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { CCU } from 'src/core/entities/ccu.entity';
+import { CCUService } from './ccu.service';
+import { Participant } from 'src/core/entities/participant.entity';
 
 @Module({
   imports: [
+    TypeOrmModule.forFeature([CCU, Participant]),
     UsersModule,
     JwtModule.register({}),
     SessionModule,
@@ -34,6 +39,7 @@ import { ApiKeyGuard } from 'src/utils/strategies/api-key.strategy';
     JwtRefreshStrategy,
     AnonymousStrategy,
     AwsS3Service,
+    CCUService,
   ],
   exports: [AuthUseCases],
   controllers: [AuthController, AuthGrpcController],

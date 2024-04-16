@@ -1,5 +1,5 @@
 import { Module } from '@nestjs/common';
-import { MeetingsService } from './meetings.service';
+import { MeetingService } from './meetings.service';
 import { MeetingsController } from './meetings.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Meeting } from 'src/core/entities/meeting.entity';
@@ -10,14 +10,21 @@ import { Participant } from 'src/core/entities/participant.entity';
 import { Member } from 'src/core/entities/member.entity';
 import { MeetingGrpcController } from './meeting.proto.controller';
 import { UsersModule } from '../users/users.module';
+import { CCU } from 'src/core/entities/ccu.entity';
+import { ParticipantService } from './participant.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Meeting, User, Participant, Member]),
+    TypeOrmModule.forFeature([Meeting, User, Participant, Member, CCU]),
     UsersModule,
   ],
   controllers: [MeetingsController, MeetingGrpcController],
-  providers: [MeetingsService, MeetingsUseCases, MeetingFactoryService],
-  exports: [MeetingsService, MeetingsUseCases, MeetingFactoryService],
+  providers: [
+    MeetingService,
+    MeetingsUseCases,
+    MeetingFactoryService,
+    ParticipantService,
+  ],
+  exports: [MeetingService, MeetingsUseCases, MeetingFactoryService],
 })
 export class MeetingsModule {}

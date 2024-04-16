@@ -111,7 +111,7 @@ export class ChatGrpcClientService implements OnModuleInit {
       });
     try {
       return await lastValueFrom(
-        dataSubject.pipe(map((response) => response.isSucceed)),
+        dataSubject.pipe(map((response) => response.succeed)),
       );
     } catch (error) {
       this.logger.error(error.toString());
@@ -150,7 +150,7 @@ export class ChatGrpcClientService implements OnModuleInit {
       });
     try {
       return await lastValueFrom(
-        dataSubject.pipe(map((response) => response.isSucceed)),
+        dataSubject.pipe(map((response) => response.succeed)),
       );
     } catch (error) {
       this.logger.error(error.toString());
@@ -189,7 +189,7 @@ export class ChatGrpcClientService implements OnModuleInit {
       });
     try {
       return await lastValueFrom(
-        dataSubject.pipe(map((response) => response.isSucceed)),
+        dataSubject.pipe(map((response) => response.succeed)),
       );
     } catch (error) {
       this.logger.error(error.toString());

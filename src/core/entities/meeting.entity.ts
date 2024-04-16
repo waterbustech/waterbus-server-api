@@ -18,6 +18,7 @@ import { Transform } from 'class-transformer';
 import { Message } from './message.entity';
 import { Member } from './member.entity';
 import { customAlphabet } from 'nanoid';
+import { MeetingStatus } from '../enums/meeting';
 
 @Entity({ name: 'meetings' })
 export class Meeting extends EntityHelper {
@@ -53,6 +54,13 @@ export class Meeting extends EntityHelper {
 
   @OneToMany(() => Message, (message) => message.meeting)
   message: Message;
+
+  @Column({
+    type: 'enum',
+    enum: MeetingStatus,
+    default: MeetingStatus.Active,
+  })
+  status: MeetingStatus;
 
   @BeforeInsert()
   @BeforeUpdate()

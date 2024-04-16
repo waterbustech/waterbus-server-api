@@ -1,11 +1,12 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MeetingsService } from './meetings.service';
+import { MeetingService } from './meetings.service';
 import { Repository } from 'typeorm';
 import { Meeting } from '../../core/entities/meeting.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';
+import { MeetingStatus } from 'src/core/enums/meeting';
 
 describe('MeetingsService', () => {
-  let meetingsService: MeetingsService;
+  let meetingsService: MeetingService;
   let meetingsRepository: Repository<Meeting>;
 
   const mockMeetingRepository = {
@@ -17,7 +18,7 @@ describe('MeetingsService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [
-        MeetingsService,
+        MeetingService,
         {
           provide: getRepositoryToken(Meeting),
           useValue: mockMeetingRepository,
@@ -25,7 +26,7 @@ describe('MeetingsService', () => {
       ],
     }).compile();
 
-    meetingsService = module.get<MeetingsService>(MeetingsService);
+    meetingsService = module.get<MeetingService>(MeetingService);
     meetingsRepository = module.get<Repository<Meeting>>(
       getRepositoryToken(Meeting),
     );
@@ -55,6 +56,7 @@ describe('MeetingsService', () => {
         softRemove: jest.fn(),
         recover: jest.fn(),
         reload: jest.fn(),
+        status: MeetingStatus.Active,
       }; // Mock your meeting object here
 
       mockMeetingRepository.create.mockReturnValue(mockMeeting);

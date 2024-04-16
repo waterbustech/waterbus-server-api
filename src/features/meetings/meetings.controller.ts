@@ -20,7 +20,7 @@ import {
   PaginationListQuery,
 } from '../../core/dtos';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
@@ -29,6 +29,7 @@ import { MemberRole, MemberStatus } from '../../core/enums/member';
 import { UserUseCases } from '../users/user.usecase';
 
 @ApiBearerAuth()
+@ApiSecurity('api_key', ['api_key'])
 @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'meetings',

@@ -8,7 +8,7 @@ import { MemberStatus } from 'src/core/enums/member';
 import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
-export class MeetingsService {
+export class MeetingService {
   constructor(
     @InjectRepository(Meeting)
     private meetingsRepository: Repository<Meeting>,

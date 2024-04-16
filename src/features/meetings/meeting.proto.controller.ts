@@ -18,11 +18,11 @@ export class MeetingGrpcController implements meeting.MeetingService {
     request: meeting.GetParticipantRequest,
   ): Observable<meeting.GetParticipantResponse> {
     const participantId = Number(request.participantId);
-    console.log(`participantId: ${participantId}`);
+    const socketId = request.socketId;
     const participant$ = new Observable<meeting.GetParticipantResponse>(
       (observer) => {
         this.meetingsUseCases
-          .getParticipantById(participantId)
+          .getParticipantById(participantId, socketId)
           .then((participant) => {
             const response: meeting.GetParticipantResponse = {
               id: participant.id,
@@ -31,6 +31,11 @@ export class MeetingGrpcController implements meeting.MeetingService {
                 userName: participant.user.userName,
                 fullName: participant.user.fullName,
                 avatar: participant.user.avatar,
+              },
+              ccu: {
+                id: participant.ccu.id,
+                podName: participant.ccu.podName,
+                socketId: participant.ccu.socketId,
               },
             };
 
