@@ -12,7 +12,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
-import { ChatsUseCases } from './chats.usecase';
+import { ChatUseCases } from './chat.usecase';
 import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 
 @ApiBearerAuth()
@@ -22,8 +22,8 @@ import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
   path: 'chats',
   version: '1',
 })
-export class ChatsController {
-  constructor(private chatsUseCases: ChatsUseCases) {}
+export class ChatController {
+  constructor(private chatUseCases: ChatUseCases) {}
 
   @Get(':meetingId')
   async getMessagesByMeeting(
@@ -31,7 +31,7 @@ export class ChatsController {
     @Param('meetingId') meetingId: number,
     @Query() query: PaginationListQuery,
   ) {
-    return this.chatsUseCases.getMessagesByMeeting({
+    return this.chatUseCases.getMessagesByMeeting({
       userId: request.user.id,
       meetingId,
       query,
@@ -44,7 +44,7 @@ export class ChatsController {
     @Param('meetingId') meetingId: number,
     @Body() sendMessageDto: SendMessageDto,
   ) {
-    return this.chatsUseCases.createMessage({
+    return this.chatUseCases.createMessage({
       userId: request.user.id,
       meetingId,
       data: sendMessageDto.data,
@@ -57,7 +57,7 @@ export class ChatsController {
     @Param('messageId') messageId: number,
     @Body() editMessageDto: SendMessageDto,
   ) {
-    return this.chatsUseCases.updateMessage({
+    return this.chatUseCases.updateMessage({
       userId: request.user.id,
       messageId,
       data: editMessageDto.data,
@@ -69,7 +69,7 @@ export class ChatsController {
     @Request() request,
     @Param('messageId') messageId: number,
   ) {
-    return this.chatsUseCases.deleteMessage({
+    return this.chatUseCases.deleteMessage({
       userId: request.user.id,
       messageId,
     });
@@ -80,7 +80,7 @@ export class ChatsController {
     @Request() request,
     @Param('meetingId') meetingId: number,
   ) {
-    return this.chatsUseCases.deleteConversation({
+    return this.chatUseCases.deleteConversation({
       userId: request.user.id,
       meetingId,
     });

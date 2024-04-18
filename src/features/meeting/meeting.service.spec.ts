@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MeetingService } from './meetings.service';
+import { MeetingService } from './meeting.service';
 import { Repository } from 'typeorm';
 import { Meeting } from '../../core/entities/meeting.entity';
 import { getRepositoryToken } from '@nestjs/typeorm';

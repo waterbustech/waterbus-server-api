@@ -2,7 +2,7 @@ import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { Test, TestingModule } from '@nestjs/testing';
 import { AuthService } from './auth.service';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { SessionService } from '../session/session.service';
 import { User } from '../../core/entities/user.entity';
 import { Session } from '../../core/entities/session.entity';
@@ -24,7 +24,7 @@ const mockSessionRepositoryFactory = jest.fn(() => ({
 describe('AuthService', () => {
   let authService: AuthService;
   let sessionService: SessionService;
-  let userService: UsersService;
+  let userService: UserService;
 
   const mockUserService = {
     findOne: jest.fn(),
@@ -37,7 +37,7 @@ describe('AuthService', () => {
         AuthService,
         JwtService,
         {
-          provide: UsersService,
+          provide: UserService,
           useValue: mockUserService,
         },
         SessionService,

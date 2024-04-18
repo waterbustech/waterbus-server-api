@@ -1,16 +1,16 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { MeetingsController } from './meetings.controller';
-import { MeetingsUseCases } from './meetings.usecase';
-import { MeetingFactoryService } from './meetings-factory.service';
+import { MeetingController } from './meeting.controller';
+import { MeetingUseCases } from './meeting.usecase';
+import { MeetingFactoryService } from './meeting-factory.service';
 import { CreateMeetingDto, UpdateMeetingDto } from 'src/core/dtos';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Member } from '../../core/entities/member.entity';
-import { UserUseCases } from '../users/user.usecase';
+import { UserUseCases } from '../user/user.usecase';
 
 describe('MeetingsController', () => {
-  let meetingsController: MeetingsController;
-  let meetingsUseCases: MeetingsUseCases;
+  let meetingsController: MeetingController;
+  let meetingsUseCases: MeetingUseCases;
   let userUseCases: UserUseCases;
   let meetingFactoryService: MeetingFactoryService;
 
@@ -41,10 +41,10 @@ describe('MeetingsController', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [MeetingsController],
+      controllers: [MeetingController],
       providers: [
         {
-          provide: MeetingsUseCases,
+          provide: MeetingUseCases,
           useValue: mockMeetingsUseCases,
         },
         {
@@ -66,8 +66,8 @@ describe('MeetingsController', () => {
       ],
     }).compile();
 
-    meetingsController = module.get<MeetingsController>(MeetingsController);
-    meetingsUseCases = module.get<MeetingsUseCases>(MeetingsUseCases);
+    meetingsController = module.get<MeetingController>(MeetingController);
+    meetingsUseCases = module.get<MeetingUseCases>(MeetingUseCases);
     userUseCases = module.get<UserUseCases>(UserUseCases);
     meetingFactoryService = module.get<MeetingFactoryService>(
       MeetingFactoryService,

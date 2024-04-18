@@ -11,13 +11,13 @@ import { PaginationListQuery } from 'src/core/dtos';
 export class MeetingService {
   constructor(
     @InjectRepository(Meeting)
-    private meetingsRepository: Repository<Meeting>,
+    private meetingRepository: Repository<Meeting>,
   ) {}
 
   async create(meeting: Meeting): Promise<Meeting> {
     try {
-      const newMeeting = await this.meetingsRepository.save(
-        this.meetingsRepository.create(meeting),
+      const newMeeting = await this.meetingRepository.save(
+        this.meetingRepository.create(meeting),
       );
 
       return newMeeting;
@@ -35,7 +35,7 @@ export class MeetingService {
     status: MemberStatus;
     query: PaginationListQuery;
   }): Promise<NullableType<Meeting[]>> {
-    return this.meetingsRepository
+    return this.meetingRepository
       .createQueryBuilder('meeting')
       .innerJoinAndSelect('meeting.members', 'member')
       .leftJoinAndSelect('meeting.participants', 'participants')
@@ -53,14 +53,14 @@ export class MeetingService {
   findOne(
     fields: EntityCondition<Meeting> | Array<EntityCondition<Meeting>>,
   ): Promise<NullableType<Meeting>> {
-    return this.meetingsRepository.findOne({
+    return this.meetingRepository.findOne({
       where: fields,
     });
   }
 
   update(id: Meeting['id'], payload: DeepPartial<Meeting>): Promise<Meeting> {
-    return this.meetingsRepository.save(
-      this.meetingsRepository.create({
+    return this.meetingRepository.save(
+      this.meetingRepository.create({
         id,
         ...Object.fromEntries(
           Object.entries(payload).filter(([_, v]) => v != null),

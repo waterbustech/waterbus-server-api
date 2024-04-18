@@ -4,12 +4,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { User } from '../../core/entities';
-import { UsersService } from './users.service';
+import { UserService } from './user.service';
 import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
 export class UserUseCases {
-  constructor(private userService: UsersService) {}
+  constructor(private userService: UserService) {}
 
   async searchUsers(q: string, pagination: PaginationListQuery): Promise<any> {
     return await this.userService.searchUsers(q, pagination);

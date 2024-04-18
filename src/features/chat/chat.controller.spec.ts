@@ -1,19 +1,19 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChatsController } from './chats.controller';
-import { ChatsUseCases } from './chats.usecase';
-import { UserUseCases } from '../users/user.usecase';
+import { ChatController } from './chat.controller';
+import { ChatUseCases } from './chat.usecase';
+import { UserUseCases } from '../user/user.usecase';
 
 describe('ChatsController', () => {
-  let controller: ChatsController;
-  let mockChatsUseCases: ChatsUseCases;
+  let controller: ChatController;
+  let mockChatsUseCases: ChatUseCases;
   let mockUserUseCases: UserUseCases;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      controllers: [ChatsController],
+      controllers: [ChatController],
       providers: [
         {
-          provide: ChatsUseCases,
+          provide: ChatUseCases,
           useValue: mockChatsUseCases,
         },
         {
@@ -23,7 +23,7 @@ describe('ChatsController', () => {
       ],
     }).compile();
 
-    controller = module.get<ChatsController>(ChatsController);
+    controller = module.get<ChatController>(ChatController);
   });
 
   it('should be defined', () => {

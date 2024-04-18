@@ -1,12 +1,12 @@
 import { Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { meeting } from 'waterbus-proto';
-import { MeetingsUseCases } from './meetings.usecase';
+import { MeetingUseCases } from './meeting.usecase';
 import { Observable, catchError, throwError } from 'rxjs';
 
 @Controller()
 export class MeetingGrpcController implements meeting.MeetingService {
-  constructor(private meetingsUseCases: MeetingsUseCases) {}
+  constructor(private meetingsUseCases: MeetingUseCases) {}
 
   @GrpcMethod('MeetingService', 'ping')
   ping(payload: any) {

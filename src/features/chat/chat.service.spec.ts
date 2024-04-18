@@ -1,5 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { ChatsService } from './chats.service';
+import { ChatsService } from './chat.service';
 import { getRepositoryToken } from '@nestjs/typeorm';
 import { Message } from 'src/core/entities/message.entity';
 

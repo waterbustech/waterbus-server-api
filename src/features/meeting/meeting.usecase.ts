@@ -4,7 +4,7 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { MeetingService } from './meetings.service';
+import { MeetingService } from './meeting.service';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import bcrypt from 'bcryptjs';
 import { Participant } from '../../core/entities/participant.entity';
@@ -14,12 +14,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Message } from '../../core/entities/message.entity';
 import { PaginationListQuery } from 'src/core/dtos';
-import { UserUseCases } from '../users/user.usecase';
+import { UserUseCases } from '../user/user.usecase';
 import { CCU } from 'src/core/entities/ccu.entity';
 import { ParticipantService } from './participant.service';
 
 @Injectable()
-export class MeetingsUseCases {
+export class MeetingUseCases {
   constructor(
     private meetingService: MeetingService,
     private userUseCases: UserUseCases,

@@ -10,8 +10,8 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
-import { MeetingsUseCases } from './meetings.usecase';
-import { MeetingFactoryService } from './meetings-factory.service';
+import { MeetingUseCases } from './meeting.usecase';
+import { MeetingFactoryService } from './meeting-factory.service';
 import {
   CreateMeetingDto,
   JoinMeetingDto,
@@ -26,7 +26,7 @@ import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
 import { Member } from '../../core/entities/member.entity';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
-import { UserUseCases } from '../users/user.usecase';
+import { UserUseCases } from '../user/user.usecase';
 
 @ApiBearerAuth()
 @ApiSecurity('api_key', ['api_key'])
@@ -35,20 +35,20 @@ import { UserUseCases } from '../users/user.usecase';
   path: 'meetings',
   version: '1',
 })
-export class MeetingsController {
+export class MeetingController {
   constructor(
-    private meetingsUseCases: MeetingsUseCases,
+    private meetingUseCases: MeetingUseCases,
     private userUseCases: UserUseCases,
     private meetingFactoryService: MeetingFactoryService,
     @InjectRepository(Member)
-    private membersRepository: Repository<Member>,
+    private memberRepository: Repository<Member>,
     @InjectRepository(Participant)
-    private participantsRepository: Repository<Participant>,
+    private participantRepository: Repository<Participant>,
   ) {}
 
   @Get(':code')
   async getRoomByCode(@Param('code') code: number) {
-    return this.meetingsUseCases.getRoomByCode(code);
+    return this.meetingUseCases.getRoomByCode(code);
   }
 
   @Get('/conversations/:status')
@@ -57,7 +57,7 @@ export class MeetingsController {
     @Param('status') status: MemberStatus,
     @Query() query: PaginationListQuery,
   ) {
-    return this.meetingsUseCases.getRoomsByUserId({
+    return this.meetingUseCases.getRoomsByUserId({
       userId: request.user.id,
       status,
       query,
@@ -73,8 +73,8 @@ export class MeetingsController {
     member.role = MemberRole.Host;
     member.status = MemberStatus.Joined;
 
-    const memberSaved = await this.membersRepository.save(
-      this.membersRepository.create(member),
+    const memberSaved = await this.memberRepository.save(
+      this.memberRepository.create(member),
     );
 
     const room = this.meetingFactoryService.createNewRoom({
@@ -82,14 +82,14 @@ export class MeetingsController {
       member: memberSaved,
     });
 
-    return this.meetingsUseCases.createRoom(room);
+    return this.meetingUseCases.createRoom(room);
   }
 
   @Put()
   updateRoom(@Request() request, @Body() updateRoomDto: UpdateMeetingDto) {
     const room = this.meetingFactoryService.getRoomFromUpdateDto(updateRoomDto);
 
-    return this.meetingsUseCases.updateRoom(request.user.id, room);
+    return this.meetingUseCases.updateRoom(request.user.id, room);
   }
 
   @Post('/members/:code')
@@ -98,7 +98,7 @@ export class MeetingsController {
     @Param('code') code: number,
     @Body() addUserDto: AddUserDto,
   ) {
-    return this.meetingsUseCases.addRoomMember({
+    return this.meetingUseCases.addRoomMember({
       code: code,
       hostId: request.user.id,
       userId: addUserDto.userId,
@@ -111,7 +111,7 @@ export class MeetingsController {
     @Param('code') code: number,
     @Body() addUserDto: AddUserDto,
   ) {
-    return this.meetingsUseCases.removeRoomMember({
+    return this.meetingUseCases.removeRoomMember({
       code: code,
       hostId: request.user.id,
       userId: addUserDto.userId,
@@ -120,7 +120,7 @@ export class MeetingsController {
 
   @Post('/members/accept/:code')
   async acceptRoomInvitation(@Request() request, @Param('code') code: number) {
-    return this.meetingsUseCases.acceptRoomInvitation({
+    return this.meetingUseCases.acceptRoomInvitation({
       code: code,
       userId: request.user.id,
     });
@@ -143,32 +143,32 @@ export class MeetingsController {
     const attendee = new Participant();
     attendee.user = user;
 
-    const participant = await this.participantsRepository.save(
-      this.participantsRepository.create(attendee),
+    const participant = await this.participantRepository.save(
+      this.participantRepository.create(attendee),
     );
 
-    return this.meetingsUseCases.joinRoomWithPassword(room, participant);
+    return this.meetingUseCases.joinRoomWithPassword(room, participant);
   }
 
   @Post('/join/:code')
   async joinRoomForMember(@Param('code') code: number, @Request() request) {
     const user = await this.userUseCases.getUserById(request.user.id);
 
-    const room = await this.meetingsUseCases.getRoomByCode(code);
+    const room = await this.meetingUseCases.getRoomByCode(code);
 
     const attendee = new Participant();
     attendee.user = user;
 
-    const participant = await this.participantsRepository.save(
-      this.participantsRepository.create(attendee),
+    const participant = await this.participantRepository.save(
+      this.participantRepository.create(attendee),
     );
 
-    return this.meetingsUseCases.joinRoomForMember(room, participant, user.id);
+    return this.meetingUseCases.joinRoomForMember(room, participant, user.id);
   }
 
   @Delete(':code')
   async leaveRoom(@Request() request, @Param('code') code: number) {
     const userId = request.user.id;
-    return this.meetingsUseCases.leaveRoom({ code, userId });
+    return this.meetingUseCases.leaveRoom({ code, userId });
   }
 }

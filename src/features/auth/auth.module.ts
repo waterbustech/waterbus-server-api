@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { AuthUseCases } from './auth.usecase';
-import { UsersModule } from '../users/users.module';
+import { UserModule } from '../user/user.module';
 import { AuthService } from './auth.service';
 import { JwtStrategy } from 'src/utils/strategies/jwt.strategy';
 import { JwtRefreshStrategy } from 'src/utils/strategies/jwt-refresh.strategy';
@@ -11,7 +11,7 @@ import { JwtModule } from '@nestjs/jwt';
 import { SessionModule } from '../session/session.module';
 import { PassportModule } from '@nestjs/passport';
 import { AuthController } from './auth.controller';
-import { AwsS3Service } from '../images/aws-s3/aws-s3.service';
+import { AwsS3Service } from '../image/aws-s3/aws-s3.service';
 import { AuthGrpcController } from './auth.proto.controller';
 import { EnvironmentConfigModule } from 'src/core/config/environment/environment.module';
 import { ApiKeyGuard } from 'src/utils/strategies/api-key.strategy';
@@ -23,7 +23,7 @@ import { Participant } from 'src/core/entities/participant.entity';
 @Module({
   imports: [
     TypeOrmModule.forFeature([CCU, Participant]),
-    UsersModule,
+    UserModule,
     JwtModule.register({}),
     SessionModule,
     PassportModule,

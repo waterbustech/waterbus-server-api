@@ -4,25 +4,25 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ChatsService } from './chats.service';
+import { ChatsService } from './chat.service';
 import { Message } from 'src/core/entities/message.entity';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Status } from 'src/core/enums';
-import { MeetingsUseCases } from '../meetings/meetings.usecase';
+import { MeetingUseCases } from '../meeting/meeting.usecase';
 import { MemberStatus } from 'src/core/enums/member';
 import { Meeting } from 'src/core/entities/meeting.entity';
 import { PaginationListQuery } from 'src/core/dtos';
 import { ChatGrpcClientService } from 'src/services/chat.proto.service';
-import { UserUseCases } from '../users/user.usecase';
+import { UserUseCases } from '../user/user.usecase';
 
 @Injectable()
-export class ChatsUseCases {
+export class ChatUseCases {
   constructor(
     private chatService: ChatsService,
     private userUseCases: UserUseCases,
-    private meetingsUsecases: MeetingsUseCases,
+    private meetingUsecases: MeetingUseCases,
     private readonly chatGrpcClientService: ChatGrpcClientService,
     @InjectRepository(Message)
     private messageRepository: Repository<Message>,
@@ -38,7 +38,7 @@ export class ChatsUseCases {
     query: PaginationListQuery;
   }): Promise<Message[]> {
     try {
-      const meeting = await this.meetingsUsecases.getRoomById(meetingId);
+      const meeting = await this.meetingUsecases.getRoomById(meetingId);
 
       const indexOfUser = meeting.members.findIndex(
         (member) =>
@@ -81,7 +81,7 @@ export class ChatsUseCases {
 
       if (!user) throw new NotFoundException('User not found');
 
-      const meeting = await this.meetingsUsecases.getRoomById(meetingId);
+      const meeting = await this.meetingUsecases.getRoomById(meetingId);
 
       const message = new Message();
       message.data = data;
@@ -93,7 +93,7 @@ export class ChatsUseCases {
         this.messageRepository.create(message),
       );
 
-      await this.meetingsUsecases.updateLatestMessage(createdMessage);
+      await this.meetingUsecases.updateLatestMessage(createdMessage);
 
       this.chatGrpcClientService.sendMessage(createdMessage);
 
@@ -187,7 +187,7 @@ export class ChatsUseCases {
     userId: number;
     meetingId: number;
   }): Promise<Meeting> {
-    return this.meetingsUsecases.updateDeletedAtForMember({
+    return this.meetingUsecases.updateDeletedAtForMember({
       userId,
       meetingId,
     });

@@ -3,9 +3,9 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { TypeOrmConfigService } from './core/database/typeorm-config.service';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { AuthModule } from './features/auth/auth.module';
-import { UsersModule } from './features/users/users.module';
-import { MeetingsModule } from './features/meetings/meetings.module';
-import { ChatsModule } from './features/chats/chats.module';
+import { UserModule } from './features/user/user.module';
+import { MeetingModule } from './features/meeting/meeting.module';
+import { ChatModule } from './features/chat/chat.module';
 import { EnvironmentConfigModule } from './core/config/environment/environment.module';
 
 @Module({
@@ -18,9 +18,9 @@ import { EnvironmentConfigModule } from './core/config/environment/environment.m
       },
     }),
     AuthModule,
-    UsersModule,
-    MeetingsModule,
-    ChatsModule,
+    UserModule,
+    MeetingModule,
+    ChatModule,
   ],
 })
 export class AppModule {}

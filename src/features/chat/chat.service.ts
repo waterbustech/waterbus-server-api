@@ -10,13 +10,13 @@ import { DeepPartial, Repository } from 'typeorm';
 export class ChatsService {
   constructor(
     @InjectRepository(Message)
-    private chatsRepository: Repository<Message>,
+    private chatRepository: Repository<Message>,
   ) {}
 
   async create(message: Message): Promise<Message> {
     try {
-      const messageCreated = await this.chatsRepository.save(
-        this.chatsRepository.create(message),
+      const messageCreated = await this.chatRepository.save(
+        this.chatRepository.create(message),
       );
 
       return messageCreated;
@@ -34,7 +34,7 @@ export class ChatsService {
     deletedAt: Date;
     query: PaginationListQuery;
   }): Promise<NullableType<Message[]>> {
-    return this.chatsRepository
+    return this.chatRepository
       .createQueryBuilder('message')
       .innerJoinAndSelect('message.meeting', 'meeting')
       .innerJoinAndSelect('message.createdBy', 'createdBy')
@@ -49,14 +49,14 @@ export class ChatsService {
   findOne(
     fields: EntityCondition<Message> | Array<EntityCondition<Message>>,
   ): Promise<NullableType<Message>> {
-    return this.chatsRepository.findOne({
+    return this.chatRepository.findOne({
       where: fields,
     });
   }
 
   update(id: Message['id'], payload: DeepPartial<Message>): Promise<Message> {
-    return this.chatsRepository.save(
-      this.chatsRepository.create({
+    return this.chatRepository.save(
+      this.chatRepository.create({
         id,
         ...Object.fromEntries(
           Object.entries(payload).filter(([_, v]) => v != null),

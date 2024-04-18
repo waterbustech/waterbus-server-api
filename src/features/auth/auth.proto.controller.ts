@@ -5,7 +5,7 @@ import { JwtService } from '@nestjs/jwt';
 import { auth } from 'waterbus-proto';
 import { CCUService } from './ccu.service';
 import { CCU } from 'src/core/entities/ccu.entity';
-import { UserUseCases } from '../users/user.usecase';
+import { UserUseCases } from '../user/user.usecase';
 import { EnvironmentConfigService } from 'src/core/config/environment/environments';
 
 @Controller()

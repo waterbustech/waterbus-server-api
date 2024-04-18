@@ -7,14 +7,14 @@ import { Session } from '../../core/entities/session.entity';
 import { JwtRefreshPayloadType } from '../../utils/strategies/types/jwt-refresh-payload.type';
 import { SessionService } from '../session/session.service';
 import { LoginResponseType } from './types/login-response.type';
-import { UsersService } from '../users/users.service';
+import { UserService } from '../user/user.service';
 import ms from 'ms';
 
 @Injectable()
 export class AuthService {
   constructor(
     private jwtService: JwtService,
-    private usersService: UsersService,
+    private usersService: UserService,
     private sessionService: SessionService,
     private configService: ConfigService<AllConfigType>,
   ) {}

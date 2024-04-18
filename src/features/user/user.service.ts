@@ -9,7 +9,7 @@ import { TypesenseConfig } from 'src/core/config/typesense/typesense.config';
 import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
-export class UsersService {
+export class UserService {
   private typesenseClient: Client;
 
   constructor(
