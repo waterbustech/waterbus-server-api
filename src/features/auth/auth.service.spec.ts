@@ -24,7 +24,6 @@ const mockSessionRepositoryFactory = jest.fn(() => ({
 describe('AuthService', () => {
   let authService: AuthService;
   let sessionService: SessionService;
-  let userService: UserService;
 
   const mockUserService = {
     findOne: jest.fn(),

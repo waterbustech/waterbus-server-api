@@ -96,11 +96,12 @@ export class MeetingUseCases {
 
       if (!existsRoom) throw new NotFoundException('Not found room');
 
-      const indexHost = existsRoom.participants.findIndex(
-        (user) => user.user.id == userId,
+      const indexHost = existsRoom.members.findIndex(
+        (member) => member.user.id == userId && member.role == MemberRole.Host,
       );
 
-      if (indexHost < 0) throw new NotFoundException('Cannot check permission');
+      if (indexHost < 0)
+        throw new ForbiddenException('User not allowed to update rooom');
 
       existsRoom.title = meeting.title;
       existsRoom.password = meeting.password;
@@ -125,7 +126,7 @@ export class MeetingUseCases {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);
 
-      if (!existsRoom) throw new NotFoundException('Room not exists');
+      if (!existsRoom) throw new NotFoundException('Room Not Found');
 
       const isMatchPassword = await bcrypt.compare(
         meeting.password,
@@ -164,7 +165,7 @@ export class MeetingUseCases {
     try {
       const existsRoom = await this.getRoomByCode(meeting.code);
 
-      if (!existsRoom) throw new NotFoundException('Room not exists');
+      if (!existsRoom) throw new NotFoundException('Room Not Found');
 
       const indexOfMember = existsRoom.members.findIndex(
         (member) => member.user.id == userId,
