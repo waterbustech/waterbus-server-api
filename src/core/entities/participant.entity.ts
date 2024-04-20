@@ -6,7 +6,6 @@ import {
   Column,
   ManyToOne,
   Index,
-  OneToOne,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '..';

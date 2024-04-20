@@ -6,7 +6,6 @@ import {
 } from '@nestjs/common';
 import { ChatsService } from './chat.service';
 import { Message } from 'src/core/entities/message.entity';
-import { UserService } from '../user/user.service';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Status } from 'src/core/enums';
