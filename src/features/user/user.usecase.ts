@@ -72,7 +72,21 @@ export class UserUseCases {
 
   async updateUser(userId: number, user: User): Promise<User> {
     try {
-      const updatedUser = await this.userService.update(userId, user);
+      const existsUser = await this.userService.findOne({
+        id: userId,
+      });
+
+      if (!existsUser) {
+        throw new NotFoundException('User not found');
+      }
+
+      existsUser.fullName = user.fullName;
+      existsUser.avatar = user.avatar;
+
+      const updatedUser = await this.userService.update(
+        existsUser.id,
+        existsUser,
+      );
 
       this.userService.updateUserInTypesense(updatedUser);
 

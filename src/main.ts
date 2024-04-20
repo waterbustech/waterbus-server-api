@@ -3,24 +3,26 @@ import {
   ValidationPipe,
   VersioningType,
 } from '@nestjs/common';
+import { Logger as NestLogger } from '@nestjs/common';
 import { NestFactory, Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import { useContainer } from 'class-validator';
 import validationOptions from './utils/validation-options';
 import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { NestExpressApplication } from '@nestjs/platform-express';
+import {
+  NestFastifyApplication,
+  FastifyAdapter,
+} from '@nestjs/platform-fastify';
 import { EPackage, getProtoPath, getIncludeDirs } from 'waterbus-proto';
-import { SwaggerTheme, SwaggerThemeNameEnum } from 'swagger-themes';
-import * as swaggerUi from 'swagger-ui-express';
 import { EnvironmentConfigService } from './core/config/environment/environments';
 
-const theme = new SwaggerTheme();
-
 async function bootstrap() {
-  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
-    cors: true,
-  });
+  const app = await NestFactory.create<NestFastifyApplication>(
+    AppModule,
+    new FastifyAdapter(),
+    { cors: true },
+  );
   useContainer(app.select(AppModule), { fallbackOnErrors: true });
   const configService = app.get(EnvironmentConfigService);
 
@@ -48,14 +50,11 @@ async function bootstrap() {
     .addBearerAuth()
     .build();
 
-  const document = SwaggerModule.createDocument(app, options);
+  const document = SwaggerModule.createDocument(app, options, {
+    deepScanRoutes: true,
+  });
 
-  const optionsTheme = {
-    explorer: true,
-    customCss: theme.getBuffer(SwaggerThemeNameEnum.DARK),
-  };
-
-  app.use('/docs', swaggerUi.serve, swaggerUi.setup(document, optionsTheme));
+  SwaggerModule.setup('docs', app, document);
 
   const authGrpcUrl = configService.getAuthGrpcUrl();
   const meetingGrpcUrl = configService.getMeetingGrpcUrl();
@@ -86,7 +85,15 @@ async function bootstrap() {
   app.connectMicroservice(authMicroserviceOptions);
   app.connectMicroservice(meetingMicroserviceOptions);
   await app.startAllMicroservices();
-
-  await app.listen(configService.getPort());
+  await app.listen(configService.getPort(), '0.0.0.0');
+  return app.getUrl();
 }
-void bootstrap();
+
+(async (): Promise<void> => {
+  try {
+    const url = await bootstrap();
+    NestLogger.log(url, 'Bootstrap');
+  } catch (error) {
+    NestLogger.error(error, 'Bootstrap');
+  }
+})();

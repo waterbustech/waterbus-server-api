@@ -6,10 +6,10 @@ import { UserFactoryService } from './user-factory.service';
 import { UserUseCases } from './user.usecase';
 import { UserController } from './user.controller';
 import { TypesenseConfig } from 'src/core/config/typesense/typesense.config';
-import { CCU } from 'src/core/entities/ccu.entity';
+import { EnvironmentConfigModule } from 'src/core/config/environment/environment.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [TypeOrmModule.forFeature([User]), EnvironmentConfigModule],
   providers: [TypesenseConfig, UserFactoryService, UserService, UserUseCases],
   exports: [UserFactoryService, UserService, UserUseCases],
   controllers: [UserController],

@@ -2,9 +2,12 @@
 
 import { Injectable } from '@nestjs/common';
 import { Client } from 'typesense';
+import { EnvironmentConfigService } from '../environment/environments';
 
 @Injectable()
 export class TypesenseConfig {
+  constructor(private readonly environment: EnvironmentConfigService) {}
+
   async createSchema() {
     const client = this.getClient();
 
@@ -43,12 +46,12 @@ export class TypesenseConfig {
   }
 
   getClient(): Client {
-    let client = new Client({
-      apiKey: 'xyz',
+    const client = new Client({
+      apiKey: this.environment.getTypesenseApiKey(),
       nodes: [
         {
-          host: 'localhost',
-          port: 8108,
+          host: this.environment.getTypesenseHost(),
+          port: this.environment.getTypesensePort(),
           protocol: 'http',
         },
       ],

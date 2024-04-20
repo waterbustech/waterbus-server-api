@@ -17,6 +17,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'jwt') {
 
   public validate(payload: JwtPayloadType): OrNeverType<JwtPayloadType> {
     if (!payload.id) {
+      console.log(payload);
       throw new UnauthorizedException();
     }
 

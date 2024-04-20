@@ -455,6 +455,61 @@ describe('MeetingUseCase', () => {
       });
     });
 
+    it('should throw error - Not exists participant', async () => {
+      // Arrange
+      mockParticipantService.findOne.mockResolvedValue(null);
+      const mockParticipantId = 0;
+      const mockSocketId = '1';
+
+      // Act
+      try {
+        // Act
+        await meetingUseCases.getParticipantById(
+          mockParticipantId,
+          mockSocketId,
+        );
+        // If the above line doesn't throw an error, fail the test
+        fail('getParticipantById did not throw NotFoundException');
+      } catch (error) {
+        // Assert
+        expect(error).toBeInstanceOf(NotFoundException);
+        expect(error.message).toBe('Not exists participant');
+        expect(mockParticipantService.findOne).toHaveBeenCalledWith({
+          id: mockParticipantId,
+        });
+      }
+    });
+
+    it('should throw error - Not exists participant', async () => {
+      // Arrange
+      mockParticipantService.findOne.mockResolvedValue(mockParticipant);
+      mockCCURepository.findOne.mockResolvedValue(null);
+      const mockParticipantId = 0;
+      const mockSocketId = '1';
+
+      try {
+        // Act
+        await meetingUseCases.getParticipantById(
+          mockParticipantId,
+          mockSocketId,
+        );
+        // If the above line doesn't throw an error, fail the test
+        fail('getParticipantById did not throw NotFoundException');
+      } catch (error) {
+        // Assert
+        expect(error).toBeInstanceOf(NotFoundException);
+        expect(error.message).toBe('Not exists CCU');
+        expect(mockParticipantService.findOne).toHaveBeenCalledWith({
+          id: mockParticipantId,
+        });
+        expect(mockCCURepository.findOne).toHaveBeenCalledWith({
+          where: {
+            socketId: mockSocketId,
+          },
+        });
+      }
+    });
+
     it('should return participant with new CCU', async () => {
       // Arrange
       const mockCCU: CCU = {
@@ -500,6 +555,44 @@ describe('MeetingUseCase', () => {
       expect(mockParticipantService.update).toHaveBeenCalledWith(
         mockParticipant.id,
         mockParticipant,
+      );
+    });
+  });
+
+  describe('add room member', () => {
+    it('should return room with new member added with inviting status', async () => {
+      // Arrange
+      mockMeetingService.findOne.mockResolvedValue(mockRoom);
+      const mockHostId = 1;
+      const mockNewUser: User = Object.assign({}, mockUser);
+
+      mockNewUser.id = 12;
+      const mockNewMember = new Member();
+      mockNewMember.user = mockNewUser;
+      const mockNewRoom = {
+        ...mockRoom,
+        members: [...mockRoom.members, mockNewMember],
+      };
+
+      mockUserUseCases.getUserById.mockResolvedValue(mockNewUser);
+      mockMeetingService.update.mockResolvedValue(mockNewRoom);
+
+      // Act
+      const result = await meetingUseCases.addRoomMember({
+        code: mockRoom.code,
+        hostId: mockHostId,
+        userId: mockNewUser.id,
+      });
+
+      // Assert
+      expect(result.members.length).toEqual(2);
+      expect(mockMeetingService.findOne).toHaveBeenCalledWith({
+        code: mockRoom.code,
+      });
+      expect(mockUserUseCases.getUserById).toHaveBeenCalledWith(mockNewUser.id);
+      expect(mockMeetingService.update).toHaveBeenCalledWith(
+        mockRoom.id,
+        mockNewRoom,
       );
     });
   });

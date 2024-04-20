@@ -66,7 +66,7 @@ export class UserService {
     try {
       const users = await this.userRepository.find();
 
-      let documents = users.map((user) => ({
+      const documents = users.map((user) => ({
         id: user.id.toString(),
         userName: user.userName,
         fullName: user.fullName,
@@ -88,7 +88,7 @@ export class UserService {
     query: string,
     pagination: PaginationListQuery,
   ): Promise<any> {
-    let searchParameters = {
+    const searchParameters = {
       q: query,
       query_by: ['fullName', 'userName'],
       page: pagination.page,
@@ -102,11 +102,15 @@ export class UserService {
   }
 
   async updateUserInTypesense(user: User): Promise<void> {
-    await this.typesenseClient.collections('users').documents().upsert({
-      id: user.id.toString(),
-      userName: user.userName,
-      fullName: user.fullName,
-      avatar: user.avatar,
-    });
+    try {
+      await this.typesenseClient.collections('users').documents().upsert({
+        id: user.id.toString(),
+        userName: user.userName,
+        fullName: user.fullName,
+        avatar: user.avatar,
+      });
+    } catch (error) {
+      console.log(user);
+    }
   }
 }
