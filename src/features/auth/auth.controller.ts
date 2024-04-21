@@ -47,7 +47,6 @@ export class AuthController {
   @UseGuards(AuthGuard('jwt-refresh'))
   @HttpCode(HttpStatus.OK)
   public refresh(@Request() request): Promise<Omit<LoginResponseType, 'user'>> {
-    console.log(request);
     return this.authUseCases.refresh(request.user.sessionId);
   }
 
