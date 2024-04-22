@@ -6,6 +6,7 @@ import {
   ManyToOne,
   OneToOne,
   PrimaryGeneratedColumn,
+  Relation,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 import { EntityHelper } from '../../utils/entity-helper';
@@ -31,11 +32,11 @@ export class CCU extends EntityHelper {
     cascade: true,
   })
   @Index()
-  user: User;
+  user: Relation<User>;
 
   @CreateDateColumn()
   createdAt: Date;
 
   @OneToOne(() => Participant, (ccu) => ccu.ccu)
-  participant: Participant;
+  participant: Relation<Participant>;
 }

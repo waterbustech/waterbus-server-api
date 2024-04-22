@@ -15,7 +15,7 @@ import { ParticipantService } from './participant.service';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Meeting, User, Participant, Member, CCU]),
+    TypeOrmModule.forFeature([Meeting, CCU, Participant, Member]),
     UserModule,
   ],
   controllers: [MeetingController, MeetingGrpcController],

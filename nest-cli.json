@@ -5,6 +5,8 @@
   "compilerOptions": {
     "deleteOutDir": true,
     "assets": ["**/*.proto", "**/*_pb.js"],
-    "watchAssets": true
+    "watchAssets": true,
+    "builder": "swc",
+    "typeCheck": true
   }
 }

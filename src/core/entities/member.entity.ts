@@ -6,6 +6,7 @@ import {
   Column,
   ManyToOne,
   Index,
+  Relation,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '..';
@@ -22,10 +23,10 @@ export class Member extends EntityHelper {
     cascade: true,
   })
   @Index()
-  user: User;
+  user: Relation<User>;
 
   @ManyToOne(() => Meeting, (meeting) => meeting.members)
-  meeting: Meeting;
+  meeting: Relation<Meeting>;
 
   @Column({
     type: 'enum',

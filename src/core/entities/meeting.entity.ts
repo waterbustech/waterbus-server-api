@@ -8,6 +8,7 @@ import {
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
@@ -40,20 +41,20 @@ export class Meeting extends EntityHelper {
     eager: true,
     cascade: true,
   })
-  participants: Participant[];
+  participants: Relation<Participant[]>;
 
   // Permanent access
   @OneToMany(() => Member, (member) => member.meeting, {
     eager: true,
     cascade: true,
   })
-  members: Member[];
+  members: Relation<Member[]>;
 
   @OneToOne(() => Message, (message) => message.meeting)
-  latestMessage: Message;
+  latestMessage: Relation<Message>;
 
   @OneToMany(() => Message, (message) => message.meeting)
-  message: Message;
+  message: Relation<Message>;
 
   @Column({
     type: 'enum',

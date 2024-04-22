@@ -6,6 +6,7 @@ import {
   Index,
   ManyToOne,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
@@ -30,10 +31,10 @@ export class Message extends EntityHelper {
     cascade: true,
   })
   @Index()
-  createdBy: User;
+  createdBy: Relation<User>;
 
   @ManyToOne(() => Meeting, (meeting) => meeting.message)
-  meeting: Meeting;
+  meeting: Relation<Meeting>;
 
   @Column({
     type: 'enum',

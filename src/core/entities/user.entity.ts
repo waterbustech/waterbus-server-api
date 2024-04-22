@@ -6,6 +6,7 @@ import {
   Entity,
   OneToMany,
   PrimaryGeneratedColumn,
+  Relation,
   UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
@@ -54,10 +55,10 @@ export class User extends EntityHelper {
   lastSeenAt: Date;
 
   @OneToMany(() => Participant, (participant) => participant.user)
-  participant: Participant;
+  participant: Relation<Participant>;
 
   @OneToMany(() => Message, (message) => message.createdBy)
-  message: Message;
+  message: Relation<Message>;
 
   @BeforeInsert()
   async generateUserName() {
