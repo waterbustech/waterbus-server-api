@@ -454,8 +454,9 @@ export class MeetingUseCases {
         (participant) => participant.id == participantId,
       );
 
-      if (indexOfParticipant == -1)
+      if (indexOfParticipant == -1) {
         throw new NotFoundException('Participant Not Found');
+      }
 
       await this.participantService.remove([
         existsRoom.participants[indexOfParticipant],

@@ -92,9 +92,7 @@ export class AuthGrpcController implements auth.AuthService {
   @GrpcMethod('AuthService', 'removeCCU')
   removeCCU(data: auth.RemoveCCURequest): Observable<auth.StatusResponse> {
     try {
-      this.ccuService.findOne({ socketId: data.socketId }).then((ccu) => {
-        this.ccuService.remove(ccu);
-      });
+      this.ccuService.removeCCU(data.socketId);
 
       const response: auth.StatusResponse = {
         succeed: true,

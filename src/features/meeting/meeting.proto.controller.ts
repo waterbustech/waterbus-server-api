@@ -1,4 +1,4 @@
-import { Controller } from '@nestjs/common';
+import { BadRequestException, Controller } from '@nestjs/common';
 import { GrpcMethod } from '@nestjs/microservices';
 import { meeting } from 'waterbus-proto';
 import { MeetingUseCases } from './meeting.usecase';
@@ -24,6 +24,12 @@ export class MeetingGrpcController implements meeting.MeetingService {
         this.meetingsUseCases
           .getParticipantById(participantId, socketId)
           .then((participant) => {
+            if (!participant.ccu) {
+              observer.error(new BadRequestException('Participant not valid'));
+              observer.complete();
+              return;
+            }
+
             const response: meeting.GetParticipantResponse = {
               id: participant.id,
               user: {

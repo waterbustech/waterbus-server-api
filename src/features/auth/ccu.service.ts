@@ -50,15 +50,35 @@ export class CCUService {
     );
   }
 
+  async removeCCU(socketId: string) {
+    const participantsToDelete = await this.participantRepository.find({
+      where: { ccu: { socketId: socketId } },
+    });
+
+    if (participantsToDelete) {
+      await this.participantRepository.remove(participantsToDelete);
+    }
+
+    const ccusToDelete = await this.ccuRepository.find({ where: { socketId } });
+
+    if (ccusToDelete) {
+      await this.ccuRepository.remove(ccusToDelete);
+    }
+  }
+
   async destroyByPodName(podName: string) {
     const participantsToDelete = await this.participantRepository.find({
       where: { ccu: { podName } },
     });
 
-    await this.participantRepository.remove(participantsToDelete);
+    if (participantsToDelete) {
+      await this.participantRepository.remove(participantsToDelete);
+    }
 
     const ccusToDelete = await this.ccuRepository.find({ where: { podName } });
 
-    await this.ccuRepository.remove(ccusToDelete);
+    if (ccusToDelete) {
+      await this.ccuRepository.remove(ccusToDelete);
+    }
   }
 }
