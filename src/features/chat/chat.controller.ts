@@ -11,7 +11,12 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBearerAuth,
+  ApiOperation,
+  ApiSecurity,
+  ApiTags,
+} from '@nestjs/swagger';
 import { ChatUseCases } from './chat.usecase';
 import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 
@@ -26,7 +31,10 @@ import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 export class ChatController {
   constructor(private chatUseCases: ChatUseCases) {}
 
-  @ApiOperation({summary: 'Get messages by room', description: 'Get messages by room id'})
+  @ApiOperation({
+    summary: 'Get messages by room',
+    description: 'Get messages by room id',
+  })
   @Get(':meetingId')
   async getMessagesByMeeting(
     @Request() request,
@@ -40,7 +48,10 @@ export class ChatController {
     });
   }
 
-  @ApiOperation({summary: 'Send message', description: 'Send an encrypted message'})
+  @ApiOperation({
+    summary: 'Send message',
+    description: 'Send an encrypted message',
+  })
   @Post(':meetingId')
   async sendMessageByMeeting(
     @Request() request,
@@ -54,7 +65,10 @@ export class ChatController {
     });
   }
 
-  @ApiOperation({summary: 'Update message', description: 'Update an encrypted message'})
+  @ApiOperation({
+    summary: 'Update message',
+    description: 'Update an encrypted message',
+  })
   @Put(':messageId')
   async editMessageById(
     @Request() request,
@@ -68,7 +82,7 @@ export class ChatController {
     });
   }
 
-  @ApiOperation({summary: 'Delete message', description: 'Delete message'})
+  @ApiOperation({ summary: 'Delete message', description: 'Delete message' })
   @Delete(':messageId')
   async deleteMessageById(
     @Request() request,
@@ -80,7 +94,10 @@ export class ChatController {
     });
   }
 
-  @ApiOperation({summary: 'Delete conversation', description: 'Delete conversation only you and no one else'})
+  @ApiOperation({
+    summary: 'Delete conversation',
+    description: 'Delete conversation only you and no one else',
+  })
   @Delete('/conversations/:meetingId')
   async deleteConversationByMeetingId(
     @Request() request,
