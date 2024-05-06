@@ -83,6 +83,8 @@ export class UserUseCases {
       existsUser.fullName = user.fullName;
       existsUser.avatar = user.avatar;
 
+      if (user.bio) existsUser.bio = user.bio;
+
       const updatedUser = await this.userService.update(
         existsUser.id,
         existsUser,

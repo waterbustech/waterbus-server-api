@@ -11,10 +11,11 @@ import {
   Query,
 } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { ChatUseCases } from './chat.usecase';
 import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 
+@ApiTags('chat')
 @ApiBearerAuth()
 @ApiSecurity('api_key', ['api_key'])
 @UseGuards(AuthGuard('jwt'))
@@ -25,6 +26,7 @@ import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 export class ChatController {
   constructor(private chatUseCases: ChatUseCases) {}
 
+  @ApiOperation({summary: 'Get messages by room', description: 'Get messages by room id'})
   @Get(':meetingId')
   async getMessagesByMeeting(
     @Request() request,
@@ -38,6 +40,7 @@ export class ChatController {
     });
   }
 
+  @ApiOperation({summary: 'Send message', description: 'Send an encrypted message'})
   @Post(':meetingId')
   async sendMessageByMeeting(
     @Request() request,
@@ -51,6 +54,7 @@ export class ChatController {
     });
   }
 
+  @ApiOperation({summary: 'Update message', description: 'Update an encrypted message'})
   @Put(':messageId')
   async editMessageById(
     @Request() request,
@@ -64,6 +68,7 @@ export class ChatController {
     });
   }
 
+  @ApiOperation({summary: 'Delete message', description: 'Delete message'})
   @Delete(':messageId')
   async deleteMessageById(
     @Request() request,
@@ -75,6 +80,7 @@ export class ChatController {
     });
   }
 
+  @ApiOperation({summary: 'Delete conversation', description: 'Delete conversation only you and no one else'})
   @Delete('/conversations/:meetingId')
   async deleteConversationByMeetingId(
     @Request() request,

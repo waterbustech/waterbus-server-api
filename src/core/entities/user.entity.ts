@@ -28,6 +28,10 @@ export class User extends EntityHelper {
   @Column({ type: String, unique: true, nullable: false })
   userName?: string;
 
+  @ApiProperty({ example: 'I am a software engineer' })
+  @Column({ type: String, nullable: true })
+  bio?: string;
+
   @ApiProperty({ example: 'googleId' })
   @Column({ type: String, unique: true, nullable: true })
   googleId?: string;

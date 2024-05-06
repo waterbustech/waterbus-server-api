@@ -19,6 +19,7 @@ export class UserFactoryService {
     const newUser = new User();
     newUser.fullName = user.fullName;
     newUser.avatar = user.avatar;
+    newUser.bio = user.bio;
 
     return newUser;
   }

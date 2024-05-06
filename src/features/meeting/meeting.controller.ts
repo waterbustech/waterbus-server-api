@@ -20,7 +20,7 @@ import {
   PaginationListQuery,
 } from '../../core/dtos';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Repository } from 'typeorm';
@@ -28,6 +28,7 @@ import { Member } from '../../core/entities/member.entity';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
 import { UserUseCases } from '../user/user.usecase';
 
+@ApiTags('meeting')
 @ApiBearerAuth()
 @ApiSecurity('api_key', ['api_key'])
 @UseGuards(AuthGuard('jwt'))
@@ -46,11 +47,13 @@ export class MeetingController {
     private participantRepository: Repository<Participant>,
   ) {}
 
+  @ApiOperation({summary: 'Get room', description: 'Get room by id'})
   @Get(':code')
   async getRoomByCode(@Param('code') code: number) {
     return this.meetingUseCases.getRoomByCode(code);
   }
 
+  @ApiOperation({summary: 'Get rooms by status', description: 'Get room (also known as a conversation) by status'})
   @Get('/conversations/:status')
   async getRoomsByAuth(
     @Request() request,
@@ -64,6 +67,7 @@ export class MeetingController {
     });
   }
 
+  @ApiOperation({summary: 'Create meeting room', description: 'Create a room with room name and password'})
   @Post()
   async createRoom(@Request() request, @Body() createRoom: CreateMeetingDto) {
     const user = await this.userUseCases.getUserById(request.user.id);
@@ -85,6 +89,7 @@ export class MeetingController {
     return this.meetingUseCases.createRoom(room);
   }
 
+  @ApiOperation({summary: 'Update meeting room', description: 'Update room with new info or password'})
   @Put()
   updateRoom(@Request() request, @Body() updateRoomDto: UpdateMeetingDto) {
     const room = this.meetingFactoryService.getRoomFromUpdateDto(updateRoomDto);
@@ -92,6 +97,7 @@ export class MeetingController {
     return this.meetingUseCases.updateRoom(request.user.id, room);
   }
 
+  @ApiOperation({summary: 'Add member', description: 'Add member to the room'})
   @Post('/members/:code')
   async addRoomMember(
     @Request() request,
@@ -105,6 +111,7 @@ export class MeetingController {
     });
   }
 
+  @ApiOperation({summary: 'Delete member', description: 'Kick user out the room'})
   @Delete('/members/:code')
   async removeRoomMember(
     @Request() request,
@@ -118,6 +125,7 @@ export class MeetingController {
     });
   }
 
+  @ApiOperation({summary: 'Accept invitation', description: 'Accept invitation to access room as a member'})
   @Post('/members/accept/:code')
   async acceptRoomInvitation(@Request() request, @Param('code') code: number) {
     return this.meetingUseCases.acceptRoomInvitation({
@@ -126,7 +134,7 @@ export class MeetingController {
     });
   }
 
-  // Using for stranger join by code & password
+  @ApiOperation({summary: 'Join room (guest)', description: 'If you are not a room member, password is required to join'})
   @Post('/join/password/:code')
   async joinRoomForStranger(
     @Param('code') code: number,
@@ -150,6 +158,7 @@ export class MeetingController {
     return this.meetingUseCases.joinRoomWithPassword(room, participant);
   }
 
+  @ApiOperation({summary: 'Join room (member)', description: 'Join directly if you are a room member'})
   @Post('/join/:code')
   async joinRoomForMember(@Param('code') code: number, @Request() request) {
     const user = await this.userUseCases.getUserById(request.user.id);
@@ -166,6 +175,7 @@ export class MeetingController {
     return this.meetingUseCases.joinRoomForMember(room, participant, user.id);
   }
 
+  @ApiOperation({summary: 'Leave room', description: 'Leave out the room'})
   @Delete(':code')
   async leaveRoom(@Request() request, @Param('code') code: number) {
     const userId = request.user.id;

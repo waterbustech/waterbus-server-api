@@ -14,11 +14,12 @@ import { LoginSocialDto } from 'src/core/dtos/auth';
 import { UserFactoryService } from '../user/user-factory.service';
 import { AuthUseCases } from 'src/features/auth/auth.usecase';
 import { AuthGuard } from '@nestjs/passport';
-import { ApiBearerAuth, ApiSecurity } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiOperation, ApiSecurity, ApiTags } from '@nestjs/swagger';
 import { LoginResponseType } from 'src/features/auth/types/login-response.type';
 import { AwsS3Service } from '../image/aws-s3/aws-s3.service';
 import { ApiKeyGuard } from 'src/utils/strategies/api-key.strategy';
 
+@ApiTags('auth')
 @ApiSecurity('api_key', ['api_key'])
 @UseGuards(ApiKeyGuard)
 @Controller({
@@ -32,6 +33,7 @@ export class AuthController {
     private awsS3Service: AwsS3Service,
   ) {}
 
+  @ApiOperation({summary: 'Login', description: 'Login with Social Media'})
   @Post()
   loginWithSocial(@Body() loginWithSocial: LoginSocialDto) {
     const user = this.userFactoryService.createNewUser(loginWithSocial);
@@ -39,6 +41,7 @@ export class AuthController {
     return this.authUseCases.loginWithSocial(user);
   }
 
+  @ApiOperation({summary: 'Refresh Token', description: 'Refresh token when access token expired'})
   @ApiBearerAuth()
   @SerializeOptions({
     groups: ['me'],
@@ -50,6 +53,7 @@ export class AuthController {
     return this.authUseCases.refresh(request.user.sessionId);
   }
 
+  @ApiOperation({summary: 'Logout', description: 'Terminate your session'})
   @ApiBearerAuth()
   @Delete()
   @UseGuards(AuthGuard('jwt'))
@@ -58,6 +62,7 @@ export class AuthController {
     await this.authUseCases.logout(request.user.sessionId);
   }
 
+  @ApiOperation({summary: 'Get AWS-S3 presigned url', description: 'Presigned url to upload avatar'})
   @ApiBearerAuth()
   @Post('presigned-url')
   @UseGuards(AuthGuard('jwt'))

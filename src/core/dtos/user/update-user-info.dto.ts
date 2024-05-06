@@ -5,6 +5,10 @@ export class UpdateUserInfoDto {
   @IsNotEmpty()
   fullName: string;
 
+  @IsString()
+  @IsOptional()
+  bio: string;
+
   @IsOptional()
   @IsString()
   avatar: string;
