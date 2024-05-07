@@ -12,7 +12,7 @@ export class UpdateUserInfoDto {
   @IsOptional()
   bio: string;
 
-  @ApiProperty({example: 'https://image.png'})
+  @ApiProperty({ example: 'https://image.png' })
   @IsOptional()
   @IsString()
   avatar: string;
