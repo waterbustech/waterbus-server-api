@@ -1,11 +1,10 @@
-> [!IMPORTANT]  
-> Waterbus is an open source video conferencing app built on latest WebRTC SDK. Currently, Waterbus is an early release that is subject to the following limitations: it may have limited support, changes may not be compatible with other pre-general availability versions, and availability may change without notice.
-
 <div align="center">
-<img src="./images/banner-waterbus.png" width="70%"/>
+<img src="https://github.com/waterbustech/waterbus/raw/main/assets/images/img_app_logo.png?raw=true" width="25%"/>
 </div>
 
 <h2 align="center">Waterbus Server API</h2>
+<p align="center">This is the server API for Waterbus. It is responsible for interacting with the database and ensuring data consistency.</p>
+
 <div class="badges" align="center">
 <p><img src="https://img.shields.io/github/actions/workflow/status/waterbustech/waterbus-server-api/ci.yml" alt="GitHub Workflow Status (with event)"><img src="https://img.shields.io/github/issues/waterbustech/waterbus-server-api" alt="GitHub issues"><a href="https://chromium.googlesource.com/external/webrtc/+/branch-heads/6099"><img src="https://img.shields.io/badge/libwebrtc-122.6261.01-yellow.svg" alt="libwebrtc"></a><img src="https://img.shields.io/cocoapods/v/KaiRTC" alt="Cocoapods Version"><a href="https://github.com/lambiengcode"><img src="https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat&amp;logo=github" alt="PRs Welcome"></a></p>
 </div>
@@ -18,14 +17,15 @@
   <a href="https://github.com/waterbustech/waterbus-server-api/blob/main/LICENSE">License</a>
 </p>
 
+> [!IMPORTANT]  
+> Currently, Waterbus is an early release that is subject to the following limitations: it may have limited support, changes may not be compatible with other pre-general availability versions, and availability may change without notice.
+
 ## 👋 Introduction
 
-- 🤙 Waterbus is open source video conferencing multiplatform app built on latest WebRTC SDK. This is server api for the application. 
+- 📺 Waterbus is open source video conferencing multiplatform app built on latest WebRTC SDK. This is server api for the application. 
 - 🎯 Waterbus aims for scalability and low latency as well as self-hosted and offers many useful features for everyday interviews or meetings.
 
-## 🚀 Quick run
-
-### 👇 Requirements
+## 📦 Requirements
 
 Before getting started, ensure you have the following software installed:
 
@@ -34,7 +34,9 @@ Before getting started, ensure you have the following software installed:
 - `Postgres`
 - `Typesense`: (26.0)
 
-- Clone repository
+## 🚀 Quick start
+
+- Clone the repository
 
 ```sh
 git clone https://github.com/waterbustech/waterbus-server-api-server-api.git
@@ -74,11 +76,15 @@ Contributions are welcome! Please feel free to submit a pull request or open an 
 - 📢 [waterbus.netlify.app](http://waterbus.netlify.app/): Home page to introduce products and features.
 - 🌍 [meet.waterbus.tech](http://meet.waterbus.tech/): Web version of `waterbus` with features for online meetings
 - 📖 [Documentation](http://docs.waterbus.tech/): for developers.
-  - [Design](https://docs.waterbus.tech/server/design): ERD, Architecture and SFU
-  - [API Documentation](https://docs.waterbus.tech/server/api): OpenAPI
+- 👷 [Server Design](https://docs.waterbus.tech/server/design): ERD, Architecture and SFU
+- 🛠️ [API Documentation](https://docs.waterbus.tech/server/api): OpenAPI
+
+## License
+
+Distributed under [Apache 2.0](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## 📧 Contact Information
 
 If you have any questions or suggestions related to this application, please contact me via email: `lambiengcode@gmail.com`.
 
-<h4 align="center">Built with 💙 by the Waterbus team.</h4>
+Built with 💙 by the Waterbus team.
