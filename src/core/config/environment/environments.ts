@@ -52,4 +52,8 @@ export class EnvironmentConfigService {
   getMeetingGrpcUrl(): string {
     return this.configService.get<string>('MEETING_GRPC_URL');
   }
+
+  getOauthSecret(): string {
+    return this.configService.get<string>('CLIENT_SECRET');
+  }
 }
