@@ -25,7 +25,7 @@ import { AwsS3Service } from '../image/aws-s3/aws-s3.service';
 import { ApiKeyGuard } from 'src/utils/strategies/api-key.strategy';
 
 @ApiTags('auth')
-@ApiSecurity('api_key', ['api_key'])
+@ApiSecurity('api-key', ['api-key'])
 @UseGuards(ApiKeyGuard)
 @Controller({
   path: 'auth',

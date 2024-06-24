@@ -42,11 +42,14 @@ async function bootstrap() {
       'Open source video conferencing app built on latest WebRTC SDK. Android/iOS/MacOS/Web',
     )
     .setVersion('2.0')
-    .addApiKey({
-      type: 'apiKey',
-      in: 'header',
-      name: 'api_key',
-    })
+    .addApiKey(
+      {
+        type: 'apiKey',
+        in: 'header',
+        name: 'api-key',
+      },
+      'api-key',
+    )
     .addBearerAuth()
     .build();
 

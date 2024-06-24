@@ -22,7 +22,7 @@ import { PaginationListQuery, SendMessageDto } from 'src/core/dtos';
 
 @ApiTags('chat')
 @ApiBearerAuth()
-@ApiSecurity('api_key', ['api_key'])
+@ApiSecurity('api-key', ['api-key'])
 @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'chats',

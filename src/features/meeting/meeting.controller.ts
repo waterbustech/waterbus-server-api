@@ -35,7 +35,7 @@ import { UserUseCases } from '../user/user.usecase';
 
 @ApiTags('meeting')
 @ApiBearerAuth()
-@ApiSecurity('api_key', ['api_key'])
+@ApiSecurity('api-key', ['api-key'])
 @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'meetings',

@@ -21,7 +21,7 @@ import { UserUseCases } from './user.usecase';
 
 @ApiTags('user')
 @ApiBearerAuth()
-@ApiSecurity('api_key', ['api_key'])
+@ApiSecurity('api-key', ['api-key'])
 @UseGuards(AuthGuard('jwt'))
 @Controller({
   path: 'users',
