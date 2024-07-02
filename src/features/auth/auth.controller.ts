@@ -43,25 +43,32 @@ export class AuthController {
     private awsS3Service: AwsS3Service,
   ) {}
 
-  @ApiOperation({ summary: 'Get Oauth Token', description: 'Get Oauth token from code' })
+  @ApiOperation({
+    summary: 'Get Oauth Token',
+    description: 'Get Oauth token from code',
+  })
   @Post('token')
   async getOauthToken(@Body() oauth: OauthDto) {
     try {
-      const res = await axios.post("https://oauth2.googleapis.com/token", null, {
-        params: {
-          client_id: oauth.clientId,
-          client_secret: this.environment.getOauthSecret(),
-          code: oauth.code,
-          grant_type: 'authorization_code',
-          redirect_uri: oauth.redirectUri,
-        }
-      });
+      const res = await axios.post(
+        'https://oauth2.googleapis.com/token',
+        null,
+        {
+          params: {
+            client_id: oauth.clientId,
+            client_secret: this.environment.getOauthSecret(),
+            code: oauth.code,
+            grant_type: 'authorization_code',
+            redirect_uri: oauth.redirectUri,
+          },
+        },
+      );
 
       if (res.status == 200) {
         return res.data;
       }
 
-      throw new NotFoundException()
+      throw new NotFoundException();
     } catch (error) {
       throw new InternalServerErrorException();
     }
