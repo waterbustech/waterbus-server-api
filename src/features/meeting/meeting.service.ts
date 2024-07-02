@@ -35,15 +35,22 @@ export class MeetingService {
     status: MemberStatus;
     query: PaginationListQuery;
   }): Promise<NullableType<Meeting[]>> {
+    const subQuery = this.meetingRepository
+      .createQueryBuilder('subquery')
+      .leftJoin('subquery.members', 'subMember')
+      .leftJoin('subMember.user', 'subUser')
+      .where('subMember.status = :status', { status })
+      .andWhere('subUser.id = :userId', { userId })
+      .select('subquery.id');
+
     return this.meetingRepository
       .createQueryBuilder('meeting')
-      .innerJoinAndSelect('meeting.members', 'member')
+      .leftJoinAndSelect('meeting.members', 'member')
       .leftJoinAndSelect('meeting.participants', 'participants')
       .leftJoinAndSelect('meeting.latestMessage', 'latestMessage')
-      .innerJoinAndSelect('member.user', 'memberUser')
-      .leftJoinAndSelect('participants.user', 'user')
-      .where('memberUser.id = :userId', { userId })
-      .andWhere('member.status = :status', { status })
+      .leftJoinAndSelect('member.user', 'user')
+      .andWhere(`meeting.id IN (${subQuery.getQuery()})`)
+      .setParameters(subQuery.getParameters())
       .orderBy('latestMessage.createdAt', 'DESC')
       .skip(query.skip)
       .limit(query.limit)

@@ -151,6 +151,11 @@ export class MeetingUseCases {
         existsRoom,
       );
 
+      updatedRoom.participants = updatedRoom.participants.filter(
+        (mParticipant) =>
+          mParticipant.ccu != null || mParticipant.id == participant.id,
+      );
+
       return updatedRoom;
     } catch (error) {
       throw error;
@@ -188,6 +193,11 @@ export class MeetingUseCases {
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,
         existsRoom,
+      );
+
+      updatedRoom.participants = updatedRoom.participants.filter(
+        (mParticipant) =>
+          mParticipant.ccu != null || mParticipant.id == participant.id,
       );
 
       return updatedRoom;
