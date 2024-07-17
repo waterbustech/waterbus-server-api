@@ -56,7 +56,7 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "typesense": "^1.8.2",
-    "waterbus-proto": "^1.1.3"
+    "waterbus-proto": "^1.1.4"
   },
   "resolutions": {
     "inquirer": "^8.0.0"

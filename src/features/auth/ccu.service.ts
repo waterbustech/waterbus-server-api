@@ -4,7 +4,7 @@ import { CCU } from 'src/core/entities/ccu.entity';
 import { Participant } from 'src/core/entities/participant.entity';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { DeepPartial, Repository } from 'typeorm';
+import { DeepPartial, In, Repository } from 'typeorm';
 
 @Injectable()
 export class CCUService {
@@ -25,6 +25,16 @@ export class CCUService {
     } catch (error) {
       throw error;
     }
+  }
+
+  async findByUserIds({ userIds }: { userIds: Array<number> }): Promise<CCU[]> {
+    return this.ccuRepository.find({
+      where: {
+        user: {
+          id: In(userIds),
+        },
+      },
+    });
   }
 
   findOne(

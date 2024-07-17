@@ -2,9 +2,11 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import {
   BehaviorSubject,
   catchError,
+  concatMap,
   interval,
   lastValueFrom,
   map,
+  Observable,
   retry,
   Subject,
   Subscription,
@@ -14,10 +16,12 @@ import {
   timeout,
 } from 'rxjs';
 import { ClientGrpc } from '@nestjs/microservices';
-import { chat } from 'waterbus-proto';
+import { chat, meeting } from 'waterbus-proto';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import { ClientService } from 'src/core/enums/grpc/client-service';
 import { Message } from 'src/core/entities/message.entity';
+import { CCUService } from 'src/features/auth/ccu.service';
+import { Member } from 'src/core/entities/member.entity';
 
 @Injectable()
 export class ChatGrpcClientService implements OnModuleInit {
@@ -27,7 +31,10 @@ export class ChatGrpcClientService implements OnModuleInit {
   private isConnected: boolean;
   private $reconnect: Subscription;
 
-  constructor(private readonly chatClientProxy: ClientGrpc) {
+  constructor(
+    private readonly chatClientProxy: ClientGrpc,
+    private readonly ccuService: CCUService,
+  ) {
     this.logger = new Logger('ChatService');
   }
 
@@ -83,10 +90,16 @@ export class ChatGrpcClientService implements OnModuleInit {
     const dataSubject = new Subject<chat.MessageResponse>();
     this.$connectionSubject
       .pipe(
-        switchMap((isConnected) => {
+        switchMap(async (isConnected) => {
           if (isConnected) {
+            let socketIds = await this.getSocketsInConversation({
+              members: message.meeting.members,
+            });
+            console.log(socketIds);
             return this.chatService
-              .sendMessage(this.convertMessageToMessageRequest(message))
+              .sendMessage(
+                this.convertMessageToMessageRequest(message, socketIds),
+              )
               .pipe(timeout(5000));
           } else
             return throwError(() => ({
@@ -103,7 +116,8 @@ export class ChatGrpcClientService implements OnModuleInit {
             this.$connectionSubject.next(false);
           return throwError(() => error);
         }),
-        tap((data) => dataSubject.next(data)),
+        concatMap((observable: Observable<chat.MessageResponse>) => observable),
+        tap((data: chat.MessageResponse) => dataSubject.next(data)),
         tap(() => dataSubject.complete()),
       )
       .subscribe({
@@ -122,10 +136,16 @@ export class ChatGrpcClientService implements OnModuleInit {
     const dataSubject = new Subject<chat.MessageResponse>();
     this.$connectionSubject
       .pipe(
-        switchMap((isConnected) => {
+        switchMap(async (isConnected) => {
           if (isConnected) {
+            let socketIds = await this.getSocketsInConversation({
+              members: message.meeting.members,
+            });
+
             return this.chatService
-              .updateMessage(this.convertMessageToMessageRequest(message))
+              .updateMessage(
+                this.convertMessageToMessageRequest(message, socketIds),
+              )
               .pipe(timeout(5000));
           } else
             return throwError(() => ({
@@ -142,7 +162,8 @@ export class ChatGrpcClientService implements OnModuleInit {
             this.$connectionSubject.next(false);
           return throwError(() => error);
         }),
-        tap((data) => dataSubject.next(data)),
+        concatMap((observable: Observable<chat.MessageResponse>) => observable),
+        tap((data: chat.MessageResponse) => dataSubject.next(data)),
         tap(() => dataSubject.complete()),
       )
       .subscribe({
@@ -161,10 +182,16 @@ export class ChatGrpcClientService implements OnModuleInit {
     const dataSubject = new Subject<chat.MessageResponse>();
     this.$connectionSubject
       .pipe(
-        switchMap((isConnected) => {
+        switchMap(async (isConnected) => {
           if (isConnected) {
+            let socketIds = await this.getSocketsInConversation({
+              members: message.meeting.members,
+            });
+
             return this.chatService
-              .deleteMessage(this.convertMessageToMessageRequest(message))
+              .deleteMessage(
+                this.convertMessageToMessageRequest(message, socketIds),
+              )
               .pipe(timeout(5000));
           } else
             return throwError(() => ({
@@ -181,7 +208,8 @@ export class ChatGrpcClientService implements OnModuleInit {
             this.$connectionSubject.next(false);
           return throwError(() => error);
         }),
-        tap((data) => dataSubject.next(data)),
+        concatMap((observable: Observable<chat.MessageResponse>) => observable),
+        tap((data: chat.MessageResponse) => dataSubject.next(data)),
         tap(() => dataSubject.complete()),
       )
       .subscribe({
@@ -196,8 +224,21 @@ export class ChatGrpcClientService implements OnModuleInit {
     }
   }
 
+  private async getSocketsInConversation({
+    members,
+  }: {
+    members: Member[];
+  }): Promise<string[]> {
+    let userIds = members.map((member) => member.user.id);
+    let ccus = await this.ccuService.findByUserIds({ userIds });
+    let ccusStr = ccus.map((ccu) => ccu.socketId);
+
+    return ccusStr;
+  }
+
   private convertMessageToMessageRequest(
     message: Message,
+    ccus: string[],
   ): chat.MessageRequest {
     return {
       id: message.id,
@@ -205,6 +246,7 @@ export class ChatGrpcClientService implements OnModuleInit {
       type: message.type,
       status: message.status,
       meeting: message.meeting.id,
+      ccus: ccus,
       createdAt: message.createdAt.getTime(),
       updatedAt: message.updatedAt.getTime(),
       createdBy: {

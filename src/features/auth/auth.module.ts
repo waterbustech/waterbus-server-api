@@ -41,7 +41,7 @@ import { Participant } from 'src/core/entities/participant.entity';
     AwsS3Service,
     CCUService,
   ],
-  exports: [AuthUseCases],
+  exports: [AuthUseCases, CCUService],
   controllers: [AuthController, AuthGrpcController],
 })
 export class AuthModule {}
