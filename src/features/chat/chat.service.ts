@@ -51,6 +51,7 @@ export class ChatsService {
   ): Promise<NullableType<Message>> {
     return this.chatRepository.findOne({
       where: fields,
+      relations: ['meeting', 'meeting.members', 'meeting.members.user'],
     });
   }
 
