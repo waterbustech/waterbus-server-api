@@ -49,11 +49,15 @@ export class MeetingService {
       .leftJoinAndSelect('meeting.participants', 'participants')
       .leftJoinAndSelect('meeting.latestMessage', 'latestMessage')
       .leftJoinAndSelect('member.user', 'user')
+      .addSelect(
+        'COALESCE(latestMessage.createdAt, meeting.createdAt)',
+        'latest',
+      )
       .andWhere(`meeting.id IN (${subQuery.getQuery()})`)
       .setParameters(subQuery.getParameters())
-      .orderBy('latestMessage.createdAt', 'DESC')
+      .orderBy('latest', 'DESC')
       .skip(query.skip)
-      .limit(query.limit)
+      .take(query.limit)
       .getMany();
   }
 
