@@ -39,7 +39,9 @@ export class ChatsService {
       .innerJoinAndSelect('message.meeting', 'meeting')
       .innerJoinAndSelect('message.createdBy', 'createdBy')
       .where('meeting.id = :meetingId', { meetingId })
-      .andWhere('message.createdAt > :softDeletedAt', { deletedAt })
+      .andWhere('message.createdAt > :softDeletedAt', {
+        softDeletedAt: deletedAt,
+      })
       .orderBy('message.createdAt', 'DESC')
       .skip(query.skip)
       .limit(query.limit)

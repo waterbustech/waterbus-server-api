@@ -50,8 +50,8 @@ export class ChatUseCases {
         );
       }
 
-      const deletedAt = meeting.members[indexOfUser].deletedAt
-        ? meeting.members[indexOfUser].deletedAt
+      const deletedAt = meeting.members[indexOfUser].softDeletedAt
+        ? meeting.members[indexOfUser].softDeletedAt
         : meeting.createdAt;
 
       const messages = await this.chatService.findAllMessagesByMeeting({
