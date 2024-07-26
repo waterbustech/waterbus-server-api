@@ -74,6 +74,7 @@ describe('MeetingUseCase', () => {
     status: MemberStatus.Joined,
     createdAt: undefined,
     deletedAt: undefined,
+    softDeletedAt: undefined,
     setEntityName: jest.fn(),
     toJSON: jest.fn(),
     hasId: jest.fn(),
