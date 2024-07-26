@@ -398,7 +398,7 @@ export class MeetingUseCases {
         throw new NotFoundException('User not joined meeting');
       }
 
-      meeting.members[indexOfMember].deletedAt = new Date();
+      meeting.members[indexOfMember].softDeletedAt = new Date();
       meeting.members[indexOfMember].status = MemberStatus.Invisible;
 
       const updatedMeeting = await this.meetingService.update(

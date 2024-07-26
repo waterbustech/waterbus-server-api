@@ -47,4 +47,10 @@ export class Member extends EntityHelper {
 
   @DeleteDateColumn()
   deletedAt: Date;
+
+  @Column({
+    type: Date,
+    nullable: true,
+  })
+  softDeletedAt: Date;
 }
