@@ -44,7 +44,7 @@ export class ChatsService {
       })
       .orderBy('message.createdAt', 'DESC')
       .skip(query.skip)
-      .limit(query.limit)
+      .take(query.limit)
       .getMany();
   }
 
