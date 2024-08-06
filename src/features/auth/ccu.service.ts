@@ -66,7 +66,11 @@ export class CCUService {
     });
 
     if (participantsToDelete) {
-      await this.participantRepository.remove(participantsToDelete);
+      for (const participant of participantsToDelete) {
+        participant.ccu = null;
+      }
+
+      await this.participantRepository.save(participantsToDelete);
     }
 
     const ccusToDelete = await this.ccuRepository.find({ where: { socketId } });

@@ -95,7 +95,6 @@ export class ChatGrpcClientService implements OnModuleInit {
             let socketIds = await this.getSocketsInConversation({
               members: message.meeting.members,
             });
-            console.log(socketIds);
             return this.chatService
               .sendMessage(
                 this.convertMessageToMessageRequest(message, socketIds),
