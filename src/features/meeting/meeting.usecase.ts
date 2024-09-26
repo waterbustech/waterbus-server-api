@@ -17,6 +17,7 @@ import { PaginationListQuery } from 'src/core/dtos';
 import { UserUseCases } from '../user/user.usecase';
 import { CCU } from 'src/core/entities/ccu.entity';
 import { ParticipantService } from './participant.service';
+import { MeetingStatus } from 'src/core/enums/meeting';
 
 @Injectable()
 export class MeetingUseCases {
@@ -30,17 +31,20 @@ export class MeetingUseCases {
 
   async getRoomsByUserId({
     userId,
-    status,
+    memberStatus,
+    meetingStatus = MeetingStatus.Active,
     query,
   }: {
     userId: number;
-    status: MemberStatus;
+    memberStatus: MemberStatus;
+    meetingStatus?: MeetingStatus;
     query: PaginationListQuery;
   }): Promise<Meeting[]> {
     try {
       const rooms = await this.meetingService.findAll({
         userId,
-        status,
+        memberStatus,
+        meetingStatus,
         query,
       });
 
@@ -362,6 +366,7 @@ export class MeetingUseCases {
       const meeting = await this.getRoomById(message.meeting.id);
 
       meeting.latestMessage = message;
+      meeting.latestMessageCreatedAt = message.createdAt;
 
       for (const member of meeting.members) {
         if (member.status == MemberStatus.Invisible) {
@@ -439,6 +444,43 @@ export class MeetingUseCases {
       }
 
       existsRoom.members.splice(indexOfMember, 1);
+
+      const updatedRoom = await this.meetingService.update(
+        existsRoom.id,
+        existsRoom,
+      );
+
+      return updatedRoom;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async archivedRoom({
+    code,
+    userId,
+  }: {
+    code: number;
+    userId: number;
+  }): Promise<Meeting> {
+    try {
+      const existsRoom = await this.getRoomByCode(code);
+
+      if (!existsRoom) throw new NotFoundException('Room Not Found');
+
+      const indexOfMember = existsRoom.members.findIndex(
+        (member) => member.user.id == userId,
+      );
+
+      if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+      if (existsRoom.members[indexOfMember].role != MemberRole.Host) {
+        throw new ForbiddenException(
+          'Only Host permited to archived the room.',
+        );
+      }
+
+      existsRoom.status = MeetingStatus.Archived;
 
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,

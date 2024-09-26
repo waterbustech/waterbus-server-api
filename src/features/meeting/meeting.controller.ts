@@ -32,6 +32,7 @@ import { Repository } from 'typeorm';
 import { Member } from '../../core/entities/member.entity';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
 import { UserUseCases } from '../user/user.usecase';
+import { MeetingStatus } from 'src/core/enums/meeting';
 
 @ApiTags('meeting')
 @ApiBearerAuth()
@@ -70,7 +71,24 @@ export class MeetingController {
   ) {
     return this.meetingUseCases.getRoomsByUserId({
       userId: request.user.id,
-      status,
+      memberStatus: status,
+      query,
+    });
+  }
+
+  @ApiOperation({
+    summary: 'Get archived rooms',
+    description: 'Get list rooms which are archived',
+  })
+  @Get('/conversations/archived')
+  async getArchivedRooms(
+    @Request() request,
+    @Query() query: PaginationListQuery,
+  ) {
+    return this.meetingUseCases.getRoomsByUserId({
+      userId: request.user.id,
+      memberStatus: MemberStatus.Joined,
+      meetingStatus: MeetingStatus.Archived,
       query,
     });
   }
@@ -209,5 +227,16 @@ export class MeetingController {
   async leaveRoom(@Request() request, @Param('code') code: number) {
     const userId = request.user.id;
     return this.meetingUseCases.leaveRoom({ code, userId });
+  }
+
+  @ApiOperation({
+    summary: 'Archived room',
+    description:
+      'Archived the room, user only can see the messages, not allow to modify messages anymore.',
+  })
+  @Post('/archived/:code')
+  async archivedRoom(@Request() request, @Param('code') code: number) {
+    const userId = request.user.id;
+    return this.meetingUseCases.archivedRoom({ code, userId });
   }
 }

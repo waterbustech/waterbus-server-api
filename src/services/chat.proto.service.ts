@@ -49,7 +49,7 @@ export class ChatGrpcClientService implements OnModuleInit {
             .pipe()
             .subscribe({
               next: () => {
-                this.logger.log('Retry to connect...');
+                // this.logger.log('Retry to connect...');
                 this.connect();
                 this.checkConnection();
               },

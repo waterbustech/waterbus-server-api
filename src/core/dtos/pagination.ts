@@ -8,25 +8,25 @@ export interface IPagination {
 }
 
 export class PaginationListQuery implements IPagination {
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, default: 0 })
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @IsOptional()
   readonly skip: number = 0;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, default: 5 })
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @IsOptional()
   readonly limit: number = 5;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, default: 1 })
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @IsOptional()
   readonly page: number = 1;
 
-  @ApiProperty({ required: false })
+  @ApiProperty({ required: false, default: 10 })
   @Transform(({ value }) => parseInt(value))
   @IsNumber()
   @IsOptional()

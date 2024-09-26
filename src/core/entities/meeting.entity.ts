@@ -63,6 +63,9 @@ export class Meeting extends EntityHelper {
   })
   status: MeetingStatus;
 
+  @Column({ type: Date, nullable: true })
+  latestMessageCreatedAt: Date;
+
   @BeforeInsert()
   @BeforeUpdate()
   async setPassword() {
@@ -94,5 +97,12 @@ export class Meeting extends EntityHelper {
     }
 
     this.code = Number(id);
+  }
+
+  @BeforeUpdate()
+  async updateLatestMessageCreatedAt() {
+    if (this.latestMessage) {
+      this.latestMessageCreatedAt = this.latestMessage.createdAt;
+    }
   }
 }
