@@ -111,6 +111,7 @@ describe('MeetingUseCase', () => {
     members: [mockMember],
     participants: [],
     setPassword: jest.fn(),
+    latestMessageCreatedAt: null,
     createdAt: undefined,
     updatedAt: undefined,
     deletedAt: undefined,
@@ -125,6 +126,7 @@ describe('MeetingUseCase', () => {
     softRemove: jest.fn(),
     recover: jest.fn(),
     reload: jest.fn(),
+    updateLatestMessageCreatedAt: jest.fn(),
     status: MeetingStatus.Active,
   };
 
@@ -159,7 +161,8 @@ describe('MeetingUseCase', () => {
       // Arrange
       const mockQuery = {
         userId: 1,
-        status: 2,
+        memberStatus: 2,
+        meetingStatus: 0,
         query: {
           skip: 0,
           limit: 10,
