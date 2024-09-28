@@ -20,6 +20,7 @@ import { Message } from './message.entity';
 import { Member } from './member.entity';
 import { customAlphabet } from 'nanoid';
 import { MeetingStatus } from '../enums/meeting';
+import { WhiteBoard } from './white-board.entity';
 
 @Entity({ name: 'meetings' })
 export class Meeting extends EntityHelper {
@@ -55,6 +56,9 @@ export class Meeting extends EntityHelper {
 
   @OneToMany(() => Message, (message) => message.meeting)
   message: Relation<Message>;
+
+  @OneToMany(() => WhiteBoard, (whiteBoard) => whiteBoard.meeting)
+  whiteBoard: Relation<WhiteBoard>;
 
   @Column({
     type: 'enum',

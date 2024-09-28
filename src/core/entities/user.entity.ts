@@ -14,6 +14,7 @@ import { EntityHelper } from '../../utils/entity-helper';
 import { Participant } from './participant.entity';
 import { Message } from './message.entity';
 import { nanoid } from 'nanoid';
+import { Record } from './record.entity';
 
 @Entity({ name: 'users' })
 export class User extends EntityHelper {
@@ -63,6 +64,9 @@ export class User extends EntityHelper {
 
   @OneToMany(() => Message, (message) => message.createdBy)
   message: Relation<Message>;
+
+  @OneToMany(() => Record, (record) => record.createdBy)
+  record: Relation<Record>;
 
   @BeforeInsert()
   async generateUserName() {

@@ -17,6 +17,7 @@ export class MeetingFactoryService {
     newRoom.password = room.password;
     newRoom.members = [member];
     newRoom.participants = [];
+    newRoom.latestMessageCreatedAt = new Date();
 
     return newRoom;
   }

@@ -117,6 +117,7 @@ describe('MeetingUseCase', () => {
     deletedAt: undefined,
     latestMessage: null,
     message: null,
+    whiteBoard: null,
     generateCode: jest.fn(),
     setEntityName: jest.fn(),
     toJSON: jest.fn(),
