@@ -55,6 +55,7 @@ describe('MeetingUseCase', () => {
     lastSeenAt: undefined,
     participant: new Participant(),
     message: new Message(),
+    record: null,
     generateUserName: jest.fn(),
     setEntityName: jest.fn(),
     toJSON: jest.fn(),

@@ -16,6 +16,7 @@ import { Transform } from 'class-transformer';
 export interface PaintModel {
   color: string;
   offsets: { dx: number; dy: number };
+  width: number;
 }
 
 @Entity({ name: 'white-boards' })
