@@ -52,6 +52,7 @@ export class MeetingService {
       .leftJoinAndSelect('meeting.members', 'member')
       .leftJoinAndSelect('meeting.participants', 'participants')
       .leftJoinAndSelect('meeting.latestMessage', 'latestMessage')
+      .leftJoinAndSelect('latestMessage.createdBy', 'createdBy')
       .leftJoinAndSelect('member.user', 'user')
       .andWhere(`meeting.id IN (${subQuery.getQuery()})`)
       .setParameters(subQuery.getParameters())

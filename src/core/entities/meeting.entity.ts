@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -51,7 +52,11 @@ export class Meeting extends EntityHelper {
   })
   members: Relation<Member[]>;
 
-  @OneToOne(() => Message, (message) => message.meeting)
+  @OneToOne(() => Message, (message) => message.meeting, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinColumn()
   latestMessage: Relation<Message>;
 
   @OneToMany(() => Message, (message) => message.meeting)
