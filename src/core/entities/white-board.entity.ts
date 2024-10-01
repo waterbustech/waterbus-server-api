@@ -1,7 +1,6 @@
 import {
   CreateDateColumn,
   Entity,
-  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   DeleteDateColumn,
@@ -15,8 +14,13 @@ import { Transform } from 'class-transformer';
 
 export interface PaintModel {
   color: string;
-  offsets: { dx: number; dy: number };
+  offsets: OffsetModel[];
   width: number;
+}
+
+export interface OffsetModel {
+  dx: number;
+  dy: number;
 }
 
 @Entity({ name: 'white-boards' })

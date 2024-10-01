@@ -58,7 +58,12 @@ async function bootstrap() {
   SwaggerModule.setup('docs', app, document);
 
   const authGrpcUrl = configService.getAuthGrpcUrl();
+  const whiteBoardGrpcUrl = configService.getWhiteBoardGrpcUrl();
+  const recordGrpcUrl = configService.getRecordGrpcUrl();
   const meetingGrpcUrl = configService.getMeetingGrpcUrl();
+
+  console.log(recordGrpcUrl);
+  console.log(whiteBoardGrpcUrl);
 
   const authMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
@@ -66,6 +71,28 @@ async function bootstrap() {
       package: EPackage.AUTH,
       protoPath: getProtoPath(EPackage.AUTH),
       url: authGrpcUrl,
+      loader: {
+        includeDirs: [getIncludeDirs()],
+      },
+    },
+  };
+  const whiteBoardMicroserviceOptions: MicroserviceOptions = {
+    transport: Transport.GRPC,
+    options: {
+      package: EPackage.WHITEBOARD,
+      protoPath: getProtoPath(EPackage.WHITEBOARD),
+      url: whiteBoardGrpcUrl,
+      loader: {
+        includeDirs: [getIncludeDirs()],
+      },
+    },
+  };
+  const recordMicroserviceOptions: MicroserviceOptions = {
+    transport: Transport.GRPC,
+    options: {
+      package: EPackage.RECORD,
+      protoPath: getProtoPath(EPackage.RECORD),
+      url: recordGrpcUrl,
       loader: {
         includeDirs: [getIncludeDirs()],
       },
@@ -84,6 +111,8 @@ async function bootstrap() {
   };
 
   app.connectMicroservice(authMicroserviceOptions);
+  app.connectMicroservice(whiteBoardMicroserviceOptions);
+  app.connectMicroservice(recordMicroserviceOptions);
   app.connectMicroservice(meetingMicroserviceOptions);
   await app.startAllMicroservices();
   await app.listen(configService.getPort(), '0.0.0.0');

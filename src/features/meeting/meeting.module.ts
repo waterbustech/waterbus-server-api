@@ -18,6 +18,8 @@ import { Record } from 'src/core/entities/record.entity';
 import { RecordTrack } from 'src/core/entities/record-track.entity';
 import { RecordUseCases } from './record.usecase';
 import { RecordService } from './record.service';
+import { WhiteBoardGrpcController } from './white-board.proto.controller';
+import { RecordGrpcController } from './record.proto.controller';
 
 @Module({
   imports: [
@@ -32,7 +34,12 @@ import { RecordService } from './record.service';
     ]),
     UserModule,
   ],
-  controllers: [MeetingController, MeetingGrpcController],
+  controllers: [
+    MeetingController,
+    MeetingGrpcController,
+    WhiteBoardGrpcController,
+    RecordGrpcController,
+  ],
   providers: [
     MeetingService,
     MeetingUseCases,
