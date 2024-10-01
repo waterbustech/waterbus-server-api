@@ -18,6 +18,7 @@ import { UserUseCases } from '../user/user.usecase';
 import { CCU } from 'src/core/entities/ccu.entity';
 import { ParticipantService } from './participant.service';
 import { MeetingStatus } from 'src/core/enums/meeting';
+import { ChatGrpcClientService } from 'src/services/chat.proto.service';
 
 @Injectable()
 export class MeetingUseCases {
@@ -25,6 +26,7 @@ export class MeetingUseCases {
     private meetingService: MeetingService,
     private userUseCases: UserUseCases,
     private participantService: ParticipantService,
+    private readonly chatGrpcClientService: ChatGrpcClientService,
     @InjectRepository(CCU)
     private ccuRepository: Repository<CCU>,
   ) {}
@@ -285,6 +287,15 @@ export class MeetingUseCases {
         existsRoom,
       );
 
+      const memberIndex = updatedRoom.members.findIndex(
+        (member) => member.user.id == user.id,
+      );
+
+      this.chatGrpcClientService.newInvitation({
+        meeting: updatedRoom,
+        member: updatedRoom.members[memberIndex],
+      });
+
       return updatedRoom;
     } catch (error) {
       throw error;
@@ -353,6 +364,11 @@ export class MeetingUseCases {
         existsRoom.id,
         existsRoom,
       );
+
+      this.chatGrpcClientService.newMemberJoined({
+        meeting: existsRoom,
+        member: existsRoom.members[indexOfUser],
+      });
 
       return updatedRoom;
     } catch (error) {

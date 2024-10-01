@@ -20,6 +20,11 @@ import { RecordUseCases } from './record.usecase';
 import { RecordService } from './record.service';
 import { WhiteBoardGrpcController } from './white-board.proto.controller';
 import { RecordGrpcController } from './record.proto.controller';
+import { ChatGrpcClientService } from 'src/services/chat.proto.service';
+import { ClientProxyModule } from 'src/core/client-proxy/client-proxy.module';
+import { CCUService } from '../auth/ccu.service';
+import { ClientGrpc } from '@nestjs/microservices';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
@@ -32,7 +37,9 @@ import { RecordGrpcController } from './record.proto.controller';
       Record,
       RecordTrack,
     ]),
+    AuthModule,
     UserModule,
+    ClientProxyModule.register(),
   ],
   controllers: [
     MeetingController,
@@ -49,7 +56,18 @@ import { RecordGrpcController } from './record.proto.controller';
     ParticipantService,
     WhiteBoardService,
     RecordService,
+    {
+      provide: ChatGrpcClientService,
+      inject: [ClientProxyModule.chatClientProxy, CCUService],
+      useFactory: (clientProxy: ClientGrpc, ccuService: CCUService) =>
+        new ChatGrpcClientService(clientProxy, ccuService),
+    },
   ],
-  exports: [MeetingService, MeetingUseCases, MeetingFactoryService],
+  exports: [
+    MeetingService,
+    MeetingUseCases,
+    MeetingFactoryService,
+    ChatGrpcClientService,
+  ],
 })
 export class MeetingModule {}
