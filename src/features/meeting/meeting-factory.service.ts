@@ -27,6 +27,7 @@ export class MeetingFactoryService {
     newRoom.title = room.title;
     newRoom.password = room.password;
     newRoom.code = room.code;
+    newRoom.avatar = room.avatar;
 
     return newRoom;
   }

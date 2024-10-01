@@ -38,6 +38,10 @@ export class Meeting extends EntityHelper {
   @Column({ type: String })
   password: string;
 
+  @ApiProperty({ example: 'https://waterbus.cloud/assets/avatar/lambiengcode' })
+  @Column({ type: String, nullable: true })
+  avatar?: string;
+
   // Use for session join
   @OneToMany(() => Participant, (participant) => participant.meeting, {
     eager: true,

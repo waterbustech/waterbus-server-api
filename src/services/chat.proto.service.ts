@@ -308,6 +308,7 @@ export class ChatGrpcClientService implements OnModuleInit {
                   id: meeting.id,
                   title: meeting.title,
                   status: meeting.status,
+                  avatar: meeting.avatar,
                   createdAt: meeting.createdAt.getTime().toString(),
                   members: [],
                 },

@@ -134,6 +134,7 @@ describe('MeetingsController', () => {
         title: '123',
         password: '123',
         code: 123,
+        avatar: 'https://waterbus.tech/lambiengcode.png',
       }; // Mock your update room DTO here
       const mockRequest = { user: { id: 1 } };
 

@@ -19,6 +19,7 @@ import {
 } from '@nestjs/common';
 import { Status } from 'src/core/enums';
 import bcrypt from 'bcryptjs';
+import { ChatGrpcClientService } from 'src/services/chat.proto.service';
 
 describe('MeetingUseCase', () => {
   let meetingUseCases: MeetingUseCases;
@@ -37,6 +38,11 @@ describe('MeetingUseCase', () => {
   const mockParticipantService = {
     findOne: jest.fn(),
     update: jest.fn(),
+  };
+
+  const mockChatGrpcClientService = {
+    newInvitation: jest.fn(),
+    newMemberJoined: jest.fn(),
   };
 
   const mockCCURepository = {
@@ -109,6 +115,7 @@ describe('MeetingUseCase', () => {
     title: 'Meeting with Alice',
     code: 123,
     password: '123',
+    avatar: null,
     members: [mockMember],
     participants: [],
     setPassword: jest.fn(),
@@ -147,6 +154,10 @@ describe('MeetingUseCase', () => {
         {
           provide: ParticipantService,
           useValue: mockParticipantService,
+        },
+        {
+          provide: ChatGrpcClientService,
+          useValue: mockChatGrpcClientService,
         },
         {
           provide: getRepositoryToken(CCU),
