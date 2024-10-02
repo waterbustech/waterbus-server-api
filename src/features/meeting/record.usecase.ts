@@ -58,16 +58,12 @@ export class RecordUseCases {
   async stopRecord({
     recordId,
     urlToVideos,
-    urlToAudios,
   }: {
     recordId: number;
     urlToVideos: string[];
-    urlToAudios: string[];
   }) {
-    if (urlToAudios.length != urlToVideos.length) {
-      throw new BadRequestException(
-        'length of videos and audios should be same',
-      );
+    if (urlToVideos) {
+      throw new BadRequestException('videos should be not empty');
     }
 
     const record = await this.recordService.findOne({ id: recordId });
@@ -81,7 +77,6 @@ export class RecordUseCases {
     for (let i; i < urlToVideos.length; i++) {
       let track = new RecordTrack();
       track.record = record;
-      track.urlToAudio = urlToAudios[i];
       track.urlToVideo = urlToVideos[i];
 
       tracks.push(track);

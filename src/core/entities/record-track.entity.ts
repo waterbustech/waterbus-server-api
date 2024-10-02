@@ -27,11 +27,6 @@ export class RecordTrack extends EntityHelper {
   @Column({ type: String })
   urlToVideo: string;
 
-  @ApiProperty()
-  @Transform(({ value }) => undefined)
-  @Column({ type: String })
-  urlToAudio: string;
-
   @CreateDateColumn()
   createdAt: Date;
 
