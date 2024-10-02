@@ -59,11 +59,7 @@ async function bootstrap() {
 
   const authGrpcUrl = configService.getAuthGrpcUrl();
   const whiteBoardGrpcUrl = configService.getWhiteBoardGrpcUrl();
-  const recordGrpcUrl = configService.getRecordGrpcUrl();
   const meetingGrpcUrl = configService.getMeetingGrpcUrl();
-
-  console.log(recordGrpcUrl);
-  console.log(whiteBoardGrpcUrl);
 
   const authMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
@@ -87,17 +83,7 @@ async function bootstrap() {
       },
     },
   };
-  const recordMicroserviceOptions: MicroserviceOptions = {
-    transport: Transport.GRPC,
-    options: {
-      package: EPackage.RECORD,
-      protoPath: getProtoPath(EPackage.RECORD),
-      url: recordGrpcUrl,
-      loader: {
-        includeDirs: [getIncludeDirs()],
-      },
-    },
-  };
+
   const meetingMicroserviceOptions: MicroserviceOptions = {
     transport: Transport.GRPC,
     options: {
@@ -112,7 +98,6 @@ async function bootstrap() {
 
   app.connectMicroservice(authMicroserviceOptions);
   app.connectMicroservice(whiteBoardMicroserviceOptions);
-  app.connectMicroservice(recordMicroserviceOptions);
   app.connectMicroservice(meetingMicroserviceOptions);
   await app.startAllMicroservices();
   await app.listen(configService.getPort(), '0.0.0.0');
