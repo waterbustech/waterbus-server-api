@@ -8,6 +8,9 @@ import { MeetingService } from './meeting.service';
 import { UserUseCases } from '../user/user.usecase';
 import { Record } from 'src/core/entities/record.entity';
 import { RecordTrack } from 'src/core/entities/record-track.entity';
+import { RecordStatus } from 'src/core/enums';
+import { Participant } from 'src/core/entities/participant.entity';
+import { PaginationListQuery } from 'src/core/dtos';
 
 @Injectable()
 export class RecordUseCases {
@@ -16,6 +19,37 @@ export class RecordUseCases {
     private meetingService: MeetingService,
     private userUseCases: UserUseCases,
   ) {}
+
+  async getRecordsByCreatedBy({
+    userId,
+    status = RecordStatus.Finish,
+    query,
+  }: {
+    userId: number;
+    status?: RecordStatus;
+    query: PaginationListQuery;
+  }) {
+    return await this.recordService.getRecordsByCreatedBy({
+      userId,
+      status,
+      query,
+    });
+  }
+
+  async getRecordByStatus({
+    meetingId,
+    status,
+  }: {
+    meetingId: number;
+    status: RecordStatus;
+  }) {
+    const record = await this.recordService.findOne({
+      meeting: { id: meetingId },
+      status: status,
+    });
+
+    return record;
+  }
 
   /// Will create Record
   async startRecord({
@@ -56,20 +90,16 @@ export class RecordUseCases {
 
   /// Will create list Record Track from list of audio & video
   async stopRecord({
-    recordId,
+    record,
+    participants,
     urlToVideos,
   }: {
-    recordId: number;
+    record: Record;
+    participants: Participant[];
     urlToVideos: string[];
   }) {
-    if (urlToVideos) {
+    if (!urlToVideos) {
       throw new BadRequestException('videos should be not empty');
-    }
-
-    const record = await this.recordService.findOne({ id: recordId });
-
-    if (!record) {
-      throw new NotFoundException(`Record with id ${recordId} not found`);
     }
 
     let tracks: RecordTrack[] = [];
@@ -78,6 +108,7 @@ export class RecordUseCases {
       let track = new RecordTrack();
       track.record = record;
       track.urlToVideo = urlToVideos[i];
+      track.participant = participants[i];
 
       tracks.push(track);
     }
@@ -85,5 +116,9 @@ export class RecordUseCases {
     const savedTracks = await this.recordService.saveTracks(tracks);
 
     return savedTracks;
+  }
+
+  async updateRecord({ record }: { record: Record }) {
+    return await this.recordService.update(record.id, record);
   }
 }

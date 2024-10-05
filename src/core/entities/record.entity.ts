@@ -15,6 +15,7 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { RecordTrack } from './record-track.entity';
 import { User } from './user.entity';
+import { RecordStatus } from '../enums';
 
 @Entity({ name: 'records' })
 export class Record extends EntityHelper {
@@ -35,12 +36,12 @@ export class Record extends EntityHelper {
   track: Relation<Meeting>;
 
   @ApiProperty()
-  @Transform(({ value }) => value.toString())
+  @Transform(({ value }) => undefined)
   @Column({ type: String, default: null })
   urlToVideo: string;
 
   @ApiProperty()
-  @Transform(({ value }) => value.toString())
+  @Transform(({ value }) => undefined)
   @Column({ type: String, default: null })
   thumbnail: string;
 
@@ -48,6 +49,11 @@ export class Record extends EntityHelper {
   @Transform(({ value }) => Number(value))
   @Column({ type: Number, default: 0 })
   duration: number;
+
+  @ApiProperty()
+  @Transform(({ value }) => Number(value))
+  @Column({ type: 'enum', enum: RecordStatus, default: RecordStatus.Recording })
+  status: number;
 
   @CreateDateColumn()
   createdAt: Date;

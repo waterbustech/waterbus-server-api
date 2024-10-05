@@ -13,6 +13,7 @@ import { Meeting } from './meeting.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Record } from './record.entity';
+import { Participant } from './participant.entity';
 
 @Entity({ name: 'record-tracks' })
 export class RecordTrack extends EntityHelper {
@@ -26,6 +27,9 @@ export class RecordTrack extends EntityHelper {
   @Transform(({ value }) => undefined)
   @Column({ type: String })
   urlToVideo: string;
+
+  @ManyToOne(() => Participant, (participant) => participant.track)
+  participant: Relation<Participant>;
 
   @CreateDateColumn()
   createdAt: Date;

@@ -33,6 +33,8 @@ import { Member } from '../../core/entities/member.entity';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
 import { UserUseCases } from '../user/user.usecase';
 import { MeetingStatus } from 'src/core/enums/meeting';
+import { RecordUseCases } from './record.usecase';
+import { RecordStatus } from 'src/core/enums';
 
 @ApiTags('meeting')
 @ApiBearerAuth()
@@ -46,6 +48,7 @@ export class MeetingController {
   constructor(
     private meetingUseCases: MeetingUseCases,
     private userUseCases: UserUseCases,
+    private recordUseCases: RecordUseCases,
     private meetingFactoryService: MeetingFactoryService,
     @InjectRepository(Member)
     private memberRepository: Repository<Member>,
@@ -238,5 +241,41 @@ export class MeetingController {
   async archivedRoom(@Request() request, @Param('code') code: number) {
     const userId = request.user.id;
     return this.meetingUseCases.archivedRoom({ code, userId });
+  }
+
+  @ApiOperation({
+    summary: 'Get list records',
+    description: 'Get list records by id',
+  })
+  @Get('records')
+  async getRecords(@Request() request, @Query() query: PaginationListQuery) {
+    const userId = request.user.id;
+    return this.recordUseCases.getRecordsByCreatedBy({
+      userId,
+      query,
+    });
+  }
+
+  @ApiOperation({
+    summary: 'Start record meeting',
+    description: 'Start record meeting',
+  })
+  @Post('/record/start')
+  async startRecord(@Request() request, @Query('code') code: number) {
+    const userId = request.user.id;
+    return this.meetingUseCases.startRecord({ userId, code });
+  }
+
+  @ApiOperation({
+    summary: 'Stop record meeting',
+    description: 'Stop record meeting',
+  })
+  @Post('/record/stop')
+  async stopRecord(@Request() request, @Query('code') code: number) {
+    const userId = request.user.id;
+    return this.meetingUseCases.stopRecord({
+      userId,
+      code,
+    });
   }
 }

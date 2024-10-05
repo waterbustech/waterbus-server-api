@@ -7,12 +7,14 @@ import {
   ManyToOne,
   Index,
   Relation,
+  OneToMany,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
 import { User } from '..';
 import { Status } from '../enums';
 import { Meeting } from './meeting.entity';
 import { CCU } from './ccu.entity';
+import { RecordTrack } from './record-track.entity';
 
 @Entity({ name: 'participants' })
 export class Participant extends EntityHelper {
@@ -35,6 +37,9 @@ export class Participant extends EntityHelper {
   })
   @Index()
   ccu: Relation<CCU>;
+
+  @OneToMany(() => RecordTrack, (track) => track.participant)
+  track: Relation<RecordTrack>;
 
   @Column({
     type: 'enum',

@@ -19,14 +19,19 @@ import { CCU } from 'src/core/entities/ccu.entity';
 import { ParticipantService } from './participant.service';
 import { MeetingStatus } from 'src/core/enums/meeting';
 import { ChatGrpcClientService } from 'src/services/chat.proto.service';
+import { RecordGrpcService } from 'src/services/record.proto.service';
+import { RecordUseCases } from './record.usecase';
+import { RecordStatus } from 'src/core/enums';
 
 @Injectable()
 export class MeetingUseCases {
   constructor(
     private meetingService: MeetingService,
     private userUseCases: UserUseCases,
+    private recordUsecases: RecordUseCases,
     private participantService: ParticipantService,
     private readonly chatGrpcClientService: ChatGrpcClientService,
+    private readonly recordGrpcClientService: RecordGrpcService,
     @InjectRepository(CCU)
     private ccuRepository: Repository<CCU>,
   ) {}
@@ -434,6 +439,107 @@ export class MeetingUseCases {
     }
   }
 
+  async startRecord({ userId, code }: { userId: number; code: number }) {
+    const existsRoom = await this.getRoomByCode(code);
+
+    if (!existsRoom) throw new NotFoundException('Room Not Found');
+
+    const indexOfMember = existsRoom.members.findIndex(
+      (member) => member.user.id == userId,
+    );
+
+    if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+    if (existsRoom.members[indexOfMember].role != MemberRole.Host) {
+      throw new ForbiddenException('Only allow host start record');
+    }
+
+    const existsRecord = await this.recordUsecases.getRecordByStatus({
+      meetingId: existsRoom.id,
+      status: RecordStatus.Recording,
+    });
+
+    if (existsRecord) {
+      throw new BadRequestException('Meeting already recording');
+    }
+
+    const record = await this.recordUsecases.startRecord({
+      userId,
+      meetingId: existsRoom.id,
+    });
+
+    this.recordGrpcClientService.startRecord({
+      recordId: record.id,
+      meetingId: code,
+    });
+
+    return record;
+  }
+
+  async stopRecord({
+    userId = null,
+    code,
+  }: {
+    userId?: number | null;
+    code: number;
+  }) {
+    const existsRoom = await this.getRoomByCode(code);
+
+    if (!existsRoom) throw new NotFoundException('Room Not Found');
+
+    if (userId) {
+      const indexOfMember = existsRoom.members.findIndex(
+        (member) => member.user.id == userId,
+      );
+
+      if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+      if (existsRoom.members[indexOfMember].role != MemberRole.Host) {
+        throw new ForbiddenException('Only allow host stop record');
+      }
+    }
+
+    const existsRecord = await this.recordUsecases.getRecordByStatus({
+      meetingId: existsRoom.id,
+      status: RecordStatus.Recording,
+    });
+
+    if (!existsRecord) {
+      throw new NotFoundException(`Meeting with id ${existsRoom.id} not found`);
+    }
+
+    const res = await this.recordGrpcClientService.stopRecord({
+      meetingId: code,
+    });
+
+    if (res.succeed && res.tracks) {
+      const participantIds = res.tracks.map((track) => track.participantId);
+      const participants =
+        await this.participantService.findByIds(participantIds);
+
+      const urlToVideos = res.tracks.map((track) => track.urlToVideos);
+
+      await this.recordUsecases.stopRecord({
+        record: existsRecord,
+        urlToVideos,
+        participants,
+      });
+
+      // update record immediately if just 1 track
+      if (urlToVideos.length == 1) {
+        existsRecord.urlToVideo = urlToVideos[0];
+        existsRecord.status = RecordStatus.Finish;
+      } else {
+        // call merge video here if needed
+        existsRecord.status = RecordStatus.Processing;
+      }
+
+      await this.recordUsecases.updateRecord({ record: existsRecord });
+    }
+
+    return existsRecord;
+  }
+
   // MARK: related to remove
 
   async leaveRoom({
@@ -532,6 +638,10 @@ export class MeetingUseCases {
       ]);
 
       existsRoom.participants.splice(indexOfParticipant, 1);
+
+      if (!existsRoom.participants) {
+        this.stopRecord({ code: code });
+      }
 
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,

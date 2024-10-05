@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { DeepPartial, RemoveOptions, Repository } from 'typeorm';
+import { DeepPartial, In, RemoveOptions, Repository } from 'typeorm';
 import { Participant } from 'src/core/entities/participant.entity';
 
 @Injectable()
@@ -11,6 +11,18 @@ export class ParticipantService {
     @InjectRepository(Participant)
     private participantRepository: Repository<Participant>,
   ) {}
+
+  async findByIds(ids: Participant['id'][]): Promise<Participant[]> {
+    try {
+      const participants = await this.participantRepository.findBy({
+        id: In(ids),
+      });
+
+      return participants;
+    } catch (error) {
+      throw error;
+    }
+  }
 
   async create(participant: Participant): Promise<Participant> {
     try {

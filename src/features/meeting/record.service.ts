@@ -1,10 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { PaginationListQuery } from 'src/core/dtos';
 import { RecordTrack } from 'src/core/entities/record-track.entity';
 import { Record } from 'src/core/entities/record.entity';
+import { RecordStatus } from 'src/core/enums';
 import { EntityCondition } from 'src/utils/types/entity-condition.type';
 import { NullableType } from 'src/utils/types/nullable.type';
-import { DeepPartial, RemoveOptions, Repository } from 'typeorm';
+import { DeepPartial, In, RemoveOptions, Repository } from 'typeorm';
 
 @Injectable()
 export class RecordService {
@@ -14,6 +16,26 @@ export class RecordService {
     @InjectRepository(RecordTrack)
     private trackRepository: Repository<RecordTrack>,
   ) {}
+
+  getRecordsByCreatedBy({
+    userId,
+    status,
+    query,
+  }: {
+    userId: number;
+    status: RecordStatus;
+    query: PaginationListQuery;
+  }): Promise<NullableType<Record[]>> {
+    return this.recordRepository
+      .createQueryBuilder('record')
+      .innerJoinAndSelect('record.createdBy', 'createdBy')
+      .where('createdBy.id = :userId', { userId })
+      .andWhere('record.status =: status', { status })
+      .orderBy('record.createdAt', 'DESC')
+      .skip(query.skip)
+      .take(query.limit)
+      .getMany();
+  }
 
   async create(record: Record): Promise<Record> {
     try {

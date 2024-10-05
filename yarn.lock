@@ -6256,10 +6256,10 @@ watchpack@^2.4.0:
     glob-to-regexp "^0.4.1"
     graceful-fs "^4.1.2"
 
-waterbus-proto@^1.1.12:
-  version "1.1.12"
-  resolved "https://registry.yarnpkg.com/waterbus-proto/-/waterbus-proto-1.1.12.tgz#d40a3f340b776a4121483c4d316de6f13845fa9d"
-  integrity sha512-PJXfNhRnjwTYn41AURFbR/CMt7nRx/P1Ef9cRKxDDT0cW+rp3bzDYn4r8AJMH05l+qO9WwbYCk0v2TXMpdCdtA==
+waterbus-proto@^1.1.15:
+  version "1.1.15"
+  resolved "https://registry.yarnpkg.com/waterbus-proto/-/waterbus-proto-1.1.15.tgz#4cd1a86386e6392dea8c6968a2bbd5e85bd8fcab"
+  integrity sha512-IpUPBbYg9jAgMgAuLWhtkEowlgQxyD77SSliHkw6Rj+DTkjku+bq0imO7acG33b3uq2iUReroePSRdwmyahkLA==
   dependencies:
     "@grpc/grpc-js" "^1.9.3"
     rxjs "^7.8.1"
