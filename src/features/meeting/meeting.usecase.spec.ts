@@ -20,6 +20,8 @@ import {
 import { Status } from 'src/core/enums';
 import bcrypt from 'bcryptjs';
 import { ChatGrpcClientService } from 'src/services/chat.proto.service';
+import { RecordUseCases } from './record.usecase';
+import { RecordGrpcService } from 'src/services/record.proto.service';
 
 describe('MeetingUseCase', () => {
   let meetingUseCases: MeetingUseCases;
@@ -35,6 +37,8 @@ describe('MeetingUseCase', () => {
     getUserById: jest.fn(),
   };
 
+  const mockRecordUseCases = {};
+
   const mockParticipantService = {
     findOne: jest.fn(),
     update: jest.fn(),
@@ -44,6 +48,8 @@ describe('MeetingUseCase', () => {
     newInvitation: jest.fn(),
     newMemberJoined: jest.fn(),
   };
+
+  const mockRecordGrpcClientService = {};
 
   const mockCCURepository = {
     save: jest.fn(),
@@ -100,6 +106,7 @@ describe('MeetingUseCase', () => {
     status: Status.Active,
     createdAt: undefined,
     deletedAt: undefined,
+    track: null,
     setEntityName: jest.fn(),
     toJSON: jest.fn(),
     hasId: jest.fn(),
@@ -148,6 +155,10 @@ describe('MeetingUseCase', () => {
           useValue: mockUserUseCases,
         },
         {
+          provide: RecordUseCases,
+          useValue: mockRecordUseCases,
+        },
+        {
           provide: MeetingService,
           useValue: mockMeetingService,
         },
@@ -158,6 +169,10 @@ describe('MeetingUseCase', () => {
         {
           provide: ChatGrpcClientService,
           useValue: mockChatGrpcClientService,
+        },
+        {
+          provide: RecordGrpcService,
+          useValue: mockRecordGrpcClientService,
         },
         {
           provide: getRepositoryToken(CCU),
