@@ -8,6 +8,7 @@ import { MeetingModule } from './features/meeting/meeting.module';
 import { ChatModule } from './features/chat/chat.module';
 import { EnvironmentConfigModule } from './core/config/environment/environment.module';
 import { HealthCheckController } from './app.controller';
+import { NotFoundController } from './notfound.controller';
 
 @Module({
   imports: [
@@ -23,6 +24,6 @@ import { HealthCheckController } from './app.controller';
     MeetingModule,
     ChatModule,
   ],
-  controllers: [HealthCheckController],
+  controllers: [HealthCheckController, NotFoundController],
 })
 export class AppModule {}
