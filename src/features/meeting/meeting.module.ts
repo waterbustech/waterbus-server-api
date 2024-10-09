@@ -73,6 +73,8 @@ import { RecordGrpcService } from 'src/services/record.proto.service';
     MeetingUseCases,
     MeetingFactoryService,
     ChatGrpcClientService,
+    RecordUseCases,
+    RecordService,
   ],
 })
 export class MeetingModule {}

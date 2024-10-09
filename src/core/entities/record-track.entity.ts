@@ -1,7 +1,6 @@
 import {
   CreateDateColumn,
   Entity,
-  Index,
   ManyToOne,
   PrimaryGeneratedColumn,
   DeleteDateColumn,
@@ -9,11 +8,11 @@ import {
   Column,
 } from 'typeorm';
 import { EntityHelper } from '../../utils/entity-helper';
-import { Meeting } from './meeting.entity';
 import { ApiProperty } from '@nestjs/swagger';
 import { Transform } from 'class-transformer';
 import { Record } from './record.entity';
 import { Participant } from './participant.entity';
+import { User } from '..';
 
 @Entity({ name: 'record-tracks' })
 export class RecordTrack extends EntityHelper {
@@ -28,8 +27,18 @@ export class RecordTrack extends EntityHelper {
   @Column({ type: String })
   urlToVideo: string;
 
-  @ManyToOne(() => Participant, (participant) => participant.track)
-  participant: Relation<Participant>;
+  @ApiProperty()
+  @Transform(({ value }) => undefined)
+  @Column({ type: String })
+  startTime: string;
+
+  @ApiProperty()
+  @Transform(({ value }) => undefined)
+  @Column({ type: String })
+  endTime: string;
+
+  @ManyToOne(() => User, (user) => user.track)
+  user: Relation<User>;
 
   @CreateDateColumn()
   createdAt: Date;

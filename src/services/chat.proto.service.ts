@@ -36,7 +36,7 @@ export class ChatGrpcClientService implements OnModuleInit {
     private readonly chatClientProxy: ClientGrpc,
     private readonly ccuService: CCUService,
   ) {
-    this.logger = new Logger('ChatService');
+    this.logger = new Logger(ChatGrpcClientService.name);
   }
 
   onModuleInit() {

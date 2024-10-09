@@ -36,8 +36,10 @@
     "@nestjs/microservices": "^10.3.8",
     "@nestjs/passport": "^10.0.3",
     "@nestjs/platform-fastify": "^10.3.8",
+    "@nestjs/schedule": "^4.1.1",
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
+    "amqplib": "^0.10.4",
     "aws-sdk": "^2.1603.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
@@ -57,7 +59,7 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "typesense": "^1.8.2",
-    "waterbus-proto": "^1.1.15"
+    "waterbus-proto": "^1.1.17"
   },
   "resolutions": {
     "inquirer": "^8.0.0"

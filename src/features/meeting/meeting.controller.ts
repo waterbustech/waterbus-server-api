@@ -250,7 +250,7 @@ export class MeetingController {
   @Get('records')
   async getRecords(@Request() request, @Query() query: PaginationListQuery) {
     const userId = request.user.id;
-    return this.recordUseCases.getRecordsByCreatedBy({
+    return this.recordUseCases.getRecordsByStatus({
       userId,
       query,
     });

@@ -9,8 +9,9 @@ import { UserUseCases } from '../user/user.usecase';
 import { Record } from 'src/core/entities/record.entity';
 import { RecordTrack } from 'src/core/entities/record-track.entity';
 import { RecordStatus } from 'src/core/enums';
-import { Participant } from 'src/core/entities/participant.entity';
 import { PaginationListQuery } from 'src/core/dtos';
+import { meeting } from 'waterbus-proto';
+import { User } from 'src/core';
 
 @Injectable()
 export class RecordUseCases {
@@ -20,35 +21,58 @@ export class RecordUseCases {
     private userUseCases: UserUseCases,
   ) {}
 
-  async getRecordsByCreatedBy({
+  async getRecordsByStatus({
     userId,
     status = RecordStatus.Finish,
     query,
   }: {
-    userId: number;
+    userId?: number;
     status?: RecordStatus;
     query: PaginationListQuery;
-  }) {
-    return await this.recordService.getRecordsByCreatedBy({
+  }): Promise<Record[]> {
+    return await this.recordService.getRecordsByStatus({
       userId,
       status,
       query,
     });
   }
 
+  async getRecordById({
+    id,
+    status,
+  }: {
+    id: number;
+    status?: RecordStatus;
+  }): Promise<Record | null> {
+    const record = await this.recordService.findOne({
+      id,
+      status,
+    });
+
+    return record;
+  }
+
   async getRecordByStatus({
     meetingId,
     status,
   }: {
-    meetingId: number;
+    meetingId?: number;
     status: RecordStatus;
-  }) {
+  }): Promise<Record | null> {
     const record = await this.recordService.findOne({
       meeting: { id: meetingId },
       status: status,
     });
 
     return record;
+  }
+
+  async getTracksByRecordId({ id }: { id: number }): Promise<RecordTrack[]> {
+    const tracks = await this.recordService.findAllRecordTracks({
+      record: { id: id },
+    });
+
+    return tracks;
   }
 
   /// Will create Record
@@ -91,24 +115,26 @@ export class RecordUseCases {
   /// Will create list Record Track from list of audio & video
   async stopRecord({
     record,
-    participants,
-    urlToVideos,
+    users,
+    pTracks,
   }: {
     record: Record;
-    participants: Participant[];
-    urlToVideos: string[];
+    users: User[];
+    pTracks: meeting.RecordTrackRequest[];
   }) {
-    if (!urlToVideos) {
-      throw new BadRequestException('videos should be not empty');
-    }
+    if (!pTracks) return;
 
     let tracks: RecordTrack[] = [];
 
-    for (let i; i < urlToVideos.length; i++) {
+    for (let i = 0; i < pTracks.length; i++) {
+      let pTrack = pTracks[i];
+
       let track = new RecordTrack();
       track.record = record;
-      track.urlToVideo = urlToVideos[i];
-      track.participant = participants[i];
+      track.urlToVideo = pTrack.urlToVideo;
+      track.startTime = pTrack.startTime;
+      track.endTime = pTrack.endTime;
+      track.user = users[i];
 
       tracks.push(track);
     }

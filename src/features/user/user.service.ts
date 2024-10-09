@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from '../../core';
 import { EntityCondition } from '../../utils/types/entity-condition.type';
@@ -11,6 +11,7 @@ import { PaginationListQuery } from 'src/core/dtos';
 @Injectable()
 export class UserService {
   private typesenseClient: Client;
+  private readonly logger: Logger = new Logger(UserService.name);
 
   constructor(
     private readonly typesenseConfig: TypesenseConfig,
@@ -73,14 +74,12 @@ export class UserService {
         avatar: user.avatar,
       }));
 
-      const result = await this.typesenseClient
+      await this.typesenseClient
         .collections('users')
         .documents()
         .import(documents, { action: 'create' });
-
-      console.log(result);
     } catch (error) {
-      console.log(error);
+      this.logger.error(error);
     }
   }
 
@@ -110,7 +109,7 @@ export class UserService {
         avatar: user.avatar,
       });
     } catch (error) {
-      console.log(user);
+      this.logger.error(error);
     }
   }
 }

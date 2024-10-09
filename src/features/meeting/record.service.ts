@@ -17,20 +17,25 @@ export class RecordService {
     private trackRepository: Repository<RecordTrack>,
   ) {}
 
-  getRecordsByCreatedBy({
-    userId,
+  getRecordsByStatus({
+    userId = null,
     status,
     query,
   }: {
-    userId: number;
+    userId?: number;
     status: RecordStatus;
     query: PaginationListQuery;
   }): Promise<NullableType<Record[]>> {
-    return this.recordRepository
+    const qb = this.recordRepository
       .createQueryBuilder('record')
       .innerJoinAndSelect('record.createdBy', 'createdBy')
-      .where('createdBy.id = :userId', { userId })
-      .andWhere('record.status =: status', { status })
+      .where('record.status = :status', { status });
+
+    if (userId !== null) {
+      qb.andWhere('createdBy.id = :userId', { userId });
+    }
+
+    return qb
       .orderBy('record.createdAt', 'DESC')
       .skip(query.skip)
       .take(query.limit)
@@ -63,9 +68,11 @@ export class RecordService {
 
   async saveTracks(tracks: RecordTrack[]): Promise<RecordTrack[]> {
     try {
-      const newTracks = this.trackRepository.create(tracks);
+      const newTracks = await this.trackRepository.save(
+        this.trackRepository.create(tracks),
+      );
 
-      return await this.trackRepository.save(newTracks);
+      return newTracks;
     } catch (error) {
       throw error;
     }
@@ -76,6 +83,15 @@ export class RecordService {
   ): Promise<NullableType<Record>> {
     return this.recordRepository.findOne({
       where: fields,
+    });
+  }
+
+  findAllRecordTracks(
+    fields: EntityCondition<RecordTrack> | Array<EntityCondition<RecordTrack>>,
+  ): Promise<NullableType<RecordTrack>[]> {
+    return this.trackRepository.find({
+      where: fields,
+      relations: ['user'],
     });
   }
 

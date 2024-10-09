@@ -22,14 +22,15 @@ import { ChatGrpcClientService } from 'src/services/chat.proto.service';
 import { RecordGrpcService } from 'src/services/record.proto.service';
 import { RecordUseCases } from './record.usecase';
 import { RecordStatus } from 'src/core/enums';
+import { meeting } from 'waterbus-proto';
 
 @Injectable()
 export class MeetingUseCases {
   constructor(
-    private meetingService: MeetingService,
-    private userUseCases: UserUseCases,
-    private recordUsecases: RecordUseCases,
-    private participantService: ParticipantService,
+    private readonly meetingService: MeetingService,
+    private readonly userUseCases: UserUseCases,
+    private readonly recordUsecases: RecordUseCases,
+    private readonly participantService: ParticipantService,
     private readonly chatGrpcClientService: ChatGrpcClientService,
     private readonly recordGrpcClientService: RecordGrpcService,
     @InjectRepository(CCU)
@@ -512,27 +513,9 @@ export class MeetingUseCases {
       meetingId: code,
     });
 
-    if (res.succeed && res.tracks) {
-      const participantIds = res.tracks.map((track) => track.participantId);
-      const participants =
-        await this.participantService.findByIds(participantIds);
-
-      const urlToVideos = res.tracks.map((track) => track.urlToVideos);
-
-      await this.recordUsecases.stopRecord({
-        record: existsRecord,
-        urlToVideos,
-        participants,
-      });
-
-      // update record immediately if just 1 track
-      if (urlToVideos.length == 1) {
-        existsRecord.urlToVideo = urlToVideos[0];
-        existsRecord.status = RecordStatus.Finish;
-      } else {
-        // call merge video here if needed
-        existsRecord.status = RecordStatus.Processing;
-      }
+    if (res.succeed) {
+      // add track to queue for wait to combine video
+      existsRecord.status = RecordStatus.Processing;
 
       await this.recordUsecases.updateRecord({ record: existsRecord });
     }
@@ -652,5 +635,24 @@ export class MeetingUseCases {
     } catch (error) {
       throw error;
     }
+  }
+
+  async saveParticipantRecordTrack(data: meeting.RecordRequest) {
+    const existsRecord = await this.recordUsecases.getRecordById({
+      id: data.recordId,
+      status: RecordStatus.Processing,
+    });
+
+    if (!existsRecord) return;
+
+    const participantIds = data.tracks.map((track) => track.participantId);
+    const participants =
+      await this.participantService.findByIds(participantIds);
+
+    await this.recordUsecases.stopRecord({
+      record: existsRecord,
+      pTracks: data.tracks,
+      users: participants.map((p) => p.user),
+    });
   }
 }

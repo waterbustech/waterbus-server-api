@@ -14,8 +14,11 @@ export class ParticipantService {
 
   async findByIds(ids: Participant['id'][]): Promise<Participant[]> {
     try {
-      const participants = await this.participantRepository.findBy({
-        id: In(ids),
+      const participants = await this.participantRepository.find({
+        where: {
+          id: In(ids),
+        },
+        relations: ['user'],
       });
 
       return participants;
