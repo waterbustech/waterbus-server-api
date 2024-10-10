@@ -40,6 +40,23 @@ export class EnvironmentConfigService {
     return this.configService.get<string>('TYPESENSE_API_KEY');
   }
 
+  // RabbitMQ
+  getRabbitMQHost(): string {
+    return this.configService.get<string>('RABBITMQ_HOST');
+  }
+
+  getRabbitMQPort(): number {
+    return this.configService.get<number>('RABBITMQ_PORT');
+  }
+
+  getRabbitMQUser(): string {
+    return this.configService.get<string>('RABBITMQ_USER');
+  }
+
+  getRabbitMQPassword(): string {
+    return this.configService.get<string>('RABBITMQ_PASSWORD');
+  }
+
   // GRPC
   getWsGrpcUrl(): string {
     return this.configService.get<string>('WEBSOCKET_GRPC_ADDRESS');
