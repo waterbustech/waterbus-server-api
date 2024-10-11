@@ -24,11 +24,16 @@ export class RecordUseCases {
   async getRecordsByStatus({
     userId,
     status = RecordStatus.Finish,
-    query,
+    query = {
+      skip: 0,
+      limit: 10,
+      page: 0,
+      perPage: 0,
+    },
   }: {
     userId?: number;
     status?: RecordStatus;
-    query: PaginationListQuery;
+    query?: PaginationListQuery;
   }): Promise<Record[]> {
     return await this.recordService.getRecordsByStatus({
       userId,

@@ -1,6 +1,5 @@
-// cron.service.ts
 import { Injectable, Logger } from '@nestjs/common';
-import { Cron } from '@nestjs/schedule';
+import { Cron, CronExpression } from '@nestjs/schedule';
 import { RecordUseCases } from '../meeting/record.usecase';
 import { RecordStatus } from 'src/core/enums';
 import { VideoProcessingService } from './video-processing.service';
@@ -15,17 +14,11 @@ export class VideoProcessingCronService {
 
   private readonly logger = new Logger(VideoProcessingCronService.name);
 
-  @Cron('*/1 * * * *') // Executed every 5 mins
+  @Cron('*/5 * * * *') // Executed every 5 mins
   async handleEveryFiveMinutes() {
     try {
       const records = await this.recordUseCases.getRecordsByStatus({
         status: RecordStatus.Processing,
-        query: {
-          skip: 0,
-          limit: 5,
-          page: 0,
-          perPage: 0,
-        },
       });
 
       for (const record of records) {
@@ -62,4 +55,7 @@ export class VideoProcessingCronService {
       this.logger.error(error);
     }
   }
+
+  @Cron(CronExpression.EVERY_WEEKEND)
+  async cleanUpDatabase() {}
 }

@@ -12,6 +12,7 @@ import {
   VideoProcessingMessage,
 } from 'src/core/entities/video-processing';
 import { RecordStatus } from 'src/core/enums';
+import { EnvironmentConfigService } from 'src/core/config/environment/environments';
 
 @Injectable()
 export class VideoProcessingService
@@ -20,7 +21,10 @@ export class VideoProcessingService
 {
   // private readonly sentRecords = new Set<string>();
 
-  constructor(private readonly recordUseCases: RecordUseCases) {
+  constructor(
+    private readonly environment: EnvironmentConfigService,
+    private readonly recordUseCases: RecordUseCases,
+  ) {
     super();
   }
   private readonly logger = new Logger(VideoProcessingService.name);
@@ -30,10 +34,10 @@ export class VideoProcessingService
   private readonly resultsQueue = 'results';
 
   // RabbitMQ connection parameters
-  private readonly rabbitmqHost = 'localhost';
-  private readonly rabbitmqPort = 5672;
-  private readonly rabbitmqUser = 'guest';
-  private readonly rabbitmqPassword = 'guest';
+  private readonly rabbitmqHost = this.environment.getRabbitMQHost();
+  private readonly rabbitmqPort = this.environment.getRabbitMQPort();
+  private readonly rabbitmqUser = this.environment.getRabbitMQUser();
+  private readonly rabbitmqPassword = this.environment.getRabbitMQPassword();
 
   /**
    * Initialize the connection and start consuming results when the module initializes
