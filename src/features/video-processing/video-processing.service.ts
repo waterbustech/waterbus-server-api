@@ -18,7 +18,7 @@ export class VideoProcessingService
   extends EventEmitter
   implements OnModuleInit, OnModuleDestroy
 {
-  private readonly sentRecords = new Set<string>();
+  // private readonly sentRecords = new Set<string>();
 
   constructor(private readonly recordUseCases: RecordUseCases) {
     super();
@@ -91,12 +91,12 @@ export class VideoProcessingService
    */
   async sendToProcessing(message: VideoProcessingMessage): Promise<void> {
     try {
-      if (this.sentRecords.has(message.record_id)) {
-        this.logger.warn(
-          `Message with record_id ${message.record_id} already exists in the queue. Skipping...`,
-        );
-        return;
-      }
+      // if (this.sentRecords.has(message.record_id)) {
+      //   this.logger.warn(
+      //     `Message with record_id ${message.record_id} already exists in the queue. Skipping...`,
+      //   );
+      //   return;
+      // }
 
       const msgBuffer = Buffer.from(JSON.stringify(message));
       const sent = this.channel.sendToQueue(this.processingQueue, msgBuffer, {
@@ -104,7 +104,10 @@ export class VideoProcessingService
       });
 
       if (sent) {
-        this.sentRecords.add(message.record_id);
+        this.logger.log(
+          `Pushed to ['${this.processingQueue}'] queue. Record ID: ${message.record_id}`,
+        );
+        // this.sentRecords.add(message.record_id);
       } else {
         this.logger.warn(
           `Failed to send message to '${this.processingQueue}' queue. Record ID: ${message.record_id}`,

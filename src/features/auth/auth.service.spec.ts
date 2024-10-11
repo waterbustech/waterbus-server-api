@@ -83,6 +83,7 @@ describe('AuthService', () => {
         lastSeenAt: null,
         message: null,
         record: null,
+        track: null,
       };
 
       const mSession: Session = {

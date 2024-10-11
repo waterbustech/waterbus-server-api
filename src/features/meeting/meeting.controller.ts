@@ -245,7 +245,7 @@ export class MeetingController {
 
   @ApiOperation({
     summary: 'Get list records',
-    description: 'Get list records by id',
+    description: 'Get list records',
   })
   @Get('records')
   async getRecords(@Request() request, @Query() query: PaginationListQuery) {
