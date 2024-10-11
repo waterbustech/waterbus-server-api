@@ -38,7 +38,7 @@ export class VideoProcessingCronService {
 
         const participantTracks: ParticipantTrack[] = sortedTracks.map(
           (track) => ({
-            name: track.user.fullName ?? 'Waterbus',
+            name: track.user?.fullName ?? 'Waterbus',
             start_time: track.startTime,
             end_time: track.endTime,
             video_file_path: track.urlToVideo,
