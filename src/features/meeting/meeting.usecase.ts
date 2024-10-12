@@ -643,7 +643,7 @@ export class MeetingUseCases {
       status: RecordStatus.Processing,
     });
 
-    if (!existsRecord) return;
+    if (!existsRecord || !data.tracks) return;
 
     const participantIds = data.tracks.map((track) => track.participantId);
     const participants =
