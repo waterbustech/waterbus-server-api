@@ -115,9 +115,9 @@ export class MeetingUseCases {
       if (indexHost < 0)
         throw new ForbiddenException('User not allowed to update rooom');
 
-      existsRoom.title ??= meeting.title;
-      existsRoom.password ??= meeting.password;
-      existsRoom.avatar ??= meeting.avatar;
+      if (meeting.title) existsRoom.title = meeting.title;
+      if (meeting.password) existsRoom.password = meeting.password;
+      if (meeting.avatar) existsRoom.avatar = meeting.avatar;
 
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,
