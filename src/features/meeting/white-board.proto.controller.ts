@@ -45,7 +45,7 @@ export class WhiteBoardGrpcController implements whiteboard.WhiteBoardService {
   ): Observable<whiteboard.WhiteBoardResponse> {
     return new Observable<whiteboard.WhiteBoardResponse>((observer) => {
       this.whiteBoardUseCases
-        .updateBoard(data.meetingId, data.paints)
+        .updateBoard(data.meetingId, data.paints, data.action)
         .then((whiteBoard) => {
           const response: whiteboard.WhiteBoardResponse = {
             succeed: true,

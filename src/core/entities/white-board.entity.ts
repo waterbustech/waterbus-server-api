@@ -16,6 +16,10 @@ export interface PaintModel {
   color: string;
   offsets: OffsetModel[];
   width: number;
+  poligonSides: number;
+  isFilled: boolean;
+  type: string;
+  createdAt: string;
 }
 
 export interface OffsetModel {

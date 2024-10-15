@@ -10,19 +10,19 @@ export class WhiteBoardUseCases {
     private meetingService: MeetingService,
   ) {}
 
-  async getBoardByMeeting(meetingId: number): Promise<WhiteBoard> {
+  async getBoardByMeeting(meetingCode: number): Promise<WhiteBoard> {
     let board = await this.whiteBoardService.findOne({
-      meeting: { id: meetingId },
+      meeting: { code: meetingCode },
     });
 
     // if board not exists - create new board
     if (!board) {
       const meeting = await this.meetingService.findOne({
-        id: meetingId,
+        code: meetingCode,
       });
 
       if (!meeting) {
-        throw new NotFoundException(`Meeting with ID ${meetingId} not found`);
+        throw new NotFoundException(`Meeting with ID ${meetingCode} not found`);
       }
 
       board = new WhiteBoard();
@@ -38,16 +38,34 @@ export class WhiteBoardUseCases {
   }
 
   async updateBoard(
-    boardId: number,
+    meetingCode: number,
     paints: PaintModel[],
+    action: string,
   ): Promise<WhiteBoard> {
-    let board = await this.whiteBoardService.findOne({ id: boardId });
+    let board = await this.whiteBoardService.findOne({
+      meeting: { code: meetingCode },
+    });
 
     if (!board) {
-      throw new NotFoundException(`White board with ID ${boardId} not found`);
+      throw new NotFoundException(
+        `White board with ID ${meetingCode} not found`,
+      );
     }
 
-    board.paints = paints;
+    let current = board.paints;
+
+    if (action === 'add') {
+      current = [...current, ...paints];
+    } else if (action === 'remove') {
+      current = current.filter(
+        (paint) =>
+          !paints.some((p) => JSON.stringify(p) === JSON.stringify(paint)),
+      );
+    } else {
+      current = [];
+    }
+
+    board.paints = current;
 
     const newBoard = await this.whiteBoardService.update(board.id, board);
 
