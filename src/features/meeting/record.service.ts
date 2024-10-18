@@ -28,8 +28,8 @@ export class RecordService {
   }): Promise<NullableType<Record[]>> {
     const qb = this.recordRepository
       .createQueryBuilder('record')
-      .innerJoinAndSelect('record.createdBy', 'createdBy')
-      .innerJoinAndSelect('record.meeting', 'meeting')
+      .leftJoinAndSelect('record.createdBy', 'createdBy')
+      .leftJoinAndSelect('record.meeting', 'meeting')
       .where('record.status = :status', { status });
 
     if (userId !== null) {
