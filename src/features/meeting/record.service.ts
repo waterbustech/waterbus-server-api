@@ -29,6 +29,7 @@ export class RecordService {
     const qb = this.recordRepository
       .createQueryBuilder('record')
       .innerJoinAndSelect('record.createdBy', 'createdBy')
+      .innerJoinAndSelect('record.meeting', 'meeting')
       .where('record.status = :status', { status });
 
     if (userId !== null) {
