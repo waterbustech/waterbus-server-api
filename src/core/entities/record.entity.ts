@@ -37,12 +37,12 @@ export class Record extends EntityHelper {
 
   @ApiProperty()
   @Transform(({ value }) => undefined)
-  @Column({ type: String, default: null })
+  @Column({ type: String, default: null, nullable: true })
   urlToVideo: string;
 
   @ApiProperty()
   @Transform(({ value }) => undefined)
-  @Column({ type: String, default: null })
+  @Column({ type: String, default: null, nullable: true })
   thumbnail: string;
 
   @ApiProperty()

@@ -30,6 +30,7 @@ export class RecordService {
       .createQueryBuilder('record')
       .leftJoinAndSelect('record.createdBy', 'createdBy')
       .leftJoinAndSelect('record.meeting', 'meeting')
+      .addSelect(['record.urlToVideo', 'record.thumbnail'])
       .where('record.status = :status', { status });
 
     if (userId !== null) {
