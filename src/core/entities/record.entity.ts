@@ -36,12 +36,10 @@ export class Record extends EntityHelper {
   track: Relation<Meeting>;
 
   @ApiProperty()
-  @Transform(({ value }) => undefined)
   @Column({ type: String, default: null, nullable: true })
   urlToVideo: string;
 
   @ApiProperty()
-  @Transform(({ value }) => undefined)
   @Column({ type: String, default: null, nullable: true })
   thumbnail: string;
 
