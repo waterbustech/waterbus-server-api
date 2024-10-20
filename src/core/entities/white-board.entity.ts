@@ -10,7 +10,6 @@ import {
 import { EntityHelper } from '../../utils/entity-helper';
 import { Meeting } from './meeting.entity';
 import { ApiProperty } from '@nestjs/swagger';
-import { Transform } from 'class-transformer';
 
 export interface PaintModel {
   color: string;
@@ -36,7 +35,6 @@ export class WhiteBoard extends EntityHelper {
   meeting: Relation<Meeting>;
 
   @ApiProperty()
-  @Transform(({ value }) => undefined)
   @Column({ type: 'simple-json', default: [] })
   paints: PaintModel[];
 
