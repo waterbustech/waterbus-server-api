@@ -170,10 +170,10 @@ export class MeetingController {
     summary: 'Accept invitation',
     description: 'Accept invitation to access room as a member',
   })
-  @Post('/members/accept/:code')
-  async acceptRoomInvitation(@Request() request, @Param('code') code: number) {
+  @Post('/members/accept/:id')
+  async acceptRoomInvitation(@Request() request, @Param('id') meetingId: number) {
     return this.meetingUseCases.acceptRoomInvitation({
-      code: code,
+      meetingId: meetingId,
       userId: request.user.id,
     });
   }

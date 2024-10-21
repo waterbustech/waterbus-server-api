@@ -349,14 +349,14 @@ export class MeetingUseCases {
   }
 
   async acceptRoomInvitation({
-    code,
+    meetingId,
     userId,
   }: {
-    code: number;
+    meetingId: number;
     userId: number;
   }) {
     try {
-      const existsRoom = await this.getRoomByCode(code);
+      const existsRoom = await this.getRoomById(meetingId);
 
       const indexOfUser = existsRoom.members.findIndex(
         (member) =>
