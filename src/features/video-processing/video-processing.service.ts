@@ -148,7 +148,9 @@ export class VideoProcessingService
    */
   private async consumeResults() {
     if (!this.channel) {
-      this.logger.warn('Cannot consume results, RabbitMQ channel is not available.');
+      this.logger.warn(
+        'Cannot consume results, RabbitMQ channel is not available.',
+      );
       return;
     }
 
