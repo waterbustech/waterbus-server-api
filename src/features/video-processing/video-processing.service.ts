@@ -20,6 +20,7 @@ export class VideoProcessingService
   implements OnModuleInit, OnModuleDestroy
 {
   private readonly sentRecords = new Set<string>();
+  private readonly reconnectInterval = 5000; // Retry interval in milliseconds
 
   constructor(
     private readonly environment: EnvironmentConfigService,
@@ -43,50 +44,60 @@ export class VideoProcessingService
    * Initialize the connection and start consuming results when the module initializes
    */
   async onModuleInit() {
-    await this.connect();
-    this.consumeResults();
+    this.connectWithRetry();
+  }
+
+  /**
+   * Try to establish connection to RabbitMQ with a retry mechanism
+   */
+  private async connectWithRetry() {
+    try {
+      await this.connect();
+      this.consumeResults();
+    } catch (error) {
+      this.logger.warn(
+        `Failed to connect to RabbitMQ, retrying in ${this.reconnectInterval / 1000}s...`,
+      );
+      setTimeout(() => this.connectWithRetry(), this.reconnectInterval);
+    }
   }
 
   /**
    * Establish connection to RabbitMQ and create channel
    */
   private async connect() {
-    try {
-      this.logger.log('Connecting to RabbitMQ...');
-      const connectionParams = {
-        protocol: 'amqp',
-        hostname: this.rabbitmqHost,
-        port: this.rabbitmqPort,
-        username: this.rabbitmqUser,
-        password: this.rabbitmqPassword,
-      };
+    this.logger.log('Connecting to RabbitMQ...');
+    const connectionParams = {
+      protocol: 'amqp',
+      hostname: this.rabbitmqHost,
+      port: this.rabbitmqPort,
+      username: this.rabbitmqUser,
+      password: this.rabbitmqPassword,
+    };
 
-      this.connection = await amqp.connect(connectionParams);
-      this.connection.on('error', (err) => {
-        this.logger.error(`RabbitMQ connection error: ${err.message}`);
-      });
-      this.connection.on('close', () => {
-        this.logger.warn('RabbitMQ connection closed');
-        // Optionally implement reconnection logic here
-      });
+    this.connection = await amqp.connect(connectionParams);
+    this.connection.on('error', (err) => {
+      this.logger.error(`RabbitMQ connection error: ${err.message}`);
+    });
+    this.connection.on('close', () => {
+      this.logger.warn('RabbitMQ connection closed');
+      // Attempt reconnection
+      this.connectWithRetry();
+    });
 
-      this.channel = await this.connection.createChannel();
-      this.channel.on('error', (err) => {
-        this.logger.error(`RabbitMQ channel error: ${err.message}`);
-      });
-      this.channel.on('close', () => {
-        this.logger.warn('RabbitMQ channel closed');
-      });
+    this.channel = await this.connection.createChannel();
+    this.channel.on('error', (err) => {
+      this.logger.error(`RabbitMQ channel error: ${err.message}`);
+    });
+    this.channel.on('close', () => {
+      this.logger.warn('RabbitMQ channel closed');
+    });
 
-      // Declare the 'processing' and 'results' queues
-      await this.channel.assertQueue(this.processingQueue, { durable: true });
-      await this.channel.assertQueue(this.resultsQueue, { durable: true });
+    // Declare the 'processing' and 'results' queues
+    await this.channel.assertQueue(this.processingQueue, { durable: true });
+    await this.channel.assertQueue(this.resultsQueue, { durable: true });
 
-      this.logger.log('Connected to RabbitMQ and queues are asserted.');
-    } catch (error) {
-      this.logger.error(`Failed to connect to RabbitMQ: ${error.message}`);
-      throw error;
-    }
+    this.logger.log('Connected to RabbitMQ and queues are asserted.');
   }
 
   /**
@@ -95,6 +106,13 @@ export class VideoProcessingService
    */
   async sendToProcessing(message: VideoProcessingMessage): Promise<void> {
     try {
+      if (!this.channel) {
+        this.logger.warn(
+          `Cannot send message, RabbitMQ channel is not available. Record ID: ${message.record_id}`,
+        );
+        return;
+      }
+
       if (this.sentRecords.has(message.record_id)) {
         this.logger.warn(
           `Message with record_id ${message.record_id} already exists in the queue. Skipping...`,
@@ -129,6 +147,11 @@ export class VideoProcessingService
    * Set up consumer for the 'results' queue
    */
   private async consumeResults() {
+    if (!this.channel) {
+      this.logger.warn('Cannot consume results, RabbitMQ channel is not available.');
+      return;
+    }
+
     try {
       await this.channel.consume(
         this.resultsQueue,
@@ -182,8 +205,12 @@ export class VideoProcessingService
    */
   async onModuleDestroy() {
     try {
-      await this.channel.close();
-      await this.connection.close();
+      if (this.channel) {
+        await this.channel.close();
+      }
+      if (this.connection) {
+        await this.connection.close();
+      }
       this.logger.log('RabbitMQ connection and channel closed.');
     } catch (error) {
       this.logger.error(
