@@ -17,30 +17,42 @@ import { PaginationListQuery } from 'src/core/dtos';
 import { UserUseCases } from '../user/user.usecase';
 import { CCU } from 'src/core/entities/ccu.entity';
 import { ParticipantService } from './participant.service';
+import { MeetingStatus } from 'src/core/enums/meeting';
+import { ChatGrpcClientService } from 'src/services/chat.proto.service';
+import { RecordGrpcService } from 'src/services/record.proto.service';
+import { RecordUseCases } from './record.usecase';
+import { RecordStatus } from 'src/core/enums';
+import { meeting } from 'waterbus-proto';
 
 @Injectable()
 export class MeetingUseCases {
   constructor(
-    private meetingService: MeetingService,
-    private userUseCases: UserUseCases,
-    private participantService: ParticipantService,
+    private readonly meetingService: MeetingService,
+    private readonly userUseCases: UserUseCases,
+    private readonly recordUsecases: RecordUseCases,
+    private readonly participantService: ParticipantService,
+    private readonly chatGrpcClientService: ChatGrpcClientService,
+    private readonly recordGrpcClientService: RecordGrpcService,
     @InjectRepository(CCU)
     private ccuRepository: Repository<CCU>,
   ) {}
 
   async getRoomsByUserId({
     userId,
-    status,
+    memberStatus,
+    meetingStatus = MeetingStatus.Active,
     query,
   }: {
     userId: number;
-    status: MemberStatus;
+    memberStatus: MemberStatus;
+    meetingStatus?: MeetingStatus;
     query: PaginationListQuery;
   }): Promise<Meeting[]> {
     try {
       const rooms = await this.meetingService.findAll({
         userId,
-        status,
+        memberStatus,
+        meetingStatus,
         query,
       });
 
@@ -103,8 +115,9 @@ export class MeetingUseCases {
       if (indexHost < 0)
         throw new ForbiddenException('User not allowed to update rooom');
 
-      existsRoom.title = meeting.title;
-      existsRoom.password = meeting.password;
+      if (meeting.title) existsRoom.title = meeting.title;
+      if (meeting.password) existsRoom.password = meeting.password;
+      if (meeting.avatar) existsRoom.avatar = meeting.avatar;
 
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,
@@ -281,6 +294,15 @@ export class MeetingUseCases {
         existsRoom,
       );
 
+      const memberIndex = updatedRoom.members.findIndex(
+        (member) => member.user.id == user.id,
+      );
+
+      this.chatGrpcClientService.newInvitation({
+        meeting: updatedRoom,
+        member: updatedRoom.members[memberIndex],
+      });
+
       return updatedRoom;
     } catch (error) {
       throw error;
@@ -327,14 +349,14 @@ export class MeetingUseCases {
   }
 
   async acceptRoomInvitation({
-    code,
+    meetingId,
     userId,
   }: {
-    code: number;
+    meetingId: number;
     userId: number;
   }) {
     try {
-      const existsRoom = await this.getRoomByCode(code);
+      const existsRoom = await this.getRoomById(meetingId);
 
       const indexOfUser = existsRoom.members.findIndex(
         (member) =>
@@ -350,6 +372,11 @@ export class MeetingUseCases {
         existsRoom,
       );
 
+      this.chatGrpcClientService.newMemberJoined({
+        meeting: existsRoom,
+        member: existsRoom.members[indexOfUser],
+      });
+
       return updatedRoom;
     } catch (error) {
       throw error;
@@ -362,6 +389,7 @@ export class MeetingUseCases {
       const meeting = await this.getRoomById(message.meeting.id);
 
       meeting.latestMessage = message;
+      meeting.latestMessageCreatedAt = message.createdAt;
 
       for (const member of meeting.members) {
         if (member.status == MemberStatus.Invisible) {
@@ -412,6 +440,89 @@ export class MeetingUseCases {
     }
   }
 
+  async startRecord({ userId, code }: { userId: number; code: number }) {
+    const existsRoom = await this.getRoomByCode(code);
+
+    if (!existsRoom) throw new NotFoundException('Room Not Found');
+
+    const indexOfMember = existsRoom.members.findIndex(
+      (member) => member.user.id == userId,
+    );
+
+    if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+    if (existsRoom.members[indexOfMember].role != MemberRole.Host) {
+      throw new ForbiddenException('Only allow host start record');
+    }
+
+    const existsRecord = await this.recordUsecases.getRecordByStatus({
+      meetingId: existsRoom.id,
+      status: RecordStatus.Recording,
+    });
+
+    if (existsRecord) {
+      throw new BadRequestException('Meeting already recording');
+    }
+
+    const record = await this.recordUsecases.startRecord({
+      userId,
+      meetingId: existsRoom.id,
+    });
+
+    this.recordGrpcClientService.startRecord({
+      recordId: record.id,
+      meetingId: code,
+    });
+
+    return record;
+  }
+
+  async stopRecord({
+    userId = null,
+    code,
+  }: {
+    userId?: number | null;
+    code: number;
+  }) {
+    const existsRoom = await this.getRoomByCode(code);
+
+    if (!existsRoom) throw new NotFoundException('Room Not Found');
+
+    if (userId) {
+      const indexOfMember = existsRoom.members.findIndex(
+        (member) => member.user.id == userId,
+      );
+
+      if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+      if (existsRoom.members[indexOfMember].role != MemberRole.Host) {
+        throw new ForbiddenException('Only allow host stop record');
+      }
+    }
+
+    const existsRecord = await this.recordUsecases.getRecordByStatus({
+      meetingId: existsRoom.id,
+      status: RecordStatus.Recording,
+    });
+
+    if (!existsRecord) {
+      throw new NotFoundException(`Meeting with id ${existsRoom.id} not found`);
+    }
+
+    const res = await this.recordGrpcClientService.stopRecord({
+      meetingId: code,
+    });
+
+    if (res.succeed) {
+      // add track to queue for wait to combine video
+      existsRecord.status = RecordStatus.Processing;
+
+      await this.recordUsecases.updateRecord({ record: existsRecord });
+    }
+
+    return existsRecord;
+  }
+
   // MARK: related to remove
 
   async leaveRoom({
@@ -451,6 +562,43 @@ export class MeetingUseCases {
     }
   }
 
+  async archivedRoom({
+    code,
+    userId,
+  }: {
+    code: number;
+    userId: number;
+  }): Promise<Meeting> {
+    try {
+      const existsRoom = await this.getRoomByCode(code);
+
+      if (!existsRoom) throw new NotFoundException('Room Not Found');
+
+      const indexOfMember = existsRoom.members.findIndex(
+        (member) => member.user.id == userId,
+      );
+
+      if (indexOfMember == -1) throw new NotFoundException('Member Not Found');
+
+      if (existsRoom.members[indexOfMember].role != MemberRole.Host) {
+        throw new ForbiddenException(
+          'Only Host permited to archived the room.',
+        );
+      }
+
+      existsRoom.status = MeetingStatus.Archived;
+
+      const updatedRoom = await this.meetingService.update(
+        existsRoom.id,
+        existsRoom,
+      );
+
+      return updatedRoom;
+    } catch (error) {
+      throw error;
+    }
+  }
+
   // Use for GRPC leave room or websocket disconnected
   async removeParticipant(
     code: number,
@@ -474,6 +622,10 @@ export class MeetingUseCases {
 
       existsRoom.participants.splice(indexOfParticipant, 1);
 
+      if (!existsRoom.participants) {
+        this.stopRecord({ code: code });
+      }
+
       const updatedRoom = await this.meetingService.update(
         existsRoom.id,
         existsRoom,
@@ -483,5 +635,24 @@ export class MeetingUseCases {
     } catch (error) {
       throw error;
     }
+  }
+
+  async saveParticipantRecordTrack(data: meeting.RecordRequest) {
+    const existsRecord = await this.recordUsecases.getRecordById({
+      id: data.recordId,
+      status: RecordStatus.Processing,
+    });
+
+    if (!existsRecord || !data.tracks) return;
+
+    const participantIds = data.tracks.map((track) => track.participantId);
+    const participants =
+      await this.participantService.findByIds(participantIds);
+
+    await this.recordUsecases.stopRecord({
+      record: existsRecord,
+      pTracks: data.tracks,
+      users: participants.map((p) => p.user),
+    });
   }
 }

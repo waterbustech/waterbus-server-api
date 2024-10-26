@@ -7,6 +7,7 @@ import { getRepositoryToken } from '@nestjs/typeorm';
 import { Participant } from '../../core/entities/participant.entity';
 import { Member } from '../../core/entities/member.entity';
 import { UserUseCases } from '../user/user.usecase';
+import { RecordUseCases } from './record.usecase';
 
 describe('MeetingsController', () => {
   let meetingsController: MeetingController;
@@ -23,6 +24,8 @@ describe('MeetingsController', () => {
   const mockUserUseCases = {
     getUserById: jest.fn(),
   };
+
+  const mockRecordUseCases = {};
 
   const mockMeetingFactoryService = {
     createNewRoom: jest.fn(),
@@ -50,6 +53,10 @@ describe('MeetingsController', () => {
         {
           provide: UserUseCases,
           useValue: mockUserUseCases,
+        },
+        {
+          provide: RecordUseCases,
+          useValue: mockRecordUseCases,
         },
         {
           provide: MeetingFactoryService,
@@ -134,6 +141,7 @@ describe('MeetingsController', () => {
         title: '123',
         password: '123',
         code: 123,
+        avatar: 'https://waterbus.tech/lambiengcode.png',
       }; // Mock your update room DTO here
       const mockRequest = { user: { id: 1 } };
 

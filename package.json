@@ -21,6 +21,7 @@
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
     "migration:run": "npm run typeorm -- --dataSource=src/core/database/data-source.ts migration:run",
+    "migration:rollback": "npm run typeorm -- --dataSource=src/core/database/data-source.ts migration:revert",
     "pm2": "yarn build && yarn pm2:start",
     "pm2:start": "pm2 start ecosystem.config.js"
   },
@@ -28,15 +29,17 @@
     "@fastify/static": "^7.0.3",
     "@grpc/grpc-js": "^1.10.6",
     "@grpc/proto-loader": "^0.7.12",
-    "@nestjs/common": "^10.3.8",
+    "@nestjs/common": "^10.4.4",
     "@nestjs/config": "^3.2.2",
-    "@nestjs/core": "^10.3.8",
+    "@nestjs/core": "^10.4.4",
     "@nestjs/jwt": "^10.2.0",
-    "@nestjs/microservices": "^10.3.8",
+    "@nestjs/microservices": "^10.4.4",
     "@nestjs/passport": "^10.0.3",
-    "@nestjs/platform-fastify": "^10.3.8",
+    "@nestjs/platform-fastify": "^10.4.4",
+    "@nestjs/schedule": "^4.1.1",
     "@nestjs/swagger": "^7.3.1",
     "@nestjs/typeorm": "^10.0.2",
+    "amqplib": "^0.10.4",
     "aws-sdk": "^2.1603.0",
     "axios": "^1.7.2",
     "bcryptjs": "^2.4.3",
@@ -56,7 +59,7 @@
     "rxjs": "^7.8.1",
     "typeorm": "^0.3.20",
     "typesense": "^1.8.2",
-    "waterbus-proto": "^1.1.5"
+    "waterbus-proto": "^1.1.18"
   },
   "resolutions": {
     "inquirer": "^8.0.0"
@@ -64,7 +67,7 @@
   "devDependencies": {
     "@nestjs/cli": "^10.3.2",
     "@nestjs/schematics": "^10.1.1",
-    "@nestjs/testing": "^10.3.8",
+    "@nestjs/testing": "^10.4.4",
     "@swc/cli": "^0.3.12",
     "@swc/core": "^1.4.16",
     "@types/bcryptjs": "^2.4.6",

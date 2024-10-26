@@ -6,6 +6,7 @@ import { NullableType } from 'src/utils/types/nullable.type';
 import { DeepPartial, Repository } from 'typeorm';
 import { MemberStatus } from 'src/core/enums/member';
 import { PaginationListQuery } from 'src/core/dtos';
+import { MeetingStatus } from 'src/core/enums/meeting';
 
 @Injectable()
 export class MeetingService {
@@ -28,18 +29,21 @@ export class MeetingService {
 
   findAll({
     userId,
-    status,
+    memberStatus,
+    meetingStatus = MeetingStatus.Active,
     query,
   }: {
     userId: number;
-    status: MemberStatus;
+    memberStatus: MemberStatus;
+    meetingStatus?: MeetingStatus;
     query: PaginationListQuery;
   }): Promise<NullableType<Meeting[]>> {
     const subQuery = this.meetingRepository
       .createQueryBuilder('subquery')
       .leftJoin('subquery.members', 'subMember')
       .leftJoin('subMember.user', 'subUser')
-      .where('subMember.status = :status', { status })
+      .where(`subquery.status = :meetingStatus`, { meetingStatus })
+      .andWhere('subMember.status = :memberStatus', { memberStatus })
       .andWhere('subUser.id = :userId', { userId })
       .select('subquery.id');
 
@@ -48,16 +52,14 @@ export class MeetingService {
       .leftJoinAndSelect('meeting.members', 'member')
       .leftJoinAndSelect('meeting.participants', 'participants')
       .leftJoinAndSelect('meeting.latestMessage', 'latestMessage')
+      .leftJoinAndSelect('latestMessage.createdBy', 'createdBy')
       .leftJoinAndSelect('member.user', 'user')
-      .addSelect(
-        'COALESCE(latestMessage.createdAt, meeting.createdAt)',
-        'latest',
-      )
       .andWhere(`meeting.id IN (${subQuery.getQuery()})`)
       .setParameters(subQuery.getParameters())
-      .orderBy('latest', 'DESC')
+      .orderBy('meeting.latestMessageCreatedAt', 'DESC')
       .skip(query.skip)
       .take(query.limit)
+      .distinct(true)
       .getMany();
   }
 

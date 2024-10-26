@@ -16,12 +16,13 @@ import {
   timeout,
 } from 'rxjs';
 import { ClientGrpc } from '@nestjs/microservices';
-import { chat, meeting } from 'waterbus-proto';
+import { chat } from 'waterbus-proto';
 import { Status } from '@grpc/grpc-js/build/src/constants';
 import { ClientService } from 'src/core/enums/grpc/client-service';
 import { Message } from 'src/core/entities/message.entity';
 import { CCUService } from 'src/features/auth/ccu.service';
 import { Member } from 'src/core/entities/member.entity';
+import { Meeting } from 'src/core/entities/meeting.entity';
 
 @Injectable()
 export class ChatGrpcClientService implements OnModuleInit {
@@ -35,7 +36,7 @@ export class ChatGrpcClientService implements OnModuleInit {
     private readonly chatClientProxy: ClientGrpc,
     private readonly ccuService: CCUService,
   ) {
-    this.logger = new Logger('ChatService');
+    this.logger = new Logger(ChatGrpcClientService.name);
   }
 
   onModuleInit() {
@@ -49,7 +50,7 @@ export class ChatGrpcClientService implements OnModuleInit {
             .pipe()
             .subscribe({
               next: () => {
-                this.logger.log('Retry to connect...');
+                // this.logger.log('Retry to connect...');
                 this.connect();
                 this.checkConnection();
               },
@@ -191,6 +192,128 @@ export class ChatGrpcClientService implements OnModuleInit {
               .deleteMessage(
                 this.convertMessageToMessageRequest(message, socketIds),
               )
+              .pipe(timeout(5000));
+          } else
+            return throwError(() => ({
+              code: Status.UNAVAILABLE,
+              message: 'The service is currently unavailable',
+            }));
+        }),
+        catchError((error) => {
+          if (
+            (error?.code === Status.UNAVAILABLE ||
+              error?.name === 'TimeoutError') &&
+            this.isConnected
+          )
+            this.$connectionSubject.next(false);
+          return throwError(() => error);
+        }),
+        concatMap((observable: Observable<chat.MessageResponse>) => observable),
+        tap((data: chat.MessageResponse) => dataSubject.next(data)),
+        tap(() => dataSubject.complete()),
+      )
+      .subscribe({
+        error: (err) => dataSubject.error(err),
+      });
+    try {
+      return await lastValueFrom(
+        dataSubject.pipe(map((response) => response.succeed)),
+      );
+    } catch (error) {
+      this.logger.error(error.toString());
+    }
+  }
+
+  async newMemberJoined({
+    meeting,
+    member,
+  }: {
+    meeting: Meeting;
+    member: Member;
+  }): Promise<boolean> {
+    const dataSubject = new Subject<chat.MessageResponse>();
+    this.$connectionSubject
+      .pipe(
+        switchMap(async (isConnected) => {
+          if (isConnected) {
+            let socketIds = await this.getSocketsInConversation({
+              members: meeting.members,
+            });
+            return this.chatService
+              .newMemberJoined({
+                meetingId: meeting.id,
+                member: {
+                  id: member.id,
+                  role: member.role,
+                  status: member.status,
+                  user: {
+                    id: member.user.id,
+                    userName: member.user.userName,
+                    fullName: member.user.fullName,
+                    avatar: member.user.avatar,
+                  },
+                },
+                ccus: socketIds,
+              })
+              .pipe(timeout(5000));
+          } else
+            return throwError(() => ({
+              code: Status.UNAVAILABLE,
+              message: 'The service is currently unavailable',
+            }));
+        }),
+        catchError((error) => {
+          if (
+            (error?.code === Status.UNAVAILABLE ||
+              error?.name === 'TimeoutError') &&
+            this.isConnected
+          )
+            this.$connectionSubject.next(false);
+          return throwError(() => error);
+        }),
+        concatMap((observable: Observable<chat.MessageResponse>) => observable),
+        tap((data: chat.MessageResponse) => dataSubject.next(data)),
+        tap(() => dataSubject.complete()),
+      )
+      .subscribe({
+        error: (err) => dataSubject.error(err),
+      });
+    try {
+      return await lastValueFrom(
+        dataSubject.pipe(map((response) => response.succeed)),
+      );
+    } catch (error) {
+      this.logger.error(error.toString());
+    }
+  }
+
+  async newInvitation({
+    meeting,
+    member,
+  }: {
+    meeting: Meeting;
+    member: Member;
+  }): Promise<boolean> {
+    const dataSubject = new Subject<chat.MessageResponse>();
+    this.$connectionSubject
+      .pipe(
+        switchMap(async (isConnected) => {
+          if (isConnected) {
+            let socketIds = await this.getSocketsInConversation({
+              members: [member],
+            });
+            return this.chatService
+              .newInvitation({
+                room: {
+                  id: meeting.id,
+                  title: meeting.title,
+                  status: meeting.status,
+                  avatar: meeting.avatar,
+                  createdAt: meeting.createdAt.getTime().toString(),
+                  members: [],
+                },
+                ccus: socketIds,
+              })
               .pipe(timeout(5000));
           } else
             return throwError(() => ({

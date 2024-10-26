@@ -5,6 +5,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
   OneToMany,
   OneToOne,
   PrimaryGeneratedColumn,
@@ -20,6 +21,7 @@ import { Message } from './message.entity';
 import { Member } from './member.entity';
 import { customAlphabet } from 'nanoid';
 import { MeetingStatus } from '../enums/meeting';
+import { WhiteBoard } from './white-board.entity';
 
 @Entity({ name: 'meetings' })
 export class Meeting extends EntityHelper {
@@ -36,6 +38,10 @@ export class Meeting extends EntityHelper {
   @Column({ type: String })
   password: string;
 
+  @ApiProperty({ example: 'https://waterbus.cloud/assets/avatar/lambiengcode' })
+  @Column({ type: String, nullable: true })
+  avatar?: string;
+
   // Use for session join
   @OneToMany(() => Participant, (participant) => participant.meeting, {
     eager: true,
@@ -50,11 +56,18 @@ export class Meeting extends EntityHelper {
   })
   members: Relation<Member[]>;
 
-  @OneToOne(() => Message, (message) => message.meeting)
+  @OneToOne(() => Message, (message) => message.meeting, {
+    eager: true,
+    cascade: true,
+  })
+  @JoinColumn()
   latestMessage: Relation<Message>;
 
   @OneToMany(() => Message, (message) => message.meeting)
   message: Relation<Message>;
+
+  @OneToMany(() => WhiteBoard, (whiteBoard) => whiteBoard.meeting)
+  whiteBoard: Relation<WhiteBoard>;
 
   @Column({
     type: 'enum',
@@ -62,6 +75,9 @@ export class Meeting extends EntityHelper {
     default: MeetingStatus.Active,
   })
   status: MeetingStatus;
+
+  @Column({ type: Date, nullable: true })
+  latestMessageCreatedAt: Date;
 
   @BeforeInsert()
   @BeforeUpdate()
@@ -94,5 +110,12 @@ export class Meeting extends EntityHelper {
     }
 
     this.code = Number(id);
+  }
+
+  @BeforeUpdate()
+  async updateLatestMessageCreatedAt() {
+    if (this.latestMessage) {
+      this.latestMessageCreatedAt = this.latestMessage.createdAt;
+    }
   }
 }

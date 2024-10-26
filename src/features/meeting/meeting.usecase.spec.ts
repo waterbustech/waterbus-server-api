@@ -19,6 +19,9 @@ import {
 } from '@nestjs/common';
 import { Status } from 'src/core/enums';
 import bcrypt from 'bcryptjs';
+import { ChatGrpcClientService } from 'src/services/chat.proto.service';
+import { RecordUseCases } from './record.usecase';
+import { RecordGrpcService } from 'src/services/record.proto.service';
 
 describe('MeetingUseCase', () => {
   let meetingUseCases: MeetingUseCases;
@@ -34,10 +37,19 @@ describe('MeetingUseCase', () => {
     getUserById: jest.fn(),
   };
 
+  const mockRecordUseCases = {};
+
   const mockParticipantService = {
     findOne: jest.fn(),
     update: jest.fn(),
   };
+
+  const mockChatGrpcClientService = {
+    newInvitation: jest.fn(),
+    newMemberJoined: jest.fn(),
+  };
+
+  const mockRecordGrpcClientService = {};
 
   const mockCCURepository = {
     save: jest.fn(),
@@ -55,6 +67,8 @@ describe('MeetingUseCase', () => {
     lastSeenAt: undefined,
     participant: new Participant(),
     message: new Message(),
+    record: null,
+    track: null,
     generateUserName: jest.fn(),
     setEntityName: jest.fn(),
     toJSON: jest.fn(),
@@ -108,14 +122,17 @@ describe('MeetingUseCase', () => {
     title: 'Meeting with Alice',
     code: 123,
     password: '123',
+    avatar: null,
     members: [mockMember],
     participants: [],
     setPassword: jest.fn(),
+    latestMessageCreatedAt: null,
     createdAt: undefined,
     updatedAt: undefined,
     deletedAt: undefined,
     latestMessage: null,
     message: null,
+    whiteBoard: null,
     generateCode: jest.fn(),
     setEntityName: jest.fn(),
     toJSON: jest.fn(),
@@ -125,6 +142,7 @@ describe('MeetingUseCase', () => {
     softRemove: jest.fn(),
     recover: jest.fn(),
     reload: jest.fn(),
+    updateLatestMessageCreatedAt: jest.fn(),
     status: MeetingStatus.Active,
   };
 
@@ -137,12 +155,24 @@ describe('MeetingUseCase', () => {
           useValue: mockUserUseCases,
         },
         {
+          provide: RecordUseCases,
+          useValue: mockRecordUseCases,
+        },
+        {
           provide: MeetingService,
           useValue: mockMeetingService,
         },
         {
           provide: ParticipantService,
           useValue: mockParticipantService,
+        },
+        {
+          provide: ChatGrpcClientService,
+          useValue: mockChatGrpcClientService,
+        },
+        {
+          provide: RecordGrpcService,
+          useValue: mockRecordGrpcClientService,
         },
         {
           provide: getRepositoryToken(CCU),
@@ -159,7 +189,8 @@ describe('MeetingUseCase', () => {
       // Arrange
       const mockQuery = {
         userId: 1,
-        status: 2,
+        memberStatus: 2,
+        meetingStatus: 0,
         query: {
           skip: 0,
           limit: 10,

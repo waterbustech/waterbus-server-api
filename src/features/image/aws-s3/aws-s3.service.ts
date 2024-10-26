@@ -2,6 +2,8 @@ import { Injectable } from '@nestjs/common';
 import * as AWS from 'aws-sdk';
 import { v4 as uuidv4 } from 'uuid';
 
+require('aws-sdk/lib/maintenance_mode_message').suppress = true;
+
 @Injectable()
 export class AwsS3Service {
   private s3: AWS.S3;

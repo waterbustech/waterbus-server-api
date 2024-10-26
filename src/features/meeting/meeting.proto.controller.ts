@@ -94,4 +94,31 @@ export class MeetingGrpcController implements meeting.MeetingService {
       });
     }
   }
+
+  @GrpcMethod('MeetingService', 'emitParticipantTracks')
+  emitParticipantTracks(
+    data: meeting.RecordRequest,
+  ): Observable<meeting.LeaveRoomResponse> {
+    try {
+      this.meetingsUseCases.saveParticipantRecordTrack(data);
+
+      const response: meeting.LeaveRoomResponse = {
+        succeed: true,
+      };
+
+      return new Observable<meeting.LeaveRoomResponse>((observer) => {
+        observer.next(response);
+        observer.complete();
+      });
+    } catch (error) {
+      const response: meeting.LeaveRoomResponse = {
+        succeed: false,
+      };
+
+      return new Observable<meeting.LeaveRoomResponse>((observer) => {
+        observer.next(response);
+        observer.complete();
+      });
+    }
+  }
 }

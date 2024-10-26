@@ -42,11 +42,13 @@ describe('MeetingsService', () => {
         members: [],
         participants: [],
         setPassword: jest.fn(),
+        latestMessageCreatedAt: undefined,
         createdAt: undefined,
         updatedAt: undefined,
         deletedAt: undefined,
         latestMessage: null,
         message: null,
+        whiteBoard: null,
         generateCode: jest.fn(),
         setEntityName: jest.fn(),
         toJSON: jest.fn(),
@@ -56,6 +58,7 @@ describe('MeetingsService', () => {
         softRemove: jest.fn(),
         recover: jest.fn(),
         reload: jest.fn(),
+        updateLatestMessageCreatedAt: jest.fn(),
         status: MeetingStatus.Active,
       }; // Mock your meeting object here
 

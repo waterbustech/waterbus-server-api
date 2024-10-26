@@ -1,6 +1,6 @@
 // typesense.config.ts
 
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { Client } from 'typesense';
 import { EnvironmentConfigService } from '../environment/environments';
 
@@ -8,13 +8,15 @@ import { EnvironmentConfigService } from '../environment/environments';
 export class TypesenseConfig {
   constructor(private readonly environment: EnvironmentConfigService) {}
 
+  private readonly logger: Logger = new Logger(TypesenseConfig.name);
+
   async createSchema() {
     const client = this.getClient();
 
     try {
       await client.collections('users').delete();
     } catch (error) {
-      console.log();
+      this.logger.error(error);
     }
 
     await client.collections().create({

@@ -32,6 +32,9 @@ import { Repository } from 'typeorm';
 import { Member } from '../../core/entities/member.entity';
 import { MemberRole, MemberStatus } from '../../core/enums/member';
 import { UserUseCases } from '../user/user.usecase';
+import { MeetingStatus } from 'src/core/enums/meeting';
+import { RecordUseCases } from './record.usecase';
+import { RecordStatus } from 'src/core/enums';
 
 @ApiTags('meeting')
 @ApiBearerAuth()
@@ -45,6 +48,7 @@ export class MeetingController {
   constructor(
     private meetingUseCases: MeetingUseCases,
     private userUseCases: UserUseCases,
+    private recordUseCases: RecordUseCases,
     private meetingFactoryService: MeetingFactoryService,
     @InjectRepository(Member)
     private memberRepository: Repository<Member>,
@@ -70,7 +74,24 @@ export class MeetingController {
   ) {
     return this.meetingUseCases.getRoomsByUserId({
       userId: request.user.id,
-      status,
+      memberStatus: status,
+      query,
+    });
+  }
+
+  @ApiOperation({
+    summary: 'Get archived rooms',
+    description: 'Get list rooms which are archived',
+  })
+  @Get('/conversations/archived')
+  async getArchivedRooms(
+    @Request() request,
+    @Query() query: PaginationListQuery,
+  ) {
+    return this.meetingUseCases.getRoomsByUserId({
+      userId: request.user.id,
+      memberStatus: MemberStatus.Joined,
+      meetingStatus: MeetingStatus.Archived,
       query,
     });
   }
@@ -149,10 +170,13 @@ export class MeetingController {
     summary: 'Accept invitation',
     description: 'Accept invitation to access room as a member',
   })
-  @Post('/members/accept/:code')
-  async acceptRoomInvitation(@Request() request, @Param('code') code: number) {
+  @Post('/members/accept/:id')
+  async acceptRoomInvitation(
+    @Request() request,
+    @Param('id') meetingId: number,
+  ) {
     return this.meetingUseCases.acceptRoomInvitation({
-      code: code,
+      meetingId: meetingId,
       userId: request.user.id,
     });
   }
@@ -209,5 +233,52 @@ export class MeetingController {
   async leaveRoom(@Request() request, @Param('code') code: number) {
     const userId = request.user.id;
     return this.meetingUseCases.leaveRoom({ code, userId });
+  }
+
+  @ApiOperation({
+    summary: 'Archived room',
+    description:
+      'Archived the room, user only can see the messages, not allow to modify messages anymore.',
+  })
+  @Post('/archived/:code')
+  async archivedRoom(@Request() request, @Param('code') code: number) {
+    const userId = request.user.id;
+    return this.meetingUseCases.archivedRoom({ code, userId });
+  }
+
+  @ApiOperation({
+    summary: 'Get list records',
+    description: 'Get list records',
+  })
+  @Get('records')
+  async getRecords(@Request() request, @Query() query: PaginationListQuery) {
+    const userId = request.user.id;
+    return this.recordUseCases.getRecordsByStatus({
+      userId,
+      query,
+    });
+  }
+
+  @ApiOperation({
+    summary: 'Start record meeting',
+    description: 'Start record meeting',
+  })
+  @Post('/record/start')
+  async startRecord(@Request() request, @Query('code') code: number) {
+    const userId = request.user.id;
+    return this.meetingUseCases.startRecord({ userId, code });
+  }
+
+  @ApiOperation({
+    summary: 'Stop record meeting',
+    description: 'Stop record meeting',
+  })
+  @Post('/record/stop')
+  async stopRecord(@Request() request, @Query('code') code: number) {
+    const userId = request.user.id;
+    return this.meetingUseCases.stopRecord({
+      userId,
+      code,
+    });
   }
 }

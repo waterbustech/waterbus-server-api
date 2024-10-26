@@ -7,6 +7,9 @@ import { UserModule } from './features/user/user.module';
 import { MeetingModule } from './features/meeting/meeting.module';
 import { ChatModule } from './features/chat/chat.module';
 import { EnvironmentConfigModule } from './core/config/environment/environment.module';
+import { HealthCheckController } from './app.controller';
+import { NotFoundController } from './notfound.controller';
+import { VideoProcessingModule } from './features/video-processing/video-processing.module';
 
 @Module({
   imports: [
@@ -21,6 +24,8 @@ import { EnvironmentConfigModule } from './core/config/environment/environment.m
     UserModule,
     MeetingModule,
     ChatModule,
+    VideoProcessingModule,
   ],
+  controllers: [HealthCheckController, NotFoundController],
 })
 export class AppModule {}

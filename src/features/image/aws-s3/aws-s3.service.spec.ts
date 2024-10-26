@@ -2,6 +2,8 @@ import { Test, TestingModule } from '@nestjs/testing';
 import { AwsS3Service } from './aws-s3.service';
 import * as AWS from 'aws-sdk';
 
+require('aws-sdk/lib/maintenance_mode_message').suppress = true;
+
 class MockS3 {
   public getSignedUrlPromise(operation: string, params: any): Promise<string> {
     return new Promise((resolve, reject) => {
